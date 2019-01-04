@@ -1,2 +1,2 @@
 # rtv1
-[macOS][SDL2] Ray Tracer project
+theory concept of Raytracing
