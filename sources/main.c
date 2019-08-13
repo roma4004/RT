@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/12 19:04:13 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/08/13 18:59:35 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,41 +95,11 @@ void			game_loop(t_env *env, int threads)
 		SDL_RenderPresent(env->renderer);
 	}
 }
-void				vec3_add(t_fvec3 *restrict destination,
-								const t_fvec3 *restrict first,
-								const t_fvec3 *restrict second)
-{
-	destination->x = first->x + second->x;
-	destination->y = first->y + second->y;
-	destination->z = first->z + second->z;
-}
 
-void				vec3_sub(t_fvec3 *restrict destination,
-								const t_fvec3 *restrict first,
-								const t_fvec3 *restrict second)
-{
-	destination->x = first->x - second->x;
-	destination->y = first->y - second->y;
-	destination->z = first->z - second->z;
-}
 
-void				vec3_mul(t_fvec3 *restrict destination,
-								const t_fvec3 *restrict first,
-								const t_fvec3 *restrict second)
-{
-	destination->x = first->x * second->x;
-	destination->y = first->y * second->y;
-	destination->z = first->z * second->z;
-}
 
-void				vec3_div(t_fvec3 *restrict destination,
-								const t_fvec3 *restrict first,
-								const t_fvec3 *restrict second)
-{
-	destination->x = first->x * second->x;
-	destination->y = first->y * second->y;
-	destination->z = first->z * second->z;
-}
+
+
 
 
 //sounds https://www.deezer.com/track/441682922?utm_source=deezer&utm_content=track-441682922&utm_term=2309518464_1565535009&utm_medium=web
@@ -169,12 +139,78 @@ float	fclamp(float arg, float minimum, float maximum)
 }
 static uint8_t  double2byte_clamp(const double x)
 {
-	if (__builtin_isless(x, 0.0))
+	if (x < 0.0)
 		return (0);
-	else if (__builtin_isgreater(x, 1.0))
+	else if (x > 1.0)
 		return (255);
 	else
 		return ((uint8_t)(255.0 * x));
+}
+
+//Sphere(const Vec3f &c, const float &r) : center(c), radius(r) {}
+bool ray_intersect(const t_sphr *sphere, const t_fvec3 *orig,
+					const t_fvec3 *dir, float *t0)
+{
+	float		thc;
+	float		tca;
+	t_fvec3		L;
+	float		d2;
+	t_fvec3		tmp;
+	t_fvec3		tmp2;
+
+	vec3_sub_vec3(&L, &sphere->center, orig);
+	vec3_mul_vec3(&tmp, &L, dir);
+	tca = vec3_to_float(&tmp);
+	vec3_mul_vec3(&tmp, &L, &L);
+	vec3_sub_float(&tmp2, &tmp, tca * tca);
+	d2 = vec3_to_float(&tmp2);
+	if (d2 > sphere->radius * sphere->radius)
+		return false;
+	thc = sqrtf(sphere->radius * sphere->radius - d2);
+	*t0 = tca - thc;
+	if (*t0 < 0)
+		*t0 = tca + thc;
+	if (*t0 < 0)
+		return false;
+	return true;
+}
+
+bool scene_intersect(const t_fvec3 *orig, const t_fvec3 *dir,
+		const t_sphr *spheres, t_fvec3 *hit, t_fvec3 *N, t_mat *material)
+{
+	float		spheres_dist;
+	float		dist_i;
+	t_fvec3		tmp;
+
+	spheres_dist = MAXFLOAT;//std::numeric_limits<float>::max();
+	for (size_t i = 0; i < SPHERE_CNT; i++)
+	{
+		if (ray_intersect(&spheres[i], orig, dir, &dist_i)
+		&& dist_i < spheres_dist)
+		{
+			spheres_dist = dist_i;
+			vec3_mul_float(&tmp, dir, dist_i);
+			vec3_add_vec3(hit, orig, &tmp);
+			vec3_sub_vec3(&tmp, hit, &spheres[i].center);
+			vec3_normalize(N, &tmp);
+			*material = spheres[i].material;
+		}
+	}
+	return (spheres_dist < 1000);
+}
+
+t_fvec3			cast_ray(const t_fvec3 *orig, const t_fvec3 *dir,
+							const t_sphr *sphere_arr)
+{
+	t_fvec3		point;
+	t_fvec3		N;
+	t_mat		material;
+
+	if (!scene_intersect(orig, dir, sphere_arr, &point, &N, &material))
+	{
+		return (t_fvec3){ 0.0, 0.0, 0.0 }; // background color
+	}
+	return (material.diffuse_color);
 }
 
 int				main(int argc, char **argv)
@@ -183,45 +219,60 @@ int				main(int argc, char **argv)
 
 	env = init_env();
 
+	t_fvec3	framebuffer[WIN_WIDTH * WIN_HEIGHT];
+	t_sphr	*sphere_arr;
+	t_mat	mat1;
+	t_mat	mat2;
+	t_mat	mat3;
+	t_mat	mat4;
 
-    int y;
-    int x;
-	t_fvec3 framebuffer[WIN_WIDTH * WIN_HEIGHT];
+	mat1 = (t_mat){ (t_fvec3){ 0.3, 0.6, 0.1 } }; //orange
+	mat2 = (t_mat){ (t_fvec3){ 0.4, 0.4, 0.3 } }; //yellow
+	mat3 = (t_mat){ (t_fvec3){ 0.2, 0.2, 0.9 } }; //green
+	mat4 = (t_mat){ (t_fvec3){ 0.1, 0.4, 0.7 } }; //red
+	sphere_arr = (t_sphr *)malloc(sizeof(t_sphr) * SPHERE_CNT);
+//	sphere_arr[0] = (t_sphr){ (t_fvec3){ 5, 5, -16 }, 1 };
+//	sphere_arr[1] = (t_sphr){ (t_fvec3){ 10, 10, -16 }, 1 };
+//	sphere_arr[2] = (t_sphr){ (t_fvec3){ 20, 20, -16 }, 1 };
+//	sphere_arr[3] = (t_sphr){ (t_fvec3){ 30, 30, -16 }, 1 };
+//	sphere_arr[4] = (t_sphr){ (t_fvec3){ 50, 50, -16 }, 1 };
+
+
+
+	sphere_arr[0] = (t_sphr){ (t_fvec3){ 0, 0, 16 }, 1, mat1 };
+	sphere_arr[1] = (t_sphr){ (t_fvec3){ 5, 5, 16 }, 1, mat2 };
+	sphere_arr[2] = (t_sphr){ (t_fvec3){ -10, 10, 16 }, 1, mat3 };
+	sphere_arr[3] = (t_sphr){ (t_fvec3){ 10, -10, 19 }, 1, mat4 };
+//	sphere_arr[4] = (t_sphr){ (t_fvec3){ }, 1 };
+
 
 
 	while (!env->flags.is_game_over && prepare_render(env, &env->fps))
 	{
-		char *buf_ch;
-		buf_ch = (char *)env->buff;
-		clear_img_buff(env);
-		y = 0;
-//		while (y < WIN_HEIGHT)
-//		{
-//			x = 0;
-//			while (x < WIN_WIDTH)
-//			{
-//				buf_ch[y * WIN_WIDTH + x] = (y / (float)(WIN_HEIGHT))
-//						(x / (float)(WIN_WIDTH))
-//						(y / (float)(WIN_HEIGHT);
-//
-//				x++;
-//			}
-//			y++;
-//		}
-
-		for (size_t j = 0; j < WIN_HEIGHT; j++) {
-			for (size_t i = 0; i < WIN_WIDTH; i++) {
+		//clear_img_buff(env);
+		float x;
+		float y;
+		for (size_t j = 0; j < WIN_HEIGHT; j++)
+		{
+			for (size_t i = 0; i < WIN_WIDTH; i++)
+			{
+				x = (2 * (i + 0.5) / (float)WIN_WIDTH - 1) * tan(FOV / 2.)
+									* WIN_WIDTH / (float)WIN_HEIGHT;
+				y = -(2 * (j + 0.5) / (float)WIN_HEIGHT - 1) * tan(FOV / 2.);
+				t_fvec3 dir;
+				dir = (t_fvec3){ x, y, -1 };
+				vec3_normalize(&dir, &dir);
+				t_fvec3 tmp = (t_fvec3){ 0, 0, 0 };
 				framebuffer[i + j * WIN_WIDTH] =
-				(t_fvec3){ j / (float)(WIN_HEIGHT), i / (float)(WIN_WIDTH), 0 };
+					cast_ray(&tmp, &dir, sphere_arr);
 			}
 		}
-
 		for (size_t i = 0; i < WIN_HEIGHT * WIN_WIDTH; ++i)
 		{
-			((uint32_t*)buf_ch)[i] =
-					double2byte_clamp(framebuffer[i].y) << (1 * 8)
-				  | double2byte_clamp(framebuffer[i].x) << (2 * 8)
-				  | double2byte_clamp(framebuffer[i].z) << (3 * 8);
+			((uint32_t *)env->buff)[i] =
+					double2byte_clamp(framebuffer[i].x) << (1u * 8u)
+				| double2byte_clamp(framebuffer[i].y) << (2u * 8u)
+				| double2byte_clamp(framebuffer[i].z) << (3u * 8u);
 		}
 		event_handler(env, &env->cam, &env->flags);
 

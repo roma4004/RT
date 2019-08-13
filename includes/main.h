@@ -6,14 +6,24 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/12 17:45:27 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/08/13 18:37:20 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
-# define WIN_WIDTH 640   // =60pfs
-# define WIN_HEIGHT 480  // =60pfs
+//rtv_macro:
+//# define FOV M_PI / 3.0
+# define FOV 60
+# define WIN_WIDTH 800u   // =60pfs
+# define WIN_HEIGHT 600u  // =60pfs
+
+//tmp defines
+#define SPHERE_CNT 4
+//rtv_macro end
+
+
+
 //# define WIN_WIDTH 3000   // =30pfs
 //# define WIN_HEIGHT 2000  // =30pfs
 # define WIN_NAME "wolf3d by dromanic (@Dentair)"
@@ -107,6 +117,27 @@ typedef struct	s_double_point
 	double		x;
 	double		y;
 }				t_db_pt;
+
+
+
+typedef struct Material
+{
+	t_fvec3		diffuse_color;
+}				t_mat;
+
+
+typedef struct Sphere
+{
+	t_fvec3	center;
+	float	radius;
+	t_mat	material;
+}				t_sphr;
+
+
+
+
+
+
 
 typedef struct	s_sprite
 {
@@ -270,6 +301,69 @@ void			event_handler(t_env *env, t_cam *cam, t_flags *flags);
 int				render_interface(t_env *env, t_fps *fps, t_txt *cam);
 void			show_errors(t_env *env);
 void			quit_program(t_env *env);
+
+
+
+
+
+
+
+float				vec3_magnitude(const t_fvec3 *restrict first);
+float				vec3_to_float(const t_fvec3 *restrict first);
+void				vec3_normalize(t_fvec3 *restrict destination,
+									t_fvec3 *restrict first);
+void				vec3_normalize_ptr(t_fvec3 *restrict first);
+void				vec3_normalize_cpy(t_fvec3 first);
+
+void				vec3_add_vec3(t_fvec3 *restrict destination,
+							const t_fvec3 *restrict first,
+							const t_fvec3 *restrict second);
+void				vec3_sub_vec3(t_fvec3 *restrict destination,
+							const t_fvec3 *restrict first,
+							const t_fvec3 *restrict second);
+void				vec3_mul_vec3(t_fvec3 *restrict destination,
+							const t_fvec3 *restrict first,
+							const t_fvec3 *restrict second);
+void				vec3_div_vec3(t_fvec3 *restrict destination,
+							const t_fvec3 *restrict first,
+							const t_fvec3 *restrict second);
+
+void				float_add_vec3(t_fvec3 *restrict destination,
+							const float first,
+							const t_fvec3 *restrict second);
+void				float_sub_vec3(t_fvec3 *restrict destination,
+							const float first,
+							const t_fvec3 *restrict second);
+void				float_mul_vec3(t_fvec3 *restrict destination,
+							const float first,
+							const t_fvec3 *restrict second);
+void				float_div_vec3(t_fvec3 *restrict destination,
+							const float first,
+							const t_fvec3 *restrict second);
+
+void				vec3_add_float(t_fvec3 *restrict destination,
+							 const t_fvec3 *restrict first,
+							 const float second);
+void				vec3_sub_float(t_fvec3 *restrict destination,
+							 const t_fvec3 *restrict first,
+							 const float second);
+void				vec3_mul_float(t_fvec3 *restrict destination,
+							 const t_fvec3 *restrict first,
+							 const float second);
+void				vec3_div_float(t_fvec3 *restrict destination,
+							 const t_fvec3 *restrict first,
+							 const float second);
+
+
+
+
+
+
+
+
+
+
+
 #endif
 
 //#ifndef DOOM_H
