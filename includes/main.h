@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/13 18:37:20 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/08/14 17:48:16 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 //rtv_macro:
 //# define FOV M_PI / 3.0
 # define FOV 60
-# define WIN_WIDTH 800u   // =60pfs
-# define WIN_HEIGHT 600u  // =60pfs
+# define WIN_WIDTH 1024u   // =60pfs
+# define WIN_HEIGHT 768u  // =60pfs
 
 //tmp defines
-#define SPHERE_CNT 4
+#define SPHERE_CNT 1
+#define LIGHTS_CNT 1
 //rtv_macro end
 
 
@@ -133,6 +134,10 @@ typedef struct Sphere
 	t_mat	material;
 }				t_sphr;
 
+typedef struct Light {
+	t_fvec3	position;
+	float	intensity;
+}				t_lght;
 
 
 
@@ -307,7 +312,7 @@ void			quit_program(t_env *env);
 
 
 
-
+void				vec3_to_negative(t_fvec3 *restrict destination);
 float				vec3_magnitude(const t_fvec3 *restrict first);
 float				vec3_to_float(const t_fvec3 *restrict first);
 void				vec3_normalize(t_fvec3 *restrict destination,

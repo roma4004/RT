@@ -43,6 +43,8 @@ void				float_div_vec3(t_fvec3 *restrict destination,
 									const float first,
 									const t_fvec3 *restrict second)
 {
+	if (second == 0)
+		return ;
 	destination->x = first / second->x;
 	destination->y = first / second->y;
 	destination->z = first / second->z;

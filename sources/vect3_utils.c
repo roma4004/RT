@@ -6,11 +6,18 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/13 15:28:04 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/13 18:33:06 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/08/14 17:25:25 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+void		vec3_to_negative(t_fvec3 *restrict destination)
+{
+	destination->x = -destination->x;
+	destination->y = -destination->y;
+	destination->z = -destination->z;
+}
 
 float		vec3_to_float(const t_fvec3 *restrict first)
 {

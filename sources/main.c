@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/13 18:59:35 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/08/14 18:18:33 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,18 +199,37 @@ bool scene_intersect(const t_fvec3 *orig, const t_fvec3 *dir,
 	return (spheres_dist < 1000);
 }
 
-t_fvec3			cast_ray(const t_fvec3 *orig, const t_fvec3 *dir,
-							const t_sphr *sphere_arr)
+float			ft_max(float first, float second)
 {
-	t_fvec3		point;
-	t_fvec3		N;
-	t_mat		material;
+	return (first > second ? first : second);
+}
+
+t_fvec3			cast_ray(const t_fvec3 *orig, const t_fvec3 *dir,
+							const t_sphr *sphere_arr,
+							const t_lght *lights_arr)
+{
+	t_fvec3 point;
+	t_fvec3 N;
+	t_mat   material;
 
 	if (!scene_intersect(orig, dir, sphere_arr, &point, &N, &material))
 	{
 		return (t_fvec3){ 0.0, 0.0, 0.0 }; // background color
 	}
-	return (material.diffuse_color);
+	float diffuse_light_intensity = 0;
+	for (size_t i = 0; i < LIGHTS_CNT; i++)
+	{
+		t_fvec3     tmp;
+		vec3_sub_vec3(&tmp, &lights_arr[i].position, &point);
+		t_fvec3 light_dir;
+		vec3_normalize(&light_dir, &tmp);
+		vec3_mul_vec3(&tmp, &light_dir, &N);
+		diffuse_light_intensity +=
+			lights_arr[i].intensity * ft_max(0.f, vec3_to_float(&tmp));
+	}
+	t_fvec3 tmp;
+	vec3_mul_float(&tmp, &material.diffuse_color, diffuse_light_intensity);
+	return tmp;
 }
 
 int				main(int argc, char **argv)
@@ -219,8 +238,14 @@ int				main(int argc, char **argv)
 
 	env = init_env();
 
-	t_fvec3	framebuffer[WIN_WIDTH * WIN_HEIGHT];
+//t_fvec3	framebuffer[WIN_WIDTH * WIN_HEIGHT];
+	t_fvec3 *framebuffer_ptr;
+
+	framebuffer_ptr = (t_fvec3 *)malloc(sizeof(t_fvec3) * WIN_WIDTH *
+			WIN_HEIGHT);
+
 	t_sphr	*sphere_arr;
+	t_lght	*light_arr;
 	t_mat	mat1;
 	t_mat	mat2;
 	t_mat	mat3;
@@ -231,6 +256,11 @@ int				main(int argc, char **argv)
 	mat3 = (t_mat){ (t_fvec3){ 0.2, 0.2, 0.9 } }; //green
 	mat4 = (t_mat){ (t_fvec3){ 0.1, 0.4, 0.7 } }; //red
 	sphere_arr = (t_sphr *)malloc(sizeof(t_sphr) * SPHERE_CNT);
+
+
+
+
+
 //	sphere_arr[0] = (t_sphr){ (t_fvec3){ 5, 5, -16 }, 1 };
 //	sphere_arr[1] = (t_sphr){ (t_fvec3){ 10, 10, -16 }, 1 };
 //	sphere_arr[2] = (t_sphr){ (t_fvec3){ 20, 20, -16 }, 1 };
@@ -239,11 +269,15 @@ int				main(int argc, char **argv)
 
 
 
-	sphere_arr[0] = (t_sphr){ (t_fvec3){ 0, 0, 16 }, 1, mat1 };
-	sphere_arr[1] = (t_sphr){ (t_fvec3){ 5, 5, 16 }, 1, mat2 };
-	sphere_arr[2] = (t_sphr){ (t_fvec3){ -10, 10, 16 }, 1, mat3 };
-	sphere_arr[3] = (t_sphr){ (t_fvec3){ 10, -10, 19 }, 1, mat4 };
+	sphere_arr[0] = (t_sphr){ (t_fvec3){ -9, 0, -16 }, 1, mat1 };
+//	sphere_arr[1] = (t_sphr){ (t_fvec3){ 5, 5, 16 }, 1, mat2 };
+//	sphere_arr[2] = (t_sphr){ (t_fvec3){ -10, 10, 16 }, 1, mat3 };
+//	sphere_arr[3] = (t_sphr){ (t_fvec3){ 10, -10, 16 }, 1, mat4 };
 //	sphere_arr[4] = (t_sphr){ (t_fvec3){ }, 1 };
+
+
+	light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT);
+	light_arr[0] = (t_lght){ (t_fvec3){ -20, 20, 20 }, 2.5 };
 
 
 
@@ -260,19 +294,19 @@ int				main(int argc, char **argv)
 									* WIN_WIDTH / (float)WIN_HEIGHT;
 				y = -(2 * (j + 0.5) / (float)WIN_HEIGHT - 1) * tan(FOV / 2.);
 				t_fvec3 dir;
-				dir = (t_fvec3){ x, y, -1 };
+				dir = (t_fvec3){ x, y, 1 };
 				vec3_normalize(&dir, &dir);
 				t_fvec3 tmp = (t_fvec3){ 0, 0, 0 };
-				framebuffer[i + j * WIN_WIDTH] =
-					cast_ray(&tmp, &dir, sphere_arr);
+				framebuffer_ptr[i + j * WIN_WIDTH] =
+					cast_ray(&tmp, &dir, sphere_arr, light_arr);
 			}
 		}
 		for (size_t i = 0; i < WIN_HEIGHT * WIN_WIDTH; ++i)
 		{
 			((uint32_t *)env->buff)[i] =
-					double2byte_clamp(framebuffer[i].x) << (1u * 8u)
-				| double2byte_clamp(framebuffer[i].y) << (2u * 8u)
-				| double2byte_clamp(framebuffer[i].z) << (3u * 8u);
+					double2byte_clamp(framebuffer_ptr[i].x) << (1u * 8u)
+				| double2byte_clamp(framebuffer_ptr[i].y) << (2u * 8u)
+				| double2byte_clamp(framebuffer_ptr[i].z) << (3u * 8u);
 		}
 		event_handler(env, &env->cam, &env->flags);
 
