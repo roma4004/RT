@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/14 18:18:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/07 20:19:18 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void			quit_program(t_env *env)
 	if (env->music)
 		Mix_CloseAudio();
 	env->music = NULL;
-	show_errors(env);
+//	show_errors(env);
 	SDL_Quit();
 }
 
@@ -61,40 +61,44 @@ static int		prepare_render(t_env *env, t_fps *fps)
 	fps->value = (u_char)(1.0 / fps->frame_time);
 	env->cam.move_speed = fps->frame_time * 3.0;
 	env->cam.rotate_speed = fps->frame_time * 2.0;
-//	if ((fps->frame_limit_second) > fps->cur_tick - fps->pre_tick)
-//		SDL_Delay(fps->frame_limit_second - (fps->cur_tick - fps->pre_tick));
+	if ((fps->frame_limit_second) > fps->cur_tick - fps->pre_tick)
+		SDL_Delay(fps->frame_limit_second - (fps->cur_tick - fps->pre_tick));
 	event_handler(env, &env->cam, &env->flags);
 	clear_img_buff(env);
 	return (1);
 }
 
-void			game_loop(t_env *env, int threads)
-{
-	int			id;
-	t_pth_dt	data[threads];
-	pthread_t	threads_arr[threads];
+//void			game_loop(t_env *env, int threads)
+//{
+//	int			id;
+//	t_pth_dt	data[threads];
+//	pthread_t	threads_arr[threads];
+//
+//	if (!env)
+//		return ;
+//	while (!env->flags.is_game_over && prepare_render(env, &env->fps))
+//	{
+//		id = -1;
+//		while (++id < threads)
+//		{
+//			data[id].env = env;
+//			data[id].offset = id;
+//			pthread_create(&threads_arr[id], NULL, multi_raycasting, &data[id]);
+//		}
+//		id = -1;
+//		while (++id < threads)
+//			pthread_join(threads_arr[id], NULL);
+//		SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2);
+//		SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
+//		if (SHOW_FPS)
+//			render_interface(env, &env->fps, &env->txt);
+//		SDL_RenderPresent(env->renderer);
+//	}
+//}
 
-	if (!env)
-		return ;
-	while (!env->flags.is_game_over && prepare_render(env, &env->fps))
-	{
-		id = -1;
-		while (++id < threads)
-		{
-			data[id].env = env;
-			data[id].offset = id;
-			pthread_create(&threads_arr[id], NULL, multi_raycasting, &data[id]);
-		}
-		id = -1;
-		while (++id < threads)
-			pthread_join(threads_arr[id], NULL);
-		SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2);
-		SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
-		if (SHOW_FPS)
-			render_interface(env, &env->fps, &env->txt);
-		SDL_RenderPresent(env->renderer);
-	}
-}
+//normal = a * b
+//cosA = ( |a| * |b| ) / ( a * b )
+
 
 
 
@@ -112,7 +116,8 @@ void			game_loop(t_env *env, int threads)
 
 //ray_max_bounced
 
-//list->root_node
+//list-
+
 //list->root_pos
 //list->root_dir
 //list->reflect_pos
@@ -133,180 +138,214 @@ void			game_loop(t_env *env, int threads)
 
 
 
-float	fclamp(float arg, float minimum, float maximum)
-{
-	return (fminf(fmaxf(arg, minimum), maximum));
-}
-static uint8_t  double2byte_clamp(const double x)
-{
-	if (x < 0.0)
-		return (0);
-	else if (x > 1.0)
-		return (255);
-	else
-		return ((uint8_t)(255.0 * x));
-}
+//float	fclamp(float arg, float minimum, float maximum)
+//{
+//	return (fminf(fmaxf(arg, minimum), maximum));
+//}
+//static uint8_t  double2byte_clamp(const double x)
+//{
+//	if (x < 0.0)
+//		return (0);
+//	else if (x > 1.0)
+//		return (255);
+//	else
+//		return ((uint8_t)(255.0 * x));
+//}
 
-//Sphere(const Vec3f &c, const float &r) : center(c), radius(r) {}
-bool ray_intersect(const t_sphr *sphere, const t_fvec3 *orig,
-					const t_fvec3 *dir, float *t0)
-{
-	float		thc;
-	float		tca;
-	t_fvec3		L;
-	float		d2;
-	t_fvec3		tmp;
-	t_fvec3		tmp2;
+////Sphere(const Vec3f &c, const float &r) : center(c), radius(r) {}
+//bool ray_intersect(const t_sphr *sphere, const t_fvec3 *orig,
+//					const t_fvec3 *dir, float *t0)
+//{
+//	float		thc;
+//	float		tca;
+//	t_fvec3		L;
+//	float		d2;
+//	t_fvec3		tmp;
+//
+//	vec3_sub_vec3(&L, &sphere->center, orig);
+//	vec3_mul_vec3(&tmp, &L, dir);
+//	tca = vec3_to_float(&tmp);
+//	vec3_mul_vec3(&tmp, &L, &L);
+//	vec3_sub_float(&tmp, &tmp, powf(tca, 2));
+//	d2 = vec3_to_float(&tmp);
+//	if (d2 > powf(sphere->radius, 2))
+//		return false;
+//	thc = sqrtf(powf(sphere->radius, 2) - d2);
+//	*t0 = tca - thc;
+//	float t1 = tca + thc;
+//	if (*t0 < 0)
+//		*t0 = t1;
+//	if (*t0 < 0)
+//		return false;
+//	return true;
+//}
 
-	vec3_sub_vec3(&L, &sphere->center, orig);
-	vec3_mul_vec3(&tmp, &L, dir);
-	tca = vec3_to_float(&tmp);
-	vec3_mul_vec3(&tmp, &L, &L);
-	vec3_sub_float(&tmp2, &tmp, tca * tca);
-	d2 = vec3_to_float(&tmp2);
-	if (d2 > sphere->radius * sphere->radius)
-		return false;
-	thc = sqrtf(sphere->radius * sphere->radius - d2);
-	*t0 = tca - thc;
-	if (*t0 < 0)
-		*t0 = tca + thc;
-	if (*t0 < 0)
-		return false;
-	return true;
-}
+//bool scene_intersect(const t_fvec3 *orig, const t_fvec3 *dir,
+//		const t_sphr *spheres, t_fvec3 *hit, t_fvec3 *N, t_mat *material)
+//{
+//	float		spheres_dist;
+//	float		dist_i;
+//	t_fvec3		tmp;
+//
+//	spheres_dist = MAXFLOAT;//std::numeric_limits<float>::max();
+//	for (size_t i = 0; i < SPHERE_CNT; i++)
+//	{
+//		if (ray_intersect(&spheres[i], orig, dir, &dist_i)
+//		&& dist_i < spheres_dist)
+//		{
+//			spheres_dist = dist_i;
+//			vec3_mul_float(&tmp, dir, dist_i);
+//			vec3_add_vec3(hit, orig, &tmp);
+//			vec3_sub_vec3(&tmp, hit, &spheres[i].center);
+//			vec3_normalize(N, &tmp);
+//			*material = spheres[i].material;
+//		}
+//	}
+//	return (spheres_dist < 1000);
+//}
 
-bool scene_intersect(const t_fvec3 *orig, const t_fvec3 *dir,
-		const t_sphr *spheres, t_fvec3 *hit, t_fvec3 *N, t_mat *material)
-{
-	float		spheres_dist;
-	float		dist_i;
-	t_fvec3		tmp;
-
-	spheres_dist = MAXFLOAT;//std::numeric_limits<float>::max();
-	for (size_t i = 0; i < SPHERE_CNT; i++)
-	{
-		if (ray_intersect(&spheres[i], orig, dir, &dist_i)
-		&& dist_i < spheres_dist)
-		{
-			spheres_dist = dist_i;
-			vec3_mul_float(&tmp, dir, dist_i);
-			vec3_add_vec3(hit, orig, &tmp);
-			vec3_sub_vec3(&tmp, hit, &spheres[i].center);
-			vec3_normalize(N, &tmp);
-			*material = spheres[i].material;
-		}
-	}
-	return (spheres_dist < 1000);
-}
-
-float			ft_max(float first, float second)
+static float			ft_max(float first, float second)
 {
 	return (first > second ? first : second);
 }
 
-t_fvec3			cast_ray(const t_fvec3 *orig, const t_fvec3 *dir,
-							const t_sphr *sphere_arr,
-							const t_lght *lights_arr)
-{
-	t_fvec3 point;
-	t_fvec3 N;
-	t_mat   material;
+//t_fvec3			cast_ray(const t_fvec3 *orig, const t_fvec3 *dir,
+//							const t_sphr *sphere_arr,
+//							const t_lght *lights_arr)
+//{
+//	t_fvec3 point;
+//	t_fvec3 N;
+//	t_mat   material;
+//
+//	if (!scene_intersect(orig, dir, sphere_arr, &point, &N, &material))
+//	{		//			B		G		R
+//		return (t_fvec3){ 0.2, 0.7, 0.8 }; // background color
+//	}
+//	float diffuse_light_intensity = 0;
+//	for (size_t i = 0; i < LIGHTS_CNT; i++)
+//	{
+//		t_fvec3 tmp;
+//		vec3_sub_vec3(&tmp, &lights_arr[i].position, &point);
+//		t_fvec3 light_dir = (t_fvec3){ 0, 0, 0 };
+//		vec3_normalize(&light_dir, &tmp);
+//		vec3_mul_vec3(&tmp, &light_dir, &N);
+//		diffuse_light_intensity +=
+//			lights_arr[i].intensity * ft_max(0.f, vec3_to_float(&tmp));
+//	}
+//	t_fvec3 tmp;
+//	vec3_mul_float(&tmp, &material.diffuse_color, diffuse_light_intensity);
+//	return tmp;
+////	return material.diffuse_color;
+//}
+//
+//uint32_t		vec3_to_color(const t_fvec3 *restrict first)
+//{
+//	return (  double2byte_clamp(first->x) << (1u * 8u)
+//			| double2byte_clamp(first->y) << (2u * 8u)
+//			| double2byte_clamp(first->z) << (3u * 8u));
+//}
 
-	if (!scene_intersect(orig, dir, sphere_arr, &point, &N, &material))
-	{
-		return (t_fvec3){ 0.0, 0.0, 0.0 }; // background color
-	}
-	float diffuse_light_intensity = 0;
-	for (size_t i = 0; i < LIGHTS_CNT; i++)
-	{
-		t_fvec3     tmp;
-		vec3_sub_vec3(&tmp, &lights_arr[i].position, &point);
-		t_fvec3 light_dir;
-		vec3_normalize(&light_dir, &tmp);
-		vec3_mul_vec3(&tmp, &light_dir, &N);
-		diffuse_light_intensity +=
-			lights_arr[i].intensity * ft_max(0.f, vec3_to_float(&tmp));
-	}
-	t_fvec3 tmp;
-	vec3_mul_float(&tmp, &material.diffuse_color, diffuse_light_intensity);
-	return tmp;
+static  t_fvec3		CanvasToViewport(float x, float y)
+{
+	return (t_fvec3){ x * VIEWPORT_SIZE / WIN_WIDTH,
+					  y * VIEWPORT_SIZE / WIN_HEIGHT,
+					  PROJECTION_PLANE_Z };
 }
 
-int				main(int argc, char **argv)
+// The PutPixel() function.
+static void		PutPixel(t_env *env, float x, float y, t_fvec3 color)
+{
+	x = WIN_WIDTH / 2.f + x;
+	y = WIN_HEIGHT / 2.f - y - 1;
+	if (x < 0 || x >= WIN_WIDTH
+	|| y < 0 || y >= WIN_HEIGHT)
+		return ;
+	env->buff[(int)y][(int)x] = ( 255u                 << 24u)
+								| (((uint32_t)color.x) << 16u)
+								| (((uint32_t)color.y) << 8u)
+								| (((uint32_t)color.z));
+}
+
+static t_fvec3		where_intersect(t_fvec3 cam, t_fvec3 direction, t_sphr *obj)
+{
+	const t_fvec3		center = obj->center;
+	const float			radius = obj->radius;
+	t_fvec3				OC;
+	t_fvec3				discr;
+	float				discriminant;
+
+	OC = vec3_sub_vec3(cam, center);
+	discr.x = vec3_dot_vec3(direction, direction);
+	discr.y = vec3_to_float(float_mul_vec3(2, vec3_mul_vec3(OC, direction)));
+	discr.z = vec3_dot_vec3(OC, OC) - radius * radius;
+
+	discriminant = discr.y * discr.y - 4 * discr.x * discr.z;
+	if (discriminant < 0)
+		return (t_fvec3){MAXFLOAT, MAXFLOAT, 0};
+	return((t_fvec3){(-discr.y + sqrtf(discriminant)) / (2 * discr.x),
+					(-discr.y - sqrtf(discriminant)) / (2 * discr.x), 0});
+}
+
+t_sphr				*intersect_obj(t_env *env, float *closest_t)
+{
+	size_t		i;
+	t_sphr		*cur_obj;
+	t_fvec3		t;
+
+	cur_obj = NULL;
+	i = -1;
+	while (++i < SPHERE_CNT)
+	{
+		t = where_intersect(env->cam.pos, env->cam.dir,
+				&env->sphere_arr[i]);
+		if (t.x < *closest_t && env->cam.t_min < t.x && t.x < env->cam.t_max
+		&& (cur_obj = &env->sphere_arr[i]))
+			*closest_t = t.x;
+		if (t.y < *closest_t && env->cam.t_min < t.y && t.y < env->cam.t_max
+		&& (cur_obj = &env->sphere_arr[i]))
+			*closest_t = t.y;
+	}
+	return (cur_obj);
+}
+
+static t_fvec3		send_ray(t_env *env)
+{
+	float		closest_t;
+	t_sphr		*obj;
+	t_fvec3		t;
+	t_fvec3		normal;
+
+	closest_t = MAXFLOAT;
+	if (!(obj = intersect_obj(env, &closest_t)))
+		return ((t_fvec3){255, 255, 255});
+	t = vec3_add_vec3(env->cam.pos, float_mul_vec3(closest_t, env->cam.dir));
+	normal = vec3_sub_vec3(t, obj->center);
+	normal = float_mul_vec3(1.0 / Length(normal), normal);
+	return (float_mul_vec3(get_light(t, normal, env->light_arr), obj->color));
+}
+
+//int				main(int argc, char **argv)
+int				main(void)
 {
 	t_env *env;
-
 	env = init_env();
 
-//t_fvec3	framebuffer[WIN_WIDTH * WIN_HEIGHT];
-	t_fvec3 *framebuffer_ptr;
 
-	framebuffer_ptr = (t_fvec3 *)malloc(sizeof(t_fvec3) * WIN_WIDTH *
-			WIN_HEIGHT);
-
-	t_sphr	*sphere_arr;
-	t_lght	*light_arr;
-	t_mat	mat1;
-	t_mat	mat2;
-	t_mat	mat3;
-	t_mat	mat4;
-
-	mat1 = (t_mat){ (t_fvec3){ 0.3, 0.6, 0.1 } }; //orange
-	mat2 = (t_mat){ (t_fvec3){ 0.4, 0.4, 0.3 } }; //yellow
-	mat3 = (t_mat){ (t_fvec3){ 0.2, 0.2, 0.9 } }; //green
-	mat4 = (t_mat){ (t_fvec3){ 0.1, 0.4, 0.7 } }; //red
-	sphere_arr = (t_sphr *)malloc(sizeof(t_sphr) * SPHERE_CNT);
-
-
-
-
-
-//	sphere_arr[0] = (t_sphr){ (t_fvec3){ 5, 5, -16 }, 1 };
-//	sphere_arr[1] = (t_sphr){ (t_fvec3){ 10, 10, -16 }, 1 };
-//	sphere_arr[2] = (t_sphr){ (t_fvec3){ 20, 20, -16 }, 1 };
-//	sphere_arr[3] = (t_sphr){ (t_fvec3){ 30, 30, -16 }, 1 };
-//	sphere_arr[4] = (t_sphr){ (t_fvec3){ 50, 50, -16 }, 1 };
-
-
-
-	sphere_arr[0] = (t_sphr){ (t_fvec3){ -9, 0, -16 }, 1, mat1 };
-//	sphere_arr[1] = (t_sphr){ (t_fvec3){ 5, 5, 16 }, 1, mat2 };
-//	sphere_arr[2] = (t_sphr){ (t_fvec3){ -10, 10, 16 }, 1, mat3 };
-//	sphere_arr[3] = (t_sphr){ (t_fvec3){ 10, -10, 16 }, 1, mat4 };
-//	sphere_arr[4] = (t_sphr){ (t_fvec3){ }, 1 };
-
-
-	light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT);
-	light_arr[0] = (t_lght){ (t_fvec3){ -20, 20, 20 }, 2.5 };
-
-
-
+	//draw
+	double y;
+	double x;
 	while (!env->flags.is_game_over && prepare_render(env, &env->fps))
 	{
-		//clear_img_buff(env);
-		float x;
-		float y;
-		for (size_t j = 0; j < WIN_HEIGHT; j++)
+		x = -env->canvas_half.x - 1;
+		while (++x < env->canvas_half.x)
 		{
-			for (size_t i = 0; i < WIN_WIDTH; i++)
+			y = -env->canvas_half.y - 1;
+			while (++y < env->canvas_half.y)
 			{
-				x = (2 * (i + 0.5) / (float)WIN_WIDTH - 1) * tan(FOV / 2.)
-									* WIN_WIDTH / (float)WIN_HEIGHT;
-				y = -(2 * (j + 0.5) / (float)WIN_HEIGHT - 1) * tan(FOV / 2.);
-				t_fvec3 dir;
-				dir = (t_fvec3){ x, y, 1 };
-				vec3_normalize(&dir, &dir);
-				t_fvec3 tmp = (t_fvec3){ 0, 0, 0 };
-				framebuffer_ptr[i + j * WIN_WIDTH] =
-					cast_ray(&tmp, &dir, sphere_arr, light_arr);
+				env->cam.dir = CanvasToViewport(x, y);
+				t_fvec3 color = send_ray(env);
+				PutPixel(env, x, y, color);
 			}
-		}
-		for (size_t i = 0; i < WIN_HEIGHT * WIN_WIDTH; ++i)
-		{
-			((uint32_t *)env->buff)[i] =
-					double2byte_clamp(framebuffer_ptr[i].x) << (1u * 8u)
-				| double2byte_clamp(framebuffer_ptr[i].y) << (2u * 8u)
-				| double2byte_clamp(framebuffer_ptr[i].z) << (3u * 8u);
 		}
 		event_handler(env, &env->cam, &env->flags);
 
@@ -315,23 +354,5 @@ int				main(int argc, char **argv)
 
 		SDL_RenderPresent(env->renderer);
 	}
-
-
-
-
-
-
-
-
-//	if (argc == 2)
-//	{
-//		if ((env = init_env()) && parse_map(argv[1], env)
-//		&& !Mix_PlayMusic(env->music, 1))
-//			game_loop(env, env->threads);
-//	}
-//	else
-//		ft_putstr("Usage: ./rtv1 map.rtv\n");
-//	if (env)
-//		quit_program(env);
 	return (0);
 }

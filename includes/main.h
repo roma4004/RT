@@ -6,27 +6,26 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/14 17:48:16 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/07 20:09:13 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
 //rtv_macro:
-//# define FOV M_PI / 3.0
+//# define FOV M_PI / 2.
 # define FOV 60
-# define WIN_WIDTH 1024u   // =60pfs
-# define WIN_HEIGHT 768u  // =60pfs
-
+# define WIN_WIDTH 1024u
+# define WIN_HEIGHT 1024u
+# define BACKGROUND_COLOR 0xffffff
+# define VIEWPORT_SIZE 1.
+# define PROJECTION_PLANE_Z 1.
 //tmp defines
-#define SPHERE_CNT 1
-#define LIGHTS_CNT 1
+#define SPHERE_CNT 4
+#define LIGHTS_CNT 3
 //rtv_macro end
 
 
-
-//# define WIN_WIDTH 3000   // =30pfs
-//# define WIN_HEIGHT 2000  // =30pfs
 # define WIN_NAME "wolf3d by dromanic (@Dentair)"
 # define DEFAULT_MENU_COLOR 0x0f9100FF
 # define DEF_FONT "resources/fonts/ARIAL.TTF"
@@ -46,11 +45,22 @@
 # include <errno.h>
 # include <math.h>
 
+# pragma GCC diagnostic ignored "-Wstrict-prototypes"
+# pragma GCC diagnostic ignored "-Wpadded"
+# pragma GCC diagnostic ignored "-Wdocumentation"
+# pragma GCC diagnostic ignored "-Wundef"
+# pragma GCC diagnostic ignored "-Wreserved-id-macro"
 # include "SDL.h"
 # include "SDL_ttf.h"
 # include "SDL_image.h"
 # include "SDL_mixer.h"
 # include "SDL_audio.h"
+# pragma GCC diagnostic warning "-Wreserved-id-macro"
+# pragma GCC diagnostic warning "-Wundef"
+# pragma GCC diagnostic warning "-Wdocumentation"
+# pragma GCC diagnostic warning "-Wpadded"
+# pragma GCC diagnostic warning "-Wstrict-prototypes"
+
 # include "libft.h"
 # include "get_next_line.h"
 
@@ -119,6 +129,13 @@ typedef struct	s_double_point
 	double		y;
 }				t_db_pt;
 
+typedef struct	s_double_point3
+{
+	double		x;
+	double		y;
+	double		z;
+}				t_db_3pt;
+
 
 
 typedef struct Material
@@ -127,16 +144,17 @@ typedef struct Material
 }				t_mat;
 
 
-typedef struct Sphere
+typedef struct sphere
 {
 	t_fvec3	center;
 	float	radius;
-	t_mat	material;
+	t_fvec3	color;
 }				t_sphr;
 
-typedef struct Light {
-	t_fvec3	position;
-	float	intensity;
+typedef struct light {
+	unsigned	type;
+	t_fvec3		position;
+	float		intensity;
 }				t_lght;
 
 
@@ -214,8 +232,10 @@ typedef struct	s_camera
 	double			rotate_speed;
 	t_ui32pt		center;
 	t_sint32_pt		step;
-	t_db_pt			pos;
-	t_db_pt			dir;
+	t_fvec3			pos;
+	t_fvec3			dir;
+	float			t_min;
+	float			t_max;
 	t_db_pt			plane;
 }				t_cam;
 
@@ -232,6 +252,8 @@ typedef struct	s_flags
 	bool			is_game_over;
 	bool			is_move_forward;
 	bool			is_move_backward;
+	bool			is_move_z_forward;
+	bool			is_move_z_backward;
 	bool			is_strafe_left;
 	bool			is_strafe_right;
 	bool			is_rotate_left;
@@ -262,6 +284,10 @@ typedef struct	s_environment
 	SDL_Texture		*screen;
 	SDL_Surface		*surface;
 	Mix_Music		*music;
+
+	t_sphr		*sphere_arr;
+	t_lght		*light_arr;
+	t_fvec		canvas_half;
 }				t_env;
 
 typedef struct	s_pthread_data
@@ -296,68 +322,95 @@ enum			e_texture_mode
 	IMAGE_TEX = 2
 };
 
-t_env			*init_env();
+enum			e_light_type
+{
+	LIGHT_AMBIENT = 0,
+	LIGHT_POINT = 1,
+	LIGHT_DIRECTIONAL = 2
+};
+
+t_env			*init_env(void);
 t_env			*parse_map(char *file_name, t_env *env);
 void			generate_texture(t_env *env);
 //void			raycasting(t_env *env, Uint32 **map);
 void			*multi_raycasting(void *thread_data);
-Uint32			chose_color(Uint32 switch_num, bool side);
+//Uint32			chose_color(Uint32 switch_num, bool side);
 void			event_handler(t_env *env, t_cam *cam, t_flags *flags);
 int				render_interface(t_env *env, t_fps *fps, t_txt *cam);
-void			show_errors(t_env *env);
-void			quit_program(t_env *env);
+//void			show_errors(t_env *env);
+//void			quit_program(t_env *env);
+
+float				get_light(t_fvec3 point, t_fvec3 normal, t_lght
+*lights_arr);
 
 
-
-
-
-
+float				Length(t_fvec3 vec);
+//t_fvec3				rotate_x(t_fvec3 pt, double angle);
+//t_fvec3				rotate_y(t_fvec3 pt, double angle);
+//t_fvec3				rotate_z(t_fvec3 pt, double angle);
+float				vec3_dot_vec3(t_fvec3 first, t_fvec3 second);
 void				vec3_to_negative(t_fvec3 *restrict destination);
 float				vec3_magnitude(const t_fvec3 *restrict first);
-float				vec3_to_float(const t_fvec3 *restrict first);
+float				vec3_to_float(t_fvec3 first);
 void				vec3_normalize(t_fvec3 *restrict destination,
 									t_fvec3 *restrict first);
 void				vec3_normalize_ptr(t_fvec3 *restrict first);
-void				vec3_normalize_cpy(t_fvec3 first);
+t_fvec3				vec3_normalize_cpy(t_fvec3 first);
 
-void				vec3_add_vec3(t_fvec3 *restrict destination,
+void				vec3_add_vec32(t_fvec3 *restrict destination,
 							const t_fvec3 *restrict first,
 							const t_fvec3 *restrict second);
-void				vec3_sub_vec3(t_fvec3 *restrict destination,
+void				vec3_sub_vec32(t_fvec3 *restrict destination,
 							const t_fvec3 *restrict first,
 							const t_fvec3 *restrict second);
-void				vec3_mul_vec3(t_fvec3 *restrict destination,
+void				vec3_mul_vec32(t_fvec3 *restrict destination,
 							const t_fvec3 *restrict first,
 							const t_fvec3 *restrict second);
-void				vec3_div_vec3(t_fvec3 *restrict destination,
+void				vec3_div_vec32(t_fvec3 *restrict destination,
 							const t_fvec3 *restrict first,
 							const t_fvec3 *restrict second);
+void 				vec3_cross_vec32(t_fvec3 *restrict destination,
+							const t_fvec3 *restrict first,
+							const t_fvec3 *restrict second);
+t_fvec3				vec3_add_vec3(t_fvec3 first, t_fvec3 second);
+t_fvec3				vec3_sub_vec3(t_fvec3 first, t_fvec3 second);
+t_fvec3				vec3_mul_vec3(t_fvec3 first, t_fvec3 second);
+t_fvec3				vec3_div_vec3(t_fvec3 first, t_fvec3 second);
+t_fvec3				vec3_cross_vec3(t_fvec3 first, t_fvec3 second);
 
-void				float_add_vec3(t_fvec3 *restrict destination,
+void				float_add_vec32(t_fvec3 *restrict destination,
 							const float first,
 							const t_fvec3 *restrict second);
-void				float_sub_vec3(t_fvec3 *restrict destination,
+void				float_sub_vec32(t_fvec3 *restrict destination,
 							const float first,
 							const t_fvec3 *restrict second);
-void				float_mul_vec3(t_fvec3 *restrict destination,
+void				float_mul_vec32(t_fvec3 *restrict destination,
 							const float first,
 							const t_fvec3 *restrict second);
-void				float_div_vec3(t_fvec3 *restrict destination,
+void				float_div_vec32(t_fvec3 *restrict destination,
 							const float first,
 							const t_fvec3 *restrict second);
+t_fvec3				float_add_vec3(float first, t_fvec3 second);
+t_fvec3				float_sub_vec3(float first, t_fvec3 second);
+t_fvec3				float_mul_vec3(float first, t_fvec3 second);
+t_fvec3				float_div_vec3(float first, t_fvec3 second);
 
-void				vec3_add_float(t_fvec3 *restrict destination,
+void				vec3_add_float2(t_fvec3 *restrict destination,
 							 const t_fvec3 *restrict first,
 							 const float second);
-void				vec3_sub_float(t_fvec3 *restrict destination,
+void				vec3_sub_float2(t_fvec3 *restrict destination,
 							 const t_fvec3 *restrict first,
 							 const float second);
-void				vec3_mul_float(t_fvec3 *restrict destination,
+void				vec3_mul_float2(t_fvec3 *restrict destination,
 							 const t_fvec3 *restrict first,
 							 const float second);
-void				vec3_div_float(t_fvec3 *restrict destination,
+void				vec3_div_float2(t_fvec3 *restrict destination,
 							 const t_fvec3 *restrict first,
 							 const float second);
+t_fvec3				vec3_add_float(t_fvec3 first, float second);
+t_fvec3				vec3_sub_float(t_fvec3 first, float second);
+t_fvec3				vec3_mul_float(t_fvec3 first, float second);
+t_fvec3				vec3_div_float(t_fvec3 first, float second);
 
 
 

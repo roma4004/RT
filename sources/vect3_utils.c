@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/13 15:28:04 by dromanic          #+#    #+#             */
-/*   Updated: 2019/08/14 17:25:25 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/07 17:52:47 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,30 @@ void		vec3_to_negative(t_fvec3 *restrict destination)
 	destination->z = -destination->z;
 }
 
-float		vec3_to_float(const t_fvec3 *restrict first)
+float		vec3_to_float(t_fvec3 first)
 {
-	return (first->x + first->y + first->z);
+	return (first.x + first.y + first.z);
 }
-
+//
+//float		vec3_magnitude(const t_fvec3 *restrict first)
+//{
+//	return (sqrtf(powf(first->x, 2) + powf(first->y, 2) + powf(first->z, 2)));
+//}
+//
+//void		vec3_normalize(t_fvec3 *restrict destination,
+//							t_fvec3 *restrict first)
+//{
+//	float magnitude = vec3_magnitude(first);
+//
+//	if (magnitude > 0)
+//	{
+//		vec3_div_float(destination, first, magnitude);
+//	}
+//
+//}
 float		vec3_magnitude(const t_fvec3 *restrict first)
 {
-	return (sqrtf(first->x * first->x
-				+ first->y * first->y
-				+ first->z * first->z));
+	return (sqrtf(powf(first->x, 2) + powf(first->y, 2) + powf(first->z, 2)));
 }
 
 void		vec3_normalize(t_fvec3 *restrict destination,
@@ -38,26 +52,22 @@ void		vec3_normalize(t_fvec3 *restrict destination,
 
 	if (magnitude > 0)
 	{
-		vec3_div_float(destination, first, magnitude);
+//		t_fvec3 tmp = (t_fvec3){1,1,1};
+//		vec3_div_float2(destination, &tmp, magnitude);
+		vec3_div_float2(destination, first, magnitude);
+//		vec3_mul_vec3(destination, destination, first);
 	}
 
 }
-void		vec3_normalize_ptr(t_fvec3 *restrict first)
-{
-	float m = vec3_magnitude(first);
 
-	if (m > 0)
-	{
-		vec3_div_float(first, first, m);
-	}
+float		vec3_dot_vec3(t_fvec3 first, t_fvec3 second)
+{
+	return (first.x * second.x
+			+ first.y * second.y
+			+ first.z * second.z);
 }
 
-void		vec3_normalize_cpy(t_fvec3 first)
+float			Length(t_fvec3 vec)
 {
-	float m = vec3_magnitude(&first);
-
-	if (m > 0)
-	{
-		vec3_div_float(&first, &first, m);
-	}
+	return (sqrtf(vec3_dot_vec3(vec, vec)));
 }
