@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/07 20:09:13 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/08 19:26:16 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,11 +149,12 @@ typedef struct sphere
 	t_fvec3	center;
 	float	radius;
 	t_fvec3	color;
+	int		specular;
 }				t_sphr;
 
 typedef struct light {
 	unsigned	type;
-	t_fvec3		position;
+	t_fvec3		pos;
 	float		intensity;
 }				t_lght;
 
@@ -237,6 +238,8 @@ typedef struct	s_camera
 	float			t_min;
 	float			t_max;
 	t_db_pt			plane;
+
+	t_fvec3			rotate_angle;
 }				t_cam;
 
 typedef struct	s_map
@@ -250,15 +253,26 @@ typedef struct	s_map
 typedef struct	s_flags
 {
 	bool			is_game_over;
-	bool			is_move_forward;
-	bool			is_move_backward;
-	bool			is_move_z_forward;
-	bool			is_move_z_backward;
-	bool			is_strafe_left;
-	bool			is_strafe_right;
-	bool			is_rotate_left;
-	bool			is_rotate_right;
-	bool			is_compass_texture;
+
+	bool			is_move_x_more;
+	bool			is_move_x_less;
+
+	bool			is_move_y_more;
+	bool			is_move_y_less;
+
+	bool			is_move_z_more;
+	bool			is_move_z_less;
+
+	bool			is_rotate_x_more;
+	bool			is_rotate_x_less;
+
+	bool			is_rotate_y_more;
+	bool			is_rotate_y_less;
+
+	bool			is_rotate_z_more;
+	bool			is_rotate_z_less;
+
+//	bool			is_compass_texture;
 	unsigned char	mode;
 }				t_flags;
 
@@ -340,14 +354,19 @@ int				render_interface(t_env *env, t_fps *fps, t_txt *cam);
 //void			show_errors(t_env *env);
 //void			quit_program(t_env *env);
 
-float				get_light(t_fvec3 point, t_fvec3 normal, t_lght
-*lights_arr);
+float				get_light(t_fvec3 point, t_fvec3 normal,
+								t_fvec3 view, int specular, t_lght *lights_arr);
 
+void				rerender_scene(t_env *env);
 
-float				Length(t_fvec3 vec);
-//t_fvec3				rotate_x(t_fvec3 pt, double angle);
-//t_fvec3				rotate_y(t_fvec3 pt, double angle);
-//t_fvec3				rotate_z(t_fvec3 pt, double angle);
+t_fvec3				send_ray(t_env *env);
+
+t_fvec3				convert_to_viewport(float x, float y);
+
+//float				vec3_length(t_fvec3 vec);
+
+void				rotate_cam(t_env *env);
+
 float				vec3_dot_vec3(t_fvec3 first, t_fvec3 second);
 void				vec3_to_negative(t_fvec3 *restrict destination);
 float				vec3_magnitude(const t_fvec3 *restrict first);

@@ -67,7 +67,7 @@ float		vec3_dot_vec3(t_fvec3 first, t_fvec3 second)
 			+ first.z * second.z);
 }
 
-float			Length(t_fvec3 vec)
-{
-	return (sqrtf(vec3_dot_vec3(vec, vec)));
-}
+//float			vec3_length(t_fvec3 vec)
+//{
+//	return (sqrtf(vec3_dot_vec3(vec, vec)));
+//}

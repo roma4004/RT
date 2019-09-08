@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/07 20:17:49 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/08 17:01:57 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void			init_cam(t_cam *cam)
 	ft_bzero(cam, sizeof(t_cam));
 	cam->dir.x = -1;
 	cam->plane.y = 0.66;
-	cam->center = (t_ui32pt){ WIN_WIDTH >> 1, WIN_HEIGHT >> 1 };
+	cam->center = (t_ui32pt){ WIN_WIDTH >> 1u, WIN_HEIGHT >> 1u };
 	cam->zoom = 1;
 	cam->min_wall_dist = 8.5;
 }
@@ -65,7 +65,7 @@ static t_env			*env_def_val(t_env *env)
 		return (NULL);
 	env->err_id = 0;
 	ft_bzero(&env->flags, sizeof(t_flags));
-	env->flags.is_compass_texture = 1;
+//	env->flags.is_compass_texture = 1;
 	env->flags.mode = IMAGE_TEX;
 	init_cam(&env->cam);
 	ft_bzero(&env->fps, sizeof(t_fps));
@@ -85,18 +85,20 @@ static t_env			*env_def_val(t_env *env)
 
 
 
-
-
 	env->cam.t_min = 1;
 	env->cam.t_max = MAXFLOAT;
 	env->canvas_half = (t_fvec){ WIN_WIDTH / 2., WIN_HEIGHT / 2.};
 	env->cam.pos = (t_fvec3){ 0, 0, 0 };
 ///tmp init obj
-	env->sphere_arr[0] = (t_sphr){(t_fvec3){0,-1, 3}, 1, (t_fvec3){255, 0, 0}};
-	env->sphere_arr[1] = (t_sphr){(t_fvec3){2, 0, 4}, 1, (t_fvec3){0, 0, 255}};
-	env->sphere_arr[2] = (t_sphr){(t_fvec3){-2, 0, 4}, 1, (t_fvec3){0, 255, 0}};
-	env->sphere_arr[3] = (t_sphr){ (t_fvec3){0, -5000, 0}, 5000, (t_fvec3){255,
-																		   255, 0}};
+	env->sphere_arr[0] = (t_sphr){(t_fvec3){0,-1, 3}, 1,
+								(t_fvec3){255, 0, 0}, 500};
+	env->sphere_arr[1] = (t_sphr){(t_fvec3){2, 0, 4}, 1,
+								(t_fvec3){0, 0, 255}, 500};
+	env->sphere_arr[2] = (t_sphr){(t_fvec3){-2, 0, 4}, 1,
+							   (t_fvec3){0, 255, 0}, 10};
+	env->sphere_arr[3] = (t_sphr){(t_fvec3){0, -5000, 0}, 5000,
+									(t_fvec3){255, 255, 0}, 1000};
+
 	env->light_arr[0] = (t_lght){LIGHT_AMBIENT, (t_fvec3){ 0, 0, 0 }, 0.2 };
 	env->light_arr[1] = (t_lght){LIGHT_POINT, (t_fvec3){ 2, 1, 0 }, 0.6 };
 	env->light_arr[2] = (t_lght){LIGHT_DIRECTIONAL, (t_fvec3){ 1, 4, 4 }, 0.2 };

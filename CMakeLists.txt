@@ -35,7 +35,7 @@ find_package(SDL2		REQUIRED)
 find_package(SDL2_ttf	REQUIRED)
 find_package(SDL2_image	REQUIRED)
 find_package(SDL2_mixer	REQUIRED)
-add_executable(			${CMAKE_PROJECT_NAME} ${SOURCE_FILES} sources/ligths.c)
+add_executable(			${CMAKE_PROJECT_NAME} ${SOURCE_FILES} sources/ligths.c sources/draw.c sources/utils.c sources/ray_traces.c)
 target_link_libraries(	${CMAKE_PROJECT_NAME}
 						${LFT_NAME}
 						${SDL2_LIBRARY}
