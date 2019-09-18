@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/08 19:26:16 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/18 09:49:02 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@
 # define WIN_HEIGHT 1024u
 # define BACKGROUND_COLOR 0xffffff
 # define VIEWPORT_SIZE 1.
-# define PROJECTION_PLANE_Z 1.
+# define DISTANCE_TO_PLANE 1.
 //tmp defines
 #define SPHERE_CNT 4
 #define LIGHTS_CNT 3
+
 //rtv_macro end
 
 
@@ -136,26 +137,29 @@ typedef struct	s_double_point3
 	double		z;
 }				t_db_3pt;
 
-
-
-typedef struct Material
+typedef struct material
 {
-	t_fvec3		diffuse_color;
+	t_fvec3	diffuse_color;
+	float	specular_exponent;
+	float	albedo;
 }				t_mat;
-
 
 typedef struct sphere
 {
 	t_fvec3	center;
 	float	radius;
-	t_fvec3	color;
-	int		specular;
+//	t_fvec3	color;
+	t_mat	mat;
+//	int		specular;
+
 }				t_sphr;
+
 
 typedef struct light {
 	unsigned	type;
 	t_fvec3		pos;
 	float		intensity;
+	t_fvec3		color;
 }				t_lght;
 
 
@@ -200,6 +204,7 @@ typedef struct	s_ray
 	t_db_pt			step;
 	t_db_pt			dir;
 	t_ui32pt		pos;
+	int perem:1;
 }				t_ray;
 
 typedef struct	s_frame_per_second
@@ -235,10 +240,11 @@ typedef struct	s_camera
 	t_sint32_pt		step;
 	t_fvec3			pos;
 	t_fvec3			dir;
+
+
 	float			t_min;
 	float			t_max;
 	t_db_pt			plane;
-
 	t_fvec3			rotate_angle;
 }				t_cam;
 
@@ -252,10 +258,10 @@ typedef struct	s_map
 
 typedef struct	s_flags
 {
-	bool			is_game_over;
+	bool			is_rtv1_over;
 
-	bool			is_move_x_more;
 	bool			is_move_x_less;
+	bool			is_move_x_more;
 
 	bool			is_move_y_more;
 	bool			is_move_y_less;
@@ -292,7 +298,7 @@ typedef struct	s_environment
 	t_fps			fps;
 	t_map			map;
 	SDL_Surface		**img_tex;
-	SDL_Event		event;
+//	SDL_Event		event;
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;
@@ -302,6 +308,8 @@ typedef struct	s_environment
 	t_sphr		*sphere_arr;
 	t_lght		*light_arr;
 	t_fvec		canvas_half;
+	t_fvec3		bg_color;
+	double		epsilon;
 }				t_env;
 
 typedef struct	s_pthread_data
@@ -338,9 +346,9 @@ enum			e_texture_mode
 
 enum			e_light_type
 {
-	LIGHT_AMBIENT = 0,
-	LIGHT_POINT = 1,
-	LIGHT_DIRECTIONAL = 2
+	AMBIENT = 0,
+	POINT = 1,
+	DIRECTIONAL = 2
 };
 
 t_env			*init_env(void);
@@ -354,12 +362,14 @@ int				render_interface(t_env *env, t_fps *fps, t_txt *cam);
 //void			show_errors(t_env *env);
 //void			quit_program(t_env *env);
 
-float				get_light(t_fvec3 point, t_fvec3 normal,
-								t_fvec3 view, int specular, t_lght *lights_arr);
+t_fvec3 get_light(t_env *env, t_fvec3 point, t_fvec3 normal, t_fvec3 view, t_sphr *obj);
 
+float			vec3_length(t_fvec3 vec);
 void				rerender_scene(t_env *env);
 
 t_fvec3				send_ray(t_env *env);
+t_sphr				*intersect_obj(t_env *env, float *dist);
+t_sphr				*is_shadow_ray(t_env *env, t_fvec3 origin, t_fvec3 direction, t_fvec limits);
 
 t_fvec3				convert_to_viewport(float x, float y);
 
@@ -369,7 +379,7 @@ void				rotate_cam(t_env *env);
 
 float				vec3_dot_vec3(t_fvec3 first, t_fvec3 second);
 void				vec3_to_negative(t_fvec3 *restrict destination);
-float				vec3_magnitude(const t_fvec3 *restrict first);
+float				vec3_mag(const t_fvec3 *restrict first);
 float				vec3_to_float(t_fvec3 first);
 void				vec3_normalize(t_fvec3 *restrict destination,
 									t_fvec3 *restrict first);

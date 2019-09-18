@@ -45,7 +45,7 @@ void			quit_program(t_env *env)
 //
 //	if (!env)
 //		return ;
-//	while (!env->flags.is_game_over && prepare_render(env, &env->fps))
+//	while (!env->flags.is_rtv1_over && prepare_render(env, &env->fps))
 //	{
 //		id = -1;
 //		while (++id < threads)
@@ -111,6 +111,7 @@ float	fclamp(float arg, float minimum, float maximum)
 {
 	return (fminf(fmaxf(arg, minimum), maximum));
 }
+
 static uint8_t  double2byte_clamp(const double x)
 {
 	if (x < 0.0)

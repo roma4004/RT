@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/08 17:01:57 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/18 12:30:00 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ static t_env			*env_def_val(t_env *env)
 	env->bytes_per_pixel = sizeof(Uint32);
 	env->bits_per_pixel = (Uint8)(env->bytes_per_pixel << 3u);
 //	generate_texture(env);
-	SDL_SetRelativeMouseMode(SDL_TRUE);
+//	SDL_SetRelativeMouseMode(SDL_TRUE);
 	init_img_tex(env, env->img_tex);
 	if (env->err_id)
 		return (NULL);
@@ -85,24 +85,21 @@ static t_env			*env_def_val(t_env *env)
 
 
 
-	env->cam.t_min = 1;
-	env->cam.t_max = MAXFLOAT;
+	env->cam.t_min = 1;        //ray not cam
+	env->cam.t_max = MAXFLOAT;//ray not cam
 	env->canvas_half = (t_fvec){ WIN_WIDTH / 2., WIN_HEIGHT / 2.};
-	env->cam.pos = (t_fvec3){ 0, 0, 0 };
+	env->cam.pos = (t_fvec3){ 0, 0, -3 }; //ray not cam, ray start position
 ///tmp init obj
-	env->sphere_arr[0] = (t_sphr){(t_fvec3){0,-1, 3}, 1,
-								(t_fvec3){255, 0, 0}, 500};
-	env->sphere_arr[1] = (t_sphr){(t_fvec3){2, 0, 4}, 1,
-								(t_fvec3){0, 0, 255}, 500};
-	env->sphere_arr[2] = (t_sphr){(t_fvec3){-2, 0, 4}, 1,
-							   (t_fvec3){0, 255, 0}, 10};
-	env->sphere_arr[3] = (t_sphr){(t_fvec3){0, -5000, 0}, 5000,
-									(t_fvec3){255, 255, 0}, 1000};
+	env->sphere_arr[0] = (t_sphr){(t_fvec3){0,-1, 3}, 1,		(t_mat){(t_fvec3){255, 0, 0}, 100, 1.0}};//red
+	env->sphere_arr[1] = (t_sphr){(t_fvec3){2, 0, 4}, 1,		(t_mat){(t_fvec3){0, 0, 255}, 500, 0.5}}; //blue
+	env->sphere_arr[2] = (t_sphr){(t_fvec3){-2, 0, 4}, 1,		(t_mat){(t_fvec3){0, 255, 0}, 10,  0.9}};
+	env->sphere_arr[3] = (t_sphr){(t_fvec3){0, -5001, 0}, 5000,	(t_mat){(t_fvec3){255, 255, 0}, 1000, 0.1}};
 
-	env->light_arr[0] = (t_lght){LIGHT_AMBIENT, (t_fvec3){ 0, 0, 0 }, 0.2 };
-	env->light_arr[1] = (t_lght){LIGHT_POINT, (t_fvec3){ 2, 1, 0 }, 0.6 };
-	env->light_arr[2] = (t_lght){LIGHT_DIRECTIONAL, (t_fvec3){ 1, 4, 4 }, 0.2 };
-
+	env->light_arr[0] = (t_lght){AMBIENT, (t_fvec3){ 0, 0, 0 }, 0.3, (t_fvec3){255, 255, 255} };
+	env->light_arr[1] = (t_lght){POINT, (t_fvec3){ 2, 1, 0 }, 0.6, (t_fvec3){255, 255, 255}  };
+	env->light_arr[2] = (t_lght){DIRECTIONAL, (t_fvec3){ 1, 4, 4 }, 0.4, (t_fvec3){255, 255, 255} };
+	env->bg_color = (t_fvec3){255, 255, 255};
+	env->epsilon = 0.001;
 	return (env);
 }
 
@@ -125,6 +122,8 @@ t_env					*init_env(void)
 	|| !(env->txt.font = TTF_OpenFont(DEF_FONT, DEF_FONT_SIZE))
 	|| (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
 	|| !(env->music = Mix_LoadMUS("resources/sounds/horst_wessel_lied.wav"))
+
+
 
 	|| !(env->sphere_arr = (t_sphr *)malloc(sizeof(t_sphr) * SPHERE_CNT))
 	|| !(env->light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT))

@@ -16,5 +16,5 @@ t_fvec3		convert_to_viewport(float x, float y)
 {
 	return ((t_fvec3){ x * VIEWPORT_SIZE / WIN_WIDTH,
 					y * VIEWPORT_SIZE / WIN_HEIGHT,
-					PROJECTION_PLANE_Z });
+					DISTANCE_TO_PLANE });
 }

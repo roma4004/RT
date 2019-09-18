@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/08 16:40:23 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/10 19:18:51 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,38 +65,38 @@ static int		prepare_render(t_env *env, t_fps *fps)
 	fps->cur_tick = SDL_GetTicks();
 	fps->frame_time = (fps->cur_tick - fps->pre_tick) / 1000.0;
 	fps->value = (u_char)(1.0 / fps->frame_time);
-	env->cam.move_speed = fps->frame_time * 3.0;
-	env->cam.rotate_speed = fps->frame_time * 2.0;
-	if ((fps->frame_limit_second) > fps->cur_tick - fps->pre_tick)
-		SDL_Delay(fps->frame_limit_second - (fps->cur_tick - fps->pre_tick));
-	event_handler(env, &env->cam, &env->flags);
-	clear_img_buff(env);
+//	env->cam.move_speed = fps->frame_time * 3.0;
+//	env->cam.rotate_speed = fps->frame_time * 2.0;
+//	if ((fps->frame_limit_second) > fps->cur_tick - fps->pre_tick)
+//		SDL_Delay(fps->frame_limit_second - (fps->cur_tick - fps->pre_tick));
 	return (1);
 }
 
 void			rerender_scene(t_env *env)
 {
-	double y;
-	double x;
-	while (!env->flags.is_game_over && prepare_render(env, &env->fps))
+	double		y;
+	double		x;
+
+	while (!env->flags.is_rtv1_over && prepare_render(env, &env->fps))
 	{
-		x = -env->canvas_half.x - 1;
-		while (++x < env->canvas_half.x)
+		clear_img_buff(env);
+		y = -env->canvas_half.y - 1;
+		while (++y < env->canvas_half.y)
 		{
-			y = -env->canvas_half.y - 1;
-			while (++y < env->canvas_half.y)
+			x = -env->canvas_half.x - 1;
+			while (++x < env->canvas_half.x)
 			{
 				env->cam.dir = convert_to_viewport(x, y);
 				rotate_cam(env);
-				t_fvec3 color = send_ray(env);
+				t_fvec3 color = send_ray(env);//(t_fvec3){0};
 				put_px(env, x, y, color);
 			}
 		}
-		event_handler(env, &env->cam, &env->flags);
 
 		SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2u);
 		SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
 
 		SDL_RenderPresent(env->renderer);
+		event_handler(env, &env->cam, &env->flags);
 	}
 }

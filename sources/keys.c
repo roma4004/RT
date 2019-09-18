@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/08 19:17:02 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/10 19:08:39 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,89 +60,104 @@ static void		mouse_events(SDL_Event *event, t_cam *cam)
 		cam->zoom = 1;
 }
 
-static void		keyboard_evens(Uint32 etype, SDL_Keycode k, t_flags *f)
+static void		keyboard_evens(t_cam *cam, Uint32 etype, SDL_Keycode k, t_flags *f)
 {//need to separate to another pthread
 	bool		*flag;
 	bool		value;
 
+
 	if (((etype == SDL_KEYDOWN && (value = true))
 		|| (etype == SDL_KEYUP && !(value = false)))
-	&& (	(k == SDLK_ESCAPE					&& (flag = &f->is_game_over))
-//		|| ((k == SDLK_q || k == SDLK_LEFT)		&& (flag = &f->is_rotate_left))
-//		|| ((k == SDLK_e || k == SDLK_RIGHT)	&& (flag = &f->is_rotate_right))
-		|| ((k == SDLK_w || k == SDLK_UP)		&& (flag = &f->is_move_y_more))
-		|| ((k == SDLK_s || k == SDLK_DOWN)		&& (flag = &f->is_move_y_less))
-		|| ((k == SDLK_PAGEUP || k == SDLK_e)	&& (flag = &f->is_move_z_more))
-		|| ((k == SDLK_PAGEDOWN || k == SDLK_q)	&& (flag = &f->is_move_z_less))
-		|| (k == SDLK_a							&& (flag = &f->is_move_x_more))
-		|| (k == SDLK_d							&& (flag = &f->is_move_x_less))
+	&& ((k == SDLK_ESCAPE	&& (flag = &f->is_rtv1_over))
 
+		|| (k == SDLK_a		&& (flag = &f->is_move_x_less))
+		|| (k == SDLK_d		&& (flag = &f->is_move_x_more))
 
+		|| (k == SDLK_w		&& (flag = &f->is_move_y_more))
+		|| (k == SDLK_s		&& (flag = &f->is_move_y_less))
 
-		|| (k == SDLK_t							&& (flag = &f->is_rotate_x_more))
-		|| (k == SDLK_g							&& (flag = &f->is_rotate_x_less))
-		|| (k == SDLK_y							&& (flag = &f->is_rotate_y_more))
-		|| (k == SDLK_h							&& (flag = &f->is_rotate_y_less))
-		|| (k == SDLK_u							&& (flag = &f->is_rotate_z_more))
-		|| (k == SDLK_j							&& (flag = &f->is_rotate_z_less))
+		|| (k == SDLK_e		&& (flag = &f->is_move_z_more))
+		|| (k == SDLK_q		&& (flag = &f->is_move_z_less))
 
+		|| (k == SDLK_t		&& (flag = &f->is_rotate_x_more))
+		|| (k == SDLK_g		&& (flag = &f->is_rotate_x_less))
 
+		|| (k == SDLK_y		&& (flag = &f->is_rotate_y_more))
+		|| (k == SDLK_h		&& (flag = &f->is_rotate_y_less))
+
+		|| (k == SDLK_u		&& (flag = &f->is_rotate_z_more))
+		|| (k == SDLK_j		&& (flag = &f->is_rotate_z_less))
 		)
-
-
-
-
-		)
+	)
 		*flag = value;
 //	*flag ^= *flag;
 //	*flag &= 0;
 //	*flag |= 1;
 //	if (etype == SDL_KEYUP && k == SDLK_2 && f->mode++ >= 2)
-		f->mode = COLOR_TEX;
+//		f->mode = COLOR_TEX;
 //	if (etype == SDL_KEYUP && k == SDLK_1)
 //		f->is_compass_texture = (f->is_compass_texture) ? false : true;
+
+
+	if (etype == SDL_KEYDOWN)
+	{
+		if (k == SDLK_a)
+			cam->pos.x += 0.1;
+		if (k == SDLK_d)
+			cam->pos.x -= 0.1;
+
+
+		if (k == SDLK_w)
+			cam->pos.y -= 0.1;
+		if (k == SDLK_s)
+			cam->pos.y += 0.1;
+
+
+		if (k == SDLK_e)
+			cam->pos.z += 0.1;
+		if (k == SDLK_q)
+			cam->pos.z -= 0.1;
+
+
+		if (k == SDLK_t)
+			cam->rotate_angle.x++;
+		if (k == SDLK_g)
+			cam->rotate_angle.x--;
+
+		if (k == SDLK_y)
+			cam->rotate_angle.y++;
+		if (k == SDLK_h)
+			cam->rotate_angle.y--;
+
+		if (k == SDLK_u)
+			cam->rotate_angle.z++;
+		if (k == SDLK_j)
+			cam->rotate_angle.z--;
+	}
+
+
+
+
 }
 
 void			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 {
+	SDL_Event	event;
+	SDL_Keycode	k;
 	int			sign;
 
-	while (SDL_PollEvent(&env->event))
+	while (SDL_PollEvent(&event))
 	{
-		if (env->event.type == SDL_QUIT)
-			flags->is_game_over = true;
-		mouse_events(&env->event, cam);
-		keyboard_evens(env->event.type, env->event.key.keysym.sym, flags);
+		k = event.key.keysym.sym;
+		if (event.type == SDL_QUIT
+		|| (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE))
+			flags->is_rtv1_over = true;
+//		mouse_events(&event, cam);
+		keyboard_evens(cam, event.type, event.key.keysym.sym, flags);
+
 	}
-	if (flags->is_move_x_more)
-		env->cam.pos.x += 0.1;
-	if (flags->is_move_x_less)
-		env->cam.pos.x -= 0.1;
 
-	if (flags->is_move_y_more)
-		env->cam.pos.y -= 0.1;
-	if (flags->is_move_y_less)
-		env->cam.pos.y += 0.1;
 
-	if (flags->is_move_z_more)
-		env->cam.pos.z += 0.1;
-	if (flags->is_move_z_less)
-		env->cam.pos.z -= 0.1;
-
-	if (flags->is_rotate_x_more)
-		env->cam.rotate_angle.x++;
-	if (flags->is_rotate_x_less)
-		env->cam.rotate_angle.x--;
-
-	if (flags->is_rotate_y_more)
-		env->cam.rotate_angle.y++;
-	if (flags->is_rotate_y_less)
-		env->cam.rotate_angle.y--;
-
-	if (flags->is_rotate_z_more)
-		env->cam.rotate_angle.z++;
-	if (flags->is_rotate_z_less)
-		env->cam.rotate_angle.z--;
 
 //	if ((flags->is_rotate_left && (sign = 1))
 //	|| (flags->is_rotate_right && (sign = -1)))
