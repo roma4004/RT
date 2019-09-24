@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/10 19:18:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/24 14:32:00 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,17 @@ static uint8_t  double2byte_clamp(const double x)
 		return ((uint8_t)(255.0 * x));
 }
 
-uint32_t		vec3_to_color(const t_fvec3 *restrict first)
+uint32_t		vec3_to_color(const t_dvec3 *restrict first)
 {
 	return (  double2byte_clamp(first->x) << (1u * 8u)
 			| double2byte_clamp(first->y) << (2u * 8u)
 			| double2byte_clamp(first->z) << (3u * 8u));
 }
 
-static void		put_px(t_env *env, float x, float y, t_fvec3 color)
+static void		put_px(t_env *env, double x, double y, t_dvec3 color)
 {
-	x = WIN_WIDTH / 2.f + x;
-	y = WIN_HEIGHT / 2.f - y - 1;
+	x = env->canvas_half.x + x;
+	y = env->canvas_half.y - y - 1;
 	if (x < 0 || x >= WIN_WIDTH
 	|| y < 0 || y >= WIN_HEIGHT)
 		return ;
@@ -88,7 +88,7 @@ void			rerender_scene(t_env *env)
 			{
 				env->cam.dir = convert_to_viewport(x, y);
 				rotate_cam(env);
-				t_fvec3 color = send_ray(env);//(t_fvec3){0};
+				t_dvec3 color = send_ray(env);//(t_fvec3){0};
 				put_px(env, x, y, color);
 			}
 		}

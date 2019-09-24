@@ -13,23 +13,23 @@
 #include "main.h"
 #include "math.h"
 
-t_fvec3		rotate_y(t_fvec3 pt, double angle)
+t_dvec3		rotate_y(t_dvec3 pt, double angle)
 {
-	return ((t_fvec3){ pt.x,
+	return ((t_dvec3){ pt.x,
 						pt.y * cos(angle) + pt.z * sin(angle),
 						-pt.y * sin(angle) + pt.z * cos(angle) });
 }
 
-t_fvec3		rotate_x(t_fvec3 pt, double angle)
+t_dvec3		rotate_x(t_dvec3 pt, double angle)
 {
-	return ((t_fvec3){ pt.x * cos(angle) + pt.z * sin(angle),
+	return ((t_dvec3){ pt.x * cos(angle) + pt.z * sin(angle),
 						pt.y,
 						-pt.x * sin(angle) + pt.z * cos(angle) });
 }
 
-t_fvec3		rotate_z(t_fvec3 pt, double angle)
+t_dvec3		rotate_z(t_dvec3 pt, double angle)
 {
-	return ((t_fvec3){ pt.x * cos(angle) - pt.y * sin(angle),
+	return ((t_dvec3){ pt.x * cos(angle) - pt.y * sin(angle),
 						pt.x * sin(angle) + pt.y * cos(angle),
 						pt.z });
 }

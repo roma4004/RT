@@ -95,15 +95,15 @@ void			quit_program(t_env *env)
 //list->refracted_dir
 
 
-//obj->pos
-//obj->rotate_state{x,y,z}
-//obj->color
-//obj->is_reflected
-//obj->is_refracted
-//obj->is_light_source
-//obj->name;
-//obj->type;
-//obj->opacity;
+//cur->pos
+//cur->rotate_state{x,y,z}
+//cur->color
+//cur->is_reflected
+//cur->is_refracted
+//cur->is_light_source
+//cur->name;
+//cur->type;
+//cur->opacity;
 
 
 
@@ -180,14 +180,14 @@ static uint8_t  double2byte_clamp(const double x)
 //}
 
 //t_fvec3			cast_ray(const t_fvec3 *orig, const t_fvec3 *dir,
-//							const t_sphr *sphere_arr,
+//							const t_sphr *uni_arr,
 //							const t_lght *lights_arr)
 //{
 //	t_fvec3 point;
 //	t_fvec3 N;
 //	t_mat   material;
 //
-//	if (!scene_intersect(orig, dir, sphere_arr, &point, &N, &material))
+//	if (!scene_intersect(orig, dir, uni_arr, &point, &N, &material))
 //	{		//			B		G		R
 //		return (t_fvec3){ 0.2, 0.7, 0.8 }; // background color
 //	}

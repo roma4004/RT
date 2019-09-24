@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vect3_with_float.c                                 :+:      :+:    :+:   */
+/*   vect3_with_double.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,9 +12,9 @@
 
 #include "main.h"
 
-void				vec3_add_float2(t_fvec3 *restrict destination,
-							const t_fvec3 *restrict first,
-							const float second)
+void				vec3_add_double2(t_dvec3 *restrict destination,
+							const t_dvec3 *restrict first,
+							const double second)
 {
 	destination->x = first->x + second;
 	destination->y = first->y + second;
@@ -22,9 +22,9 @@ void				vec3_add_float2(t_fvec3 *restrict destination,
 }
 
 //translate
-void				vec3_sub_float2(t_fvec3 *restrict destination,
-							const t_fvec3 *restrict first,
-							const float second)
+void				vec3_sub_double2(t_dvec3 *restrict destination,
+							const t_dvec3 *restrict first,
+							const double second)
 {
 	destination->x = first->x - second;
 	destination->y = first->y - second;
@@ -32,18 +32,18 @@ void				vec3_sub_float2(t_fvec3 *restrict destination,
 }
 
 //scale
-void				vec3_mul_float2(t_fvec3 *restrict destination,
-							const t_fvec3 *restrict first,
-							const float second)
+void				vec3_mul_double2(t_dvec3 *restrict destination,
+							const t_dvec3 *restrict first,
+							const double second)
 {
 	destination->x = first->x * second;
 	destination->y = first->y * second;
 	destination->z = first->z * second;
 }
 
-void				vec3_div_float2(t_fvec3 *restrict destination,
-							const t_fvec3 *restrict first,
-							const float second)
+void				vec3_div_double2(t_dvec3 *restrict destination,
+							const t_dvec3 *restrict first,
+							const double second)
 {
 	if (second == 0.f)
 		return ;
@@ -54,34 +54,34 @@ void				vec3_div_float2(t_fvec3 *restrict destination,
 
 ////////////////////
 
-t_fvec3				vec3_add_float(t_fvec3 first, float second)
+t_dvec3				vec3_add_double(t_dvec3 first, double second)
 {
-	return ((t_fvec3){first.x + second,
+	return ((t_dvec3){first.x + second,
 						first.y + second,
 						first.z + second});
 }
 
 //translate
-t_fvec3				vec3_sub_float(t_fvec3 first, float second)
+t_dvec3				vec3_sub_double(t_dvec3 first, double second)
 {
-	return ((t_fvec3){first.x - second,
+	return ((t_dvec3){first.x - second,
 						first.y - second,
 						first.z - second});
 }
 
 //scale
-t_fvec3				vec3_mul_float(t_fvec3 first, float second)
+t_dvec3				vec3_mul_double(t_dvec3 first, double second)
 {
-	return ((t_fvec3){first.x * second,
+	return ((t_dvec3){first.x * second,
 						first.y * second,
 						first.z * second});
 }
 
-t_fvec3				vec3_div_float(t_fvec3 first, float second)
+t_dvec3				vec3_div_double(t_dvec3 first, double second)
 {
 //	if (second == 0.f)
 //		return (first);
-	return ((t_fvec3){first.x / second,
+	return ((t_dvec3){first.x / second,
 						first.y / second,
 						first.z / second});
 }

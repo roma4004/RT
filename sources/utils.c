@@ -12,9 +12,9 @@
 
 #include "main.h"
 
-t_fvec3		convert_to_viewport(float x, float y)
+t_dvec3		convert_to_viewport(double x, double y)
 {
-	return ((t_fvec3){ x * VIEWPORT_SIZE / WIN_WIDTH,
+	return ((t_dvec3){ x * VIEWPORT_SIZE / WIN_WIDTH,
 					y * VIEWPORT_SIZE / WIN_HEIGHT,
 					DISTANCE_TO_PLANE });
 }
