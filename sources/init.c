@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 20:01:34 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/25 14:36:47 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static t_env			*env_def_val(t_env *env)
 	env->uni_arr[0] = (t_uni){SPHERE,(t_dvec3){0, -1, 3}, 	1.0   ,	(t_dvec3){0},	(t_mat){(t_dvec3){0, 0, 0},	10 			/*, 1.0*/}};//red
 	env->uni_arr[1] = (t_uni){SPHERE,(t_dvec3){2, 0, 4},	1.0   ,	(t_dvec3){0},	(t_mat){(t_dvec3){0, 0, 255},	100 			/*, 0.5*/}}; //blue
 	env->uni_arr[2] = (t_uni){SPHERE,(t_dvec3){-2, 0, 4},	1.0   ,	(t_dvec3){0},	(t_mat){(t_dvec3){0, 255, 0},	10  			/*, 0.9*/}};
-	env->uni_arr[3] = (t_uni){SPHERE,(t_dvec3){1, -1, 0},	0.1,	(t_dvec3){0},	(t_mat){(t_dvec3){255, 255, 0},	1000			/*, 0.1*/}};
+	env->uni_arr[3] = (t_uni){SPHERE,(t_dvec3){1, -5001, 0},	5000.0,	(t_dvec3){0},	(t_mat){(t_dvec3){255, 255, 0},	1000			/*, 0.1*/}};
 	env->uni_arr[4] = (t_uni){PLANE,(t_dvec3){0, 0, 0},		0.0,	(t_dvec3){0,1,0},	(t_mat){(t_dvec3){0,255,0},		1000			/*, 0.1*/}};
 
 

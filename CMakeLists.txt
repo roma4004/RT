@@ -30,7 +30,7 @@ link_directories(		${LFT_PATH}
 aux_source_directory(	${LFT_LIB} LFT_SRC)
 aux_source_directory(	${SRC_PATH} SOURCE_FILES)
 add_library(			${LFT_NAME} STATIC ${LFT_SRC}
-						)
+        libraries/libft/ft_atod.c)
 find_package(SDL2		REQUIRED)
 find_package(SDL2_ttf	REQUIRED)
 find_package(SDL2_image	REQUIRED)

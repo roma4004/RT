@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 15:33:41 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/25 15:20:29 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ t_dvec3			get_light(t_env *env, t_dvec3 point,
 		else
 		{
 			point_or_directional(l.cur, &l.dir, &l.t_max, &point);
-			if (is_shadow_ray(env, point, l.dir,
+			if (is_shadow_ray(env->uni_arr, point, l.dir,
 								(t_dvec){env->epsilon, l.t_max}))
 				continue;
 			set_diffuse_reflection(&l, normal);

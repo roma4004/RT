@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 15:30:17 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/25 14:51:28 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,8 @@ void				rerender_scene(t_env *env);
 
 t_dvec3				send_ray(t_env *env);
 t_uni				*intersect_obj(t_env *env, double *dist);
-t_uni				*is_shadow_ray(t_env *env, t_dvec3 origin, t_dvec3 direction, t_dvec limits);
+t_uni				*is_shadow_ray(t_uni *uni_arr, t_dvec3 origin,
+									t_dvec3 direction, t_dvec limits);
 
 t_dvec3				convert_to_viewport(double x, double y);
 

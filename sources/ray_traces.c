@@ -6,13 +6,14 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 20:07:38 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/25 15:17:08 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static bool		intersect_sphere(t_cam *cam, t_uni *obj, t_dvec3 *plane_toch)
+static void		intersect_sphere(t_dvec3 ray_pos, t_uni *obj,
+								t_dvec3 ray_dir, t_dvec3 *plane_toch)
 {
 	const t_dvec3		center = obj->pos;
 	const double		radius = obj->radius;
@@ -20,9 +21,9 @@ static bool		intersect_sphere(t_cam *cam, t_uni *obj, t_dvec3 *plane_toch)
 	t_dvec3				tmp;
 	double				discriminant;
 
-	oc = vec3_sub_vec3(cam->pos, center);
-	tmp.x = vec3_dot_vec3(cam->dir, cam->dir);
-	tmp.y = vec3_to_double(double_mul_vec3(2, vec3_mul_vec3(oc, cam->dir)));
+	oc = vec3_sub_vec3(ray_pos, center);
+	tmp.x = vec3_dot_vec3(ray_dir, ray_dir);
+	tmp.y = vec3_to_double(double_mul_vec3(2, vec3_mul_vec3(oc, ray_dir)));
 	tmp.z = vec3_dot_vec3(oc, oc) - radius * radius;
 
 	discriminant = tmp.y * tmp.y - 4 * tmp.x * tmp.z;
@@ -30,42 +31,26 @@ static bool		intersect_sphere(t_cam *cam, t_uni *obj, t_dvec3 *plane_toch)
 		*plane_toch = (t_dvec3){MAXFLOAT, MAXFLOAT, 0};
 	*plane_toch = (t_dvec3){(-tmp.y + sqrtf(discriminant)) / (2 * tmp.x),
 							(-tmp.y - sqrtf(discriminant)) / (2 * tmp.x), 0};
-	if (plane_toch->x >= 0
-	|| plane_toch->y >= 0
-	|| plane_toch->y >= 0)
-	{
-		return (true);
-	}
-	return (false);
 }
 
-bool			intersect_plane(t_cam *cam, t_uni *plane, t_dvec3 *plane_toch)
+static void			intersect_plane(t_dvec3 ray_pos, t_uni *plane,
+								t_dvec3 ray_dir, t_dvec3 *plane_toch)
 {
 	t_dvec3		plane_pos;		//plane center		// (plane.pos)
-	t_dvec3		normal;			//plane normal		// (plane.dir)
-	t_dvec3		ray_pos;		//ray pos			// (cam.pos)
-	t_dvec3		ray_dir;		//ray directional	// (cam.dir)
+	t_dvec3		normal;			//plane normal		// (plane.ray_dir)
+//	t_dvec3		ray_pos;		//ray pos			// (cam.pos)
+//	t_dvec3		ray_dir;		//ray directional	// (cam.ray_dir)
 	double		denom;
 
-	vec3_normalize(&plane_pos, &plane->pos);
-	vec3_normalize(&normal, &plane->dir);
-	vec3_normalize(&ray_pos, &cam->pos);
-	vec3_normalize(&ray_dir, &cam->dir);
-//
-//	plane_pos= plane->pos;
-//	normal   = plane->dir;
-//	ray_pos  = cam->pos;
-//	ray_dir  = cam->dir;
+	plane_pos = plane->pos;
+	normal    = plane->dir;
 	denom = vec3_dot_vec3(normal, ray_dir);
-	/// при условии, что все векторы являются нормализованными
 	if (denom > 1e-6 || denom < 1e-6)
 	{
 		*plane_toch =
 			(t_dvec3){vec3_dot_vec3(vec3_sub_vec3(plane_pos, ray_pos), normal)
 			/ denom, 0, 0};
-		return (plane_toch->x >= 0);
 	}
-	return (false);
 }
 
 t_uni				*intersect_obj(t_env *env, double *dist)//dist need move to ray struct
@@ -79,9 +64,9 @@ t_uni				*intersect_obj(t_env *env, double *dist)//dist need move to ray struct
 	while (++i < SPHERE_CNT + PLANE_CNT)
 	{
 		if (env->uni_arr[i].type == SPHERE)
-			intersect_sphere(&env->cam, &env->uni_arr[i], &touch);
+			intersect_sphere(env->cam.pos, &env->uni_arr[i], env->cam.dir, &touch);
 		else if (env->uni_arr[i].type == PLANE)
-			intersect_plane(&env->cam, &env->uni_arr[i], &touch);
+			intersect_plane(env->cam.pos, &env->uni_arr[i], env->cam.dir, &touch);
 		if (touch.x < *dist //compute nearly obj
 		&& env->cam.t_min < touch.x
 		&& touch.x < env->cam.t_max
@@ -96,55 +81,27 @@ t_uni				*intersect_obj(t_env *env, double *dist)//dist need move to ray struct
 	return (cur_obj);
 }
 
-t_uni				*is_shadow_ray(t_env *env, t_dvec3 origin,
-									t_dvec3 direction, t_dvec limits)
+t_uni		*is_shadow_ray(t_uni *uni_arr, t_dvec3 origin,
+							t_dvec3 direction, t_dvec limits)
 {
 	size_t		i;
 	t_dvec3		touch;
-	bool		hit = false;
 
 	i = -1;
 	while (++i < SPHERE_CNT + PLANE_CNT)
 	{
-//		if (env->uni_arr[i].type == SPHERE)
-//		{
-		if (env->uni_arr[i].type == SPHERE)
-			hit = intersect_sphere(&env->cam, &env->uni_arr[i], &touch);
-		if (env->uni_arr[i].type == PLANE)
-			hit = intersect_plane(&env->cam, &env->uni_arr[i], &touch);
-
-		if (hit &&(
-			(touch.x < MAXFLOAT && limits.x < touch.x && touch.x < limits.y)
-		|| (touch.y < MAXFLOAT && limits.x < touch.y && touch.y < limits.y)))
-			return (&env->uni_arr[i]);
-//		}
-//		else if (env->uni_arr[i].type == PLANE)
-//		{
-//			if (intersect_plane(&env->cam, &env->uni_arr[i], &touch)
-//			&& (touch.x < MAXFLOAT && limits.x < touch.x && touch.x < limits.y))
-//			return (&env->uni_arr[i]);
-//		}
+		if (uni_arr[i].type == SPHERE)
+			intersect_sphere(origin, &uni_arr[i], direction, &touch);
+		else if (uni_arr[i].type == PLANE)
+			intersect_plane(origin, &uni_arr[i], direction,  &touch);
+		if ((touch.x < MAXFLOAT
+			&& limits.x < touch.x
+			&& touch.x < limits.y)
+		|| (touch.y < MAXFLOAT
+			&& limits.x < touch.y
+			&& touch.y < limits.y))
+			return (&uni_arr[i]);
 	}
-
-//	i = -1;
-//	while (++i < SPHERE_CNT + PLANE_CNT)
-//	{
-//		if (env->uni_arr[i].type == SPHERE)
-//			intersect_sphere(origin, direction, &env->uni_arr[i], &touch);
-//		else if (env->uni_arr[i].type == PLANE)
-//			intersect_plane(&env->cam, &env->uni_arr[i], &touch);
-//		if ((touch.x < MAXFLOAT && limits.x < touch.x && touch.x < limits.y)
-//		|| (env->uni_arr[i].type == SPHERE
-//			&& touch.y < MAXFLOAT && limits.x < touch.y && touch.y < limits.y))
-//			return (&env->uni_arr[i]);
-//	}
-
-//	i = -1;
-//	while (++i < PLANE_CNT)
-//	{
-//		&& touch.x < MAXFLOAT && limits.x < touch.x && touch.x < limits.y)
-//			return (&env->uni_arr[i]);
-//	}
 	return (NULL);
 }
 

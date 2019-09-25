@@ -120,5 +120,6 @@ int				ft_get_processors_num(void);
 void			ft_free_arr(char **arr);
 int				ft_switch(bool *bits);
 float			ft_q_rsqrt(float number);
+double			ft_atod(const char *str);
 
 #endif
