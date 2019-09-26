@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 15:21:36 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/25 16:47:02 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,45 +50,42 @@ static void		keyboard_evens(t_cam *cam, Uint32 etype, SDL_Keycode k, t_flags *f)
 //		f->is_compass_texture = (f->is_compass_texture) ? false : true;
 
 
+double move_speed = 1.2 ;
+double rot_speed = 2.9;
 	if (etype == SDL_KEYDOWN)
 	{
 		if (k == SDLK_a)
-			cam->pos.x += 0.1;
+			cam->pos.x += move_speed;
 		if (k == SDLK_d)
-			cam->pos.x -= 0.1;
+			cam->pos.x -= move_speed;
 
 
 		if (k == SDLK_w)
-			cam->pos.y -= 0.1;
+			cam->pos.y -= move_speed;
 		if (k == SDLK_s)
-			cam->pos.y += 0.1;
+			cam->pos.y += move_speed;
 
 
 		if (k == SDLK_e)
-			cam->pos.z += 0.1;
+			cam->pos.z += move_speed;
 		if (k == SDLK_q)
-			cam->pos.z -= 0.1;
-
+			cam->pos.z -= move_speed;
 
 		if (k == SDLK_t)
-			cam->rotate_angle.x++;
+			cam->rotate_angle.x += rot_speed;
 		if (k == SDLK_g)
-			cam->rotate_angle.x--;
+			cam->rotate_angle.x -= rot_speed;
 
 		if (k == SDLK_y)
-			cam->rotate_angle.y++;
+			cam->rotate_angle.y += rot_speed;;
 		if (k == SDLK_h)
-			cam->rotate_angle.y--;
+			cam->rotate_angle.y -= rot_speed;
 
 		if (k == SDLK_u)
-			cam->rotate_angle.z++;
+			cam->rotate_angle.z += rot_speed;
 		if (k == SDLK_j)
-			cam->rotate_angle.z--;
+			cam->rotate_angle.z -= rot_speed;
 	}
-
-
-
-
 }
 
 void			event_handler(t_env *env, t_cam *cam, t_flags *flags)

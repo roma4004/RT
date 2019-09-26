@@ -59,25 +59,12 @@ static void		clear_img_buff(t_env *env)
 	}
 }
 
-static int		prepare_render(t_env *env, t_fps *fps)
-{
-	fps->pre_tick = fps->cur_tick;
-	fps->cur_tick = SDL_GetTicks();
-	fps->frame_time = (fps->cur_tick - fps->pre_tick) / 1000.0;
-	fps->value = (u_char)(1.0 / fps->frame_time);
-//	env->cam.move_speed = fps->frame_time * 3.0;
-//	env->cam.rotate_speed = fps->frame_time * 2.0;
-//	if ((fps->frame_limit_second) > fps->cur_tick - fps->pre_tick)
-//		SDL_Delay(fps->frame_limit_second - (fps->cur_tick - fps->pre_tick));
-	return (1);
-}
-
 void			rerender_scene(t_env *env)
 {
 	double		y;
 	double		x;
 
-	while (!env->flags.is_rtv1_over && prepare_render(env, &env->fps))
+	while (!env->flags.is_rtv1_over)
 	{
 		clear_img_buff(env);
 		y = -env->canvas_half.y - 1;

@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/25 15:20:29 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/26 15:42:40 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,37 +84,22 @@ static uint8_t  double2byte_clamp(const double x)
 	else
 		return ((uint8_t)(255 * x));
 }
-t_dvec3				double_mul_vec3_col(double first, t_dvec3 second)
-{
-	return ((t_dvec3){double2byte_clamp(first * second.x),
-					double2byte_clamp(first * second.y),
-					double2byte_clamp(first * second.z)});
-}
 
-t_dvec3				vec3_add_vec3_col(t_dvec3 first, t_dvec3 second)
-{
-	return ((t_dvec3){double2byte_clamp(first.x + second.x),
-					double2byte_clamp(first.y + second.y),
-					double2byte_clamp(first.z + second.z)});
-}
-
-
-static double		get_specular_reflection(double light_intensity, double specular_exponent,
-											t_dvec3 *normal, t_dvec3 view, t_dvec3 *dir)
+static double		get_specular_reflection(double light_intensity,
+											double specular,
+											t_dvec3 *normal,
+											t_dvec3 view, t_dvec3 *dir)
 {
 	t_dvec3			vec_reflect;
 	double			reflect_dot_view;
 	double			intensity_spec;
 
 	if (light_intensity > 0.0
-	&& ((reflect_dot_view = vec3_dot_vec3(reflect(*normal, dir, &vec_reflect), view)) > 0.0))
+	&& ((reflect_dot_view =
+		vec3_dot_vec3(reflect(*normal, dir, &vec_reflect), view)) > 0.0))
 	{
-		intensity_spec =
-		//		light_intensity * powf(reflect_dot_view / (vec3_length(vec_reflect) * length.y), 10.);
-		light_intensity
-		* powf(reflect_dot_view /
-				(vec3_length(vec_reflect) * vec3_length(view)),
-			specular_exponent);
+		intensity_spec = light_intensity * powf(reflect_dot_view
+					/ (vec3_length(vec_reflect) * vec3_length(view)), specular);
 		if (intensity_spec > 1.0)
 			intensity_spec = 1.0;
 		return (intensity_spec);
@@ -122,33 +107,30 @@ static double		get_specular_reflection(double light_intensity, double specular_e
 	return (0.0);
 }
 
-t_dvec3			get_light(t_env *env, t_dvec3 point,
-							t_dvec3 *normal, t_dvec3 view,
-							t_uni *obj)
+t_dvec3			get_light(t_env *env, t_lght_comp *l, t_uni *obj)
 {
-	t_lght_comp		l;
-	unsigned		i = -1;
+	unsigned		i;
 
-	ft_bzero(&l, sizeof(l));
-	while (++i < LIGHTS_CNT && (l.cur = &env->light_arr[i]))
+	i = -1;
+	while (++i < LIGHTS_CNT && (l->cur = &env->light_arr[i]))
 	{
-		if (l.cur->type == AMBIENT)
-			l.defuse_val += l.cur->intensity;
+		if (l->cur->type == AMBIENT)
+			l->defuse_val += l->cur->intensity;
 		else
 		{
-			point_or_directional(l.cur, &l.dir, &l.t_max, &point);
-			if (is_shadow_ray(env->uni_arr, point, l.dir,
-								(t_dvec){env->epsilon, l.t_max}))
+			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
+			if (is_shadow_ray(env->uni_arr, l->touch_point, l->dir,
+								(t_dvec){env->epsilon, l->t_max}))
 				continue;
-			set_diffuse_reflection(&l, normal);
-			if (obj->mat.specular_exponent > 0.0
-			&& (l.specul_val = get_specular_reflection(l.cur->intensity,
-						obj->mat.specular_exponent, normal, view, &l.dir)))
-				if (l.defuse_val > 0.0
-				&& l.defuse_val + l.specul_val > 1.0)
-					l.defuse_val = 1.0 - l.specul_val;
+			set_diffuse_reflection(l, &l->obj_normal);
+			if (obj->mat.specular > 0.0
+			&& (l->specul_val = get_specular_reflection(l->cur->intensity,
+					obj->mat.specular, &l->obj_normal, l->view, &l->dir)))
+				if (l->defuse_val > 0.0
+				&& l->defuse_val + l->specul_val > 1.0)
+					l->defuse_val = 1.0 - l->specul_val;
 		}
 	}
-	return (vec3_add_vec3(double_mul_vec3(l.defuse_val, obj->mat.diffuse_color),
-		double_mul_vec3(l.specul_val, (t_dvec3){255, 255, 255})));
+	return (vec3_add_vec3(double_mul_vec3(l->defuse_val, obj->mat.diffuse_col),
+		double_mul_vec3(l->specul_val, (t_dvec3){255, 255, 255})));
 }

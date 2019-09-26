@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/25 14:51:28 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/26 18:18:19 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #define SPHERE_CNT 4
 #define LIGHTS_CNT 3
 #define PLANE_CNT 1
+#define CYLINDER_CNT 1
+#define CONE_CNT 1
 
 //rtv_macro end
 
@@ -90,8 +92,8 @@ typedef struct		s_vector_double
 
 typedef struct material
 {
-	t_dvec3	diffuse_color;
-	double	specular_exponent;
+	t_dvec3	diffuse_col;
+	double	specular;
 }				t_mat;
 
 typedef struct universal_object
@@ -124,16 +126,11 @@ typedef struct		s_light_calculating
 	double			defuse_val;
 	double			t_max;
 	double			specul_val;
-}					t_lght_comp;
 
-typedef struct	s_frame_per_second
-{
-	u_char		value;
-	double		frame_time;
-	Uint32		frame_limit_second;
-	Uint32		cur_tick;
-	Uint32		pre_tick;
-}				t_fps;
+	t_dvec3		touch_point;
+	t_dvec3		obj_normal;
+	t_dvec3		view;
+}					t_lght_comp;
 
 typedef struct	s_camera
 {
@@ -180,7 +177,6 @@ typedef struct	s_environment
 	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
 	t_flags			flags;
 	t_cam			cam;
-	t_fps			fps;
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;
@@ -193,12 +189,6 @@ typedef struct	s_environment
 	t_dvec3		bg_color;
 	double		epsilon;
 }				t_env;
-
-//typedef struct	s_pthread_data
-//{
-//	t_env	*env;
-//	int		offset;
-//}				t_pth_dt;
 
 //enum			e_errors
 //{
@@ -217,6 +207,8 @@ enum			e_light_type
 	DIRECTIONAL = 2,
 	SPHERE = 3,
 	PLANE = 4,
+	CYLINDER = 5,
+	CONE = 6,
 };
 
 t_env			*init_env(void);
@@ -224,8 +216,7 @@ void			event_handler(t_env *env, t_cam *cam, t_flags *flags);
 //void			show_errors(t_env *env);
 //void			quit_program(t_env *env);
 
-t_dvec3			get_light(t_env *env, t_dvec3 point, t_dvec3 *normal,
-						t_dvec3 view, t_uni *obj);
+t_dvec3			get_light(t_env *env, t_lght_comp *l, t_uni *obj);
 
 double				vec3_length(t_dvec3 vec);
 void				rerender_scene(t_env *env);
