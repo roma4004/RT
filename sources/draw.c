@@ -6,84 +6,53 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 14:32:00 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/27 14:40:24 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static uint8_t  double2byte_clamp(const double x)
+static t_dvec3		convert_to_viewport(t_dvec pt, double rate)
 {
-	if (x < 0.0)
-		return (0);
-	else if (x > 1.0)
-		return (255);
-	else
-		return ((uint8_t)(255.0 * x));
+	return ((t_dvec3){ pt.x * (VIEWPORT_SIZE * rate) / WIN_WIDTH,
+						pt.y * VIEWPORT_SIZE / WIN_HEIGHT,
+						DISTANCE_TO_PLANE });
 }
 
-uint32_t		vec3_to_color(const t_dvec3 *restrict first)
+static void			put_px(t_env *env, t_dvec *canvas_half,
+							t_dvec pt, t_dvec3 *color)
 {
-	return (  double2byte_clamp(first->x) << (1u * 8u)
-			| double2byte_clamp(first->y) << (2u * 8u)
-			| double2byte_clamp(first->z) << (3u * 8u));
-}
-
-static void		put_px(t_env *env, double x, double y, t_dvec3 color)
-{
-	x = env->canvas_half.x + x;
-	y = env->canvas_half.y - y - 1;
-	if (x < 0 || x >= WIN_WIDTH
-	|| y < 0 || y >= WIN_HEIGHT)
+	pt.x += canvas_half->x;
+	pt.y = canvas_half->y - pt.y - 1;
+	if (pt.x < 0 ||pt.x >= WIN_WIDTH
+	|| pt.y < 0 || pt.y >= WIN_HEIGHT)
 		return ;
-	env->buff[(int)y][(int)x] = ( 255u             << 24u)
-							| (((uint32_t)color.x) << 16u)
-							| (((uint32_t)color.y) << 8u)
-							| (((uint32_t)color.z));
+	env->buff[(int)pt.y][(int)pt.x] = ( 255u                << 24u)
+									| (((uint32_t)color->x) << 16u)
+									| (((uint32_t)color->y) << 8u)
+									| (((uint32_t)color->z));
 }
 
-static void		clear_img_buff(t_env *env)
+void				rerender_scene(t_env *env)
 {
-	Uint32	y;
-	Uint32	x;
+	t_dvec		pt;
+	t_dvec3		color;
+	t_dvec		half = env->cam.canvas.half;
+	double		rate = env->cam.canvas.rate;
 
-	if (!env)
-		return ;
-	y = 0;
-	while (y < WIN_HEIGHT)
+	pt.y = -half.y - 1;
+	while (++pt.y < half.y)
 	{
-		x = 0;
-		while (x < WIN_WIDTH)
-			env->buff[y][x++] = 0x0;
-		y++;
-	}
-}
-
-void			rerender_scene(t_env *env)
-{
-	double		y;
-	double		x;
-
-	while (!env->flags.is_rtv1_over)
-	{
-		clear_img_buff(env);
-		y = -env->canvas_half.y - 1;
-		while (++y < env->canvas_half.y)
+		pt.x = -half.x - 1;
+		while (++pt.x < half.x)
 		{
-			x = -env->canvas_half.x - 1;
-			while (++x < env->canvas_half.x)
-			{
-				env->cam.dir = convert_to_viewport(x, y);
-				rotate_cam(env);
-				t_dvec3 color = send_ray(env);//(t_fvec3){0};
-				put_px(env, x, y, color);
-			}
+			env->cam.dir = convert_to_viewport(pt, rate);
+			rotate_cam(&env->cam.dir, &env->cam.rotate_angle);
+			send_ray(env, &env->cam, &color);
+			put_px(env, &half, pt, &color);
 		}
-
-		SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2u);
-		SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
-
-		SDL_RenderPresent(env->renderer);
-		event_handler(env, &env->cam, &env->flags);
 	}
+	SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2u);
+	SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
+	SDL_RenderPresent(env->renderer);
 }

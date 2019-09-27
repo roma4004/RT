@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/13 15:28:04 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/26 14:40:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/27 11:38:34 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,23 +48,19 @@ double		vec3_dot_vec3(t_dvec3 first, t_dvec3 second)
 		+ first.z * second.z);
 }
 
-double		vec3_mag(const t_dvec3 *restrict first)
+double		vec3_length(t_dvec3 first)
 {
-	return (sqrtf(powf(first->x, 2.0f)
-				+ powf(first->y, 2.0f)
-				+ powf(first->z, 2.0f)));
+	return (sqrtf(first.x * first.x
+				+ first.y * first.y
+				+ first.z * first.z));
 }
 
-void		vec3_normalize(t_dvec3 *restrict destination,
-							t_dvec3 *restrict first)
+t_dvec3		vec3_normalize(t_dvec3 first)
 {// Should be 1.0, but just in case...
-	double magnitude = vec3_mag(first);
+	const double		magnitude = vec3_length(first);
+	t_dvec3				result;
 
-	if (magnitude > 0)
-		vec3_div_double2(destination, first, magnitude);
-}
-
-double			vec3_length(t_dvec3 vec)
-{
-	return (sqrt(vec3_dot_vec3(vec, vec)));
+	if (magnitude > 0.0)
+		return (vec3_div_double(first, magnitude));
+	return (first);
 }

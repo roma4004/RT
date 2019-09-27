@@ -79,7 +79,7 @@ t_dvec3				vec3_mul_double(t_dvec3 first, double second)
 
 t_dvec3				vec3_div_double(t_dvec3 first, double second)
 {
-//	if (second == 0.f)
+//	if (second == 0.0)
 //		return (first);
 	return ((t_dvec3){first.x / second,
 						first.y / second,

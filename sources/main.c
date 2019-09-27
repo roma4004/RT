@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/26 14:37:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/27 18:16:11 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,6 @@ void			quit_program(t_env *env)
 	if (env->surface)
 		SDL_FreeSurface(env->surface);
 	env->surface = NULL;
-	if (env->music)
-		Mix_CloseAudio();
-	env->music = NULL;
 //	show_errors(env);
 	SDL_Quit();
 }
@@ -63,12 +60,22 @@ void			quit_program(t_env *env)
 //cur->type;
 //cur->opacity;
 
-
-//int				main(int argc, char **argv)
-int				main(void)
+int				main(int argc, char **argv)
 {
 	t_env *env;
+
 	env = init_env();
+
+
+//	int fd = open(argv[1], O_RDONLY);
+//	validation_file(env, fd);
+//	close(fd);
+//	read_data(env);
+
+
 	rerender_scene(env);
+	while (!env->flags.is_rtv1_over)
+		if (event_handler(&env->cam, &env->flags))
+			rerender_scene(env);
 	return (0);
 }

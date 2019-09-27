@@ -29,13 +29,12 @@ link_directories(		${LFT_PATH}
 						)
 aux_source_directory(	${LFT_LIB} LFT_SRC)
 aux_source_directory(	${SRC_PATH} SOURCE_FILES)
-add_library(			${LFT_NAME} STATIC ${LFT_SRC}
-        libraries/libft/ft_atod.c)
+add_library(			${LFT_NAME} STATIC ${LFT_SRC})
 find_package(SDL2		REQUIRED)
 find_package(SDL2_ttf	REQUIRED)
 find_package(SDL2_image	REQUIRED)
 find_package(SDL2_mixer	REQUIRED)
-add_executable(			${CMAKE_PROJECT_NAME} ${SOURCE_FILES} sources/ligths.c sources/draw.c sources/utils.c sources/ray_traces.c)
+add_executable(			${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(	${CMAKE_PROJECT_NAME}
 						${LFT_NAME}
 						${SDL2_LIBRARY}
