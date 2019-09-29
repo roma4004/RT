@@ -1,23 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_digits_len.c                                    :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/19 17:08:30 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 18:50:38 by dromanic         ###   ########.fr       */
+/*   Created: 2018/01/08 18:00:07 by dromanic          #+#    #+#             */
+/*   Updated: 2018/03/25 14:42:02 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-size_t	ft_digits_len(const char *s)
-{
-	size_t	i;
+# include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include <sys/stat.h>
 
-	i = 0;
-	while (s[i] && ft_isdigit(s[i]))
-		i++;
-	return (i);
-}
+# include "libft.h"
+
+# define BUFF_SIZE 8192
+# define MAX_FD 10000
+# define MAX_LINE 10000
+
+int		get_next_line(const int fd, char **line);
+
+#endif

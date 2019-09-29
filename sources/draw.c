@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 14:40:24 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 18:06:19 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,26 +19,25 @@ static t_dvec3		convert_to_viewport(t_dvec pt, double rate)
 						DISTANCE_TO_PLANE });
 }
 
-static void			put_px(t_env *env, t_dvec *canvas_half,
+static void			put_px(t_env *env, const t_dvec *canvas_half,
 							t_dvec pt, t_dvec3 *color)
 {
 	pt.x += canvas_half->x;
 	pt.y = canvas_half->y - pt.y - 1;
-	if (pt.x < 0 ||pt.x >= WIN_WIDTH
+	if (pt.x < 0 || pt.x >= WIN_WIDTH
 	|| pt.y < 0 || pt.y >= WIN_HEIGHT)
 		return ;
-	env->buff[(int)pt.y][(int)pt.x] = ( 255u                << 24u)
-									| (((uint32_t)color->x) << 16u)
+	env->buff[(int)pt.y][(int)pt.x] = (((uint32_t)color->x) << 16u)
 									| (((uint32_t)color->y) << 8u)
 									| (((uint32_t)color->z));
 }
 
 void				rerender_scene(t_env *env)
 {
-	t_dvec		pt;
-	t_dvec3		color;
-	t_dvec		half = env->cam.canvas.half;
-	double		rate = env->cam.canvas.rate;
+	const t_dvec	half = env->cam.canvas.half;
+	const double	rate = env->cam.canvas.rate;
+	t_dvec			pt;
+	t_dvec3			color;
 
 	pt.y = -half.y - 1;
 	while (++pt.y < half.y)

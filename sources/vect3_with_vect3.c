@@ -50,4 +50,3 @@ t_dvec3				vec3_cross_vec3(t_dvec3 first, t_dvec3 second)
 						first.z * second.x - first.x * second.z,
 						first.x * second.y - first.y * second.x});
 }
-

@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "main.h"
-#include "math.h"
 
 t_dvec3		rotate_y(t_dvec3 *pt, double angle)
 {
@@ -43,4 +42,3 @@ void		rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle)
 	if (rotate_angle->z != 0)
 		*dir = rotate_z(dir, rotate_angle->z * M_PI / 180);
 }
-

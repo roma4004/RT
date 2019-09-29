@@ -6,47 +6,20 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 14:04:43 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 20:59:29 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
-//rtv_macro:
-//# define FOV M_PI / 2.
-# define FOV 60
+# define WIN_NAME "RTv1 by dromanic (@Dentair)"
 # define WIN_WIDTH 1000u
 # define WIN_HEIGHT 1000u
-# define BACKGROUND_COLOR 0xffffff
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
-//tmp defines
-
-#define PARSE_PARAM_CNT 6
-#define OBJ_TYPE_MAX 7
-
-#define SPHERE_CNT 4
-#define LIGHTS_CNT 3
-#define PLANE_CNT 1
-#define CYLINDER_CNT 1
-#define CONE_CNT 1
-#define UNI_OJB_CNT (SPHERE_CNT + PLANE_CNT + CYLINDER_CNT + CONE_CNT)
-
-
-//rtv_macro end
-
-
-# define WIN_NAME "RTv1 by dromanic (@Dentair)"
-# define DEFAULT_MENU_COLOR 0x0f9100FF
-# define DEF_FONT "resources/fonts/ARIAL.TTF"
-# define DEF_FONT_SIZE 24
-# define FRAME_LIMIT 60
-# define TEX_WIDTH 64
-# define TEX_HEIGHT 64
-# define TEXTURES 8
-# define DEF_EDGE_TEX 2
-# define SHOW_FPS 1
-# define DEBUG 1
+# define VALUES_PER_OBJ 11
+# define OBJ_TYPE_MAX 7
+# define DEBUG 0
 # define MAX_MAP_SIDE 10000
 
 # include <fcntl.h>
@@ -56,55 +29,9 @@
 # include <errno.h>
 # include <math.h>
 
-# pragma GCC diagnostic ignored "-Wstrict-prototypes"
-# pragma GCC diagnostic ignored "-Wpadded"
-# pragma GCC diagnostic ignored "-Wdocumentation"
-# pragma GCC diagnostic ignored "-Wundef"
-# pragma GCC diagnostic ignored "-Wreserved-id-macro"
 # include "SDL.h"
-# include "SDL_ttf.h"
-# include "SDL_image.h"
-# include "SDL_mixer.h"
-# include "SDL_audio.h"
-# pragma GCC diagnostic warning "-Wreserved-id-macro"
-# pragma GCC diagnostic warning "-Wundef"
-# pragma GCC diagnostic warning "-Wdocumentation"
-# pragma GCC diagnostic warning "-Wpadded"
-# pragma GCC diagnostic warning "-Wstrict-prototypes"
-
 # include "libft.h"
 # include "get_next_line.h"
-
-
-# define MAX_LEN		200
-# define MAX_ROWS		400
-
-enum			e_figures
-{
-	F_NON = 10,
-	F_SPHERE = 11,
-	F_PLANE = 12,
-	F_CONE = 13,
-	F_CYLINDER = 14,
-};
-
-enum			e_numbers
-{
-	N_SPHR_NBR = 8,
-	N_PLN_NBR = 8,
-	N_CONE_NBR = 8,
-	N_CLDR_NBR = 8,
-};
-
-
-/*todo:
-**	red dot aim
-**	visual editor
-**	inventory [i]
-**	pause [p]
-**	quick belt (fast access)
-**	menu and splash screen
-**/
 
 typedef struct		s_vector3_double
 {
@@ -119,19 +46,17 @@ typedef struct		s_vector_double
 	double		y;
 }					t_dvec;
 
-typedef struct	universal_object
+typedef struct		s_universal_object
 {
-	unsigned		type;
-	t_dvec3			pos;
-	double			radius;
-	t_dvec3			dir;
-	t_dvec3			diffuse_color;
-	double			specular;
-//	void			(*intersect)(t_dvec3 *, struct universal_object *,
-//								t_dvec3, t_dvec3 *);
-}				t_uni;
+	unsigned	type;
+	t_dvec3		pos;
+	double		radius;
+	t_dvec3		dir;
+	t_dvec3		diffuse_color;
+	double		specular;
+}					t_uni;
 
-typedef struct	cone
+typedef struct		s_cone
 {
 	unsigned	type;
 	t_dvec3		pos;
@@ -139,99 +64,69 @@ typedef struct	cone
 	t_dvec3		dir;
 	t_dvec3		diffuse_color;
 	double		specular;
-}				t_cone;
+}					t_cone;
 
-typedef struct	light {
+typedef struct		s_light {
 	unsigned	type;
 	t_dvec3		pos;
 	double		intensity;
-}				t_lght;
+}					t_lght;
 
 typedef struct		s_light_calculating
 {
-	t_lght			*cur;
-	t_dvec3			dir;
-//	double			defuse_val;
-	double			t_max;
-//	double			specul_val;
-
+	t_lght		*cur;
+	t_dvec3		dir;
+	double		defuse_val;
+	double		t_max;
+	double		specul_val;
 	t_dvec3		touch_point;
 	t_dvec3		obj_normal;
 	t_dvec3		view;
 }					t_lght_comp;
 
-typedef struct	s_canvas_parameter
+typedef struct		s_canvas_parameter
 {
 	t_dvec			half;
 	double			rate;
 
-}				t_canvas_par;
+}					t_canvas_par;
 
-typedef struct	s_camera
+typedef struct		s_camera
 {
 	double			move_speed;
 	double			rotate_speed;
-
-	t_dvec3			pos;
-	t_dvec3			dir;
-
 	double			t_min;
 	double			t_max;
+	t_dvec3			dir;
+	t_dvec3			pos;
 	t_dvec3			rotate_angle;
 	t_canvas_par	canvas;
-}				t_cam;
+}					t_cam;
 
-typedef struct	s_flags
+typedef struct		s_flags
 {
-	bool			is_rtv1_over;
+	bool	is_rtv1_over;
 
-	bool			is_move_x_less;
-	bool			is_move_x_more;
+	bool	is_move_x_less;
+	bool	is_move_x_more;
 
-	bool			is_move_y_more;
-	bool			is_move_y_less;
+	bool	is_move_y_more;
+	bool	is_move_y_less;
 
-	bool			is_move_z_more;
-	bool			is_move_z_less;
+	bool	is_move_z_more;
+	bool	is_move_z_less;
 
-	bool			is_rotate_x_more;
-	bool			is_rotate_x_less;
+	bool	is_rotate_x_more;
+	bool	is_rotate_x_less;
 
-	bool			is_rotate_y_more;
-	bool			is_rotate_y_less;
+	bool	is_rotate_y_more;
+	bool	is_rotate_y_less;
 
-	bool			is_rotate_z_more;
-	bool			is_rotate_z_less;
-}				t_flags;
+	bool	is_rotate_z_more;
+	bool	is_rotate_z_less;
+}					t_flags;
 
-//typedef struct			s_read
-//{
-//	char				*line;
-//	int					len;
-//	struct s_read		*next;
-//}						t_read;
-
-typedef struct			s_clr
-{
-	int 				r;
-	int 				g;
-	int 				b;
-	int 				a;
-}						t_clr;
-
-typedef struct			s_fgrs
-{
-	int 				type;
-	t_dvec3				center;
-	double				radius;
-	t_clr 				color;
-	int 				specul;
-
-	struct s_fgrs		*next;
-	//	struct s_fgrs		*prev;
-}						t_fgrs;
-
-typedef struct	s_environment
+typedef struct		s_environment
 {
 	Uint32			err_id;
 	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
@@ -247,49 +142,18 @@ typedef struct	s_environment
 	size_t			light_arr_len;
 	t_dvec3			bg_color;
 	double			epsilon;
-}				t_env;
-//# define ERR_USAGE			0
-//# define ERR_MALLOC			1
-//# define ERR_SDL			2
-//# define ERR_ARGV			3
-//# define ERR_LEN			4
-//# define ERR_ROWS			5
-//
-//# define ERR_WRONG_SYMBOL	9
-//# define ERR_PIPE			10
-//# define ERR_DOT			12
-//# define ERR_NBR			13
-//# define ERR_MINUS			14
-//
-//# define ERR_LINE			15
+	t_list			*lst;
+}					t_env;
 
-# define MAX_LEN		200
-# define MAX_ROWS		400
-#define VALUES_PER_OBJ 11
-enum			e_errors
+enum				e_errors
 {
 	SCENE_ERR = 404,
 	READ_ERR = 405,
-	MAP_SIZE_ERR = 406,
-	INVALID_RESOURCE = 407,
-	SPACE = 408,
+	SCENE_SIZE_ERR = 406,
 	ITS_A_DIRECTORY = 21,
-
-	ERR_USAGE			= 0,
-	ERR_MALLOC			= 1,
-	ERR_SDL				= 2,
-	ERR_ARGV			= 3,
-	ERR_LEN				= 4,
-	ERR_ROWS			= 5,
-	ERR_WRONG_SYMBOL	= 9,
-	ERR_PIPE			= 10,
-	ERR_DOT				= 12,
-	ERR_NBR				= 13,
-	ERR_MINUS			= 14,
-	ERR_LINE			= 15
 };
 
-enum			e_light_type
+enum				e_light_type
 {
 	AMBIENT = 0,
 	POINT = 1,
@@ -301,29 +165,31 @@ enum			e_light_type
 	CAM = 7,
 };
 
+t_env				*init_env(void);
 bool				init_obj_arr(t_env *env, t_list *lst);
-void				cnt_obj_type(t_env *env, t_list *lst);
+
 int					count_number(t_env *env, char *str, size_t len);
 size_t				get_type(const char *str);
 bool				is_valid_line(t_env *env, char *line, int len);
-void				set_value(t_env *env, const double *v, int type);
+void				set_value(t_env *env, const double *v, size_t type);
 t_env				*parse_scene(t_env *env, char *file_name);
 
-
-t_env				*init_env(void);
 bool				event_handler(t_cam *cam, t_flags *flags);
-//void				show_errors(t_env *env);
-//void				quit_program(t_env *env);
-t_uni				*intersect_obj(t_env *env, t_cam *cam, double *dist);
-t_dvec3				get_light(t_env *env, t_lght_comp *l, t_uni *obj);
-const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-									t_dvec3 direction, t_dvec limits);
-void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *plane_toch);
-double				vec3_length(t_dvec3 vec);
 void				rerender_scene(t_env *env);
 
-void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color);
+void				get_light(t_env *env, t_lght_comp *l,
+								t_uni *obj, t_dvec3 *col);
 
+void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color);
+t_uni				*intersect_obj(t_env *env, t_cam *cam, double *dist);
+const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
+									t_dvec3 direction, t_dvec limits);
+
+void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *plane_toch);
+double				vec3_length(t_dvec3 vec);
+uint8_t				double_clamp(double x);
+t_dvec3				double_mul_vec3_col(double first, t_dvec3 second);
+t_dvec3				vec3_add_vec3_col(t_dvec3 first, t_dvec3 second);
 
 void				intersect_sphere(t_dvec3 *ray_pos, const t_uni *obj,
 									t_dvec3 ray_dir, t_dvec3 *plane_toch);
@@ -334,71 +200,27 @@ void				intersect_cylinder(t_dvec3 *ray_pos, const t_uni *obj,
 void				intersect_cone(t_dvec3 *ray_pos, const t_uni *obj,
 									t_dvec3 ray_dir, t_dvec3 *plane_toch);
 
-
-
-void rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle);
+void				rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle);
 
 double				vec3_dot_vec3(t_dvec3 first, t_dvec3 second);
-void				vec3_to_negative(t_dvec3 *restrict destination);
-//double				vec3_magnitude(t_dvec3 first);
 double				vec3_to_double(t_dvec3 first);
 t_dvec3				vec3_normalize(t_dvec3 first);
-void				vec3_normalize_ptr(t_dvec3 *restrict first);
-t_dvec3				vec3_normalize_cpy(t_dvec3 first);
 
-void				vec3_add_vec32(t_dvec3 *restrict destination,
-							const t_dvec3 *restrict first,
-							const t_dvec3 *restrict second);
-void				vec3_sub_vec32(t_dvec3 *restrict destination,
-							const t_dvec3 *restrict first,
-							const t_dvec3 *restrict second);
-void				vec3_mul_vec32(t_dvec3 *restrict destination,
-							const t_dvec3 *restrict first,
-							const t_dvec3 *restrict second);
-void				vec3_div_vec32(t_dvec3 *restrict destination,
-							const t_dvec3 *restrict first,
-							const t_dvec3 *restrict second);
-void 				vec3_cross_vec32(t_dvec3 *restrict destination,
-							const t_dvec3 *restrict first,
-							const t_dvec3 *restrict second);
 t_dvec3				vec3_add_vec3(t_dvec3 first, t_dvec3 second);
 t_dvec3				vec3_sub_vec3(t_dvec3 first, t_dvec3 second);
 t_dvec3				vec3_mul_vec3(t_dvec3 first, t_dvec3 second);
 t_dvec3				vec3_div_vec3(t_dvec3 first, t_dvec3 second);
 t_dvec3				vec3_cross_vec3(t_dvec3 first, t_dvec3 second);
 
-void				double_add_vec32(t_dvec3 *restrict destination,
-							const double first,
-							const t_dvec3 *restrict second);
-void				double_sub_vec32(t_dvec3 *restrict destination,
-							const double first,
-							const t_dvec3 *restrict second);
-void				double_mul_vec32(t_dvec3 *restrict destination,
-							const double first,
-							const t_dvec3 *restrict second);
-void				double_div_vec32(t_dvec3 *restrict destination,
-							const double first,
-							const t_dvec3 *restrict second);
 t_dvec3				double_add_vec3(double first, t_dvec3 second);
 t_dvec3				double_sub_vec3(double first, t_dvec3 second);
 t_dvec3				double_mul_vec3(double first, t_dvec3 second);
 t_dvec3				double_div_vec3(double first, t_dvec3 second);
 
-void				vec3_add_double2(t_dvec3 *restrict destination,
-							 const t_dvec3 *restrict first,
-							 const double second);
-void				vec3_sub_double2(t_dvec3 *restrict destination,
-							 const t_dvec3 *restrict first,
-							 const double second);
-void				vec3_mul_double2(t_dvec3 *restrict destination,
-							 const t_dvec3 *restrict first,
-							 const double second);
-void				vec3_div_double2(t_dvec3 *restrict destination,
-							 const t_dvec3 *restrict first,
-							 const double second);
 t_dvec3				vec3_add_double(t_dvec3 first, double second);
 t_dvec3				vec3_sub_double(t_dvec3 first, double second);
 t_dvec3				vec3_mul_double(t_dvec3 first, double second);
 t_dvec3				vec3_div_double(t_dvec3 first, double second);
+void				quit_program(t_env *env);
 
 #endif

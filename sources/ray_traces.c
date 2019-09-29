@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 13:11:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 20:01:27 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ t_uni			*intersect_obj(t_env *env, t_cam *cam, double *dist)
 }
 
 const t_uni		*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-							t_dvec3 direction, t_dvec limits)
+								t_dvec3 direction, t_dvec limits)
 {
 	const t_uni		*objects = env->uni_arr;
 	const size_t	len = env->uni_arr_len;
@@ -55,11 +55,11 @@ const t_uni		*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 		if (objects[i].type == SPHERE)
 			intersect_sphere(ray_pos, &objects[i], direction, &touch);
 		else if (objects[i].type == PLANE)
-			intersect_plane(ray_pos, &objects[i], direction,  &touch);
+			intersect_plane(ray_pos, &objects[i], direction, &touch);
 		else if (objects[i].type == CYLINDER)
-			intersect_cylinder(ray_pos, &objects[i], direction,  &touch);
+			intersect_cylinder(ray_pos, &objects[i], direction, &touch);
 		else if (objects[i].type == CONE)
-			intersect_cone(ray_pos, &objects[i], direction,  &touch);
+			intersect_cone(ray_pos, &objects[i], direction, &touch);
 		if ((touch.x < MAXFLOAT
 			&& limits.x < touch.x
 			&& touch.x < limits.y)
@@ -71,38 +71,36 @@ const t_uni		*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 	return (NULL);
 }
 
-t_dvec3				get_normal(t_cam *cam, t_uni *obj,
-								t_dvec3 point, double dist)
+t_dvec3			get_normal(t_cam *cam, t_uni *obj,
+							t_dvec3 point, double dist)
 {
-	t_dvec3		obj_normal;
-	double		k;
-	t_dvec3		v;
+	const t_dvec3		dir = obj->dir;
+	t_dvec3				obj_normal;
+	double				k;
 
-	obj_normal = (t_dvec3){0};
+	obj_normal = (t_dvec3){0, 0, 0};
 	if (obj->type == SPHERE)
 		obj_normal = vec3_sub_vec3(point, obj->pos);
 	if (obj->type == PLANE)
-		obj_normal = obj->dir;
+		obj_normal = dir;
 	if (obj->type == CYLINDER)
 	{
-		v = obj->dir;
 		obj_normal = (vec3_sub_vec3(vec3_sub_vec3(point, obj->pos),
-			vec3_mul_double(v, vec3_dot_vec3(cam->dir, v)
-			* dist + vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos), v))));
+			vec3_mul_double(dir, vec3_dot_vec3(cam->dir, dir)
+			* dist + vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos), dir))));
 	}
 	if (obj->type == CONE)
 	{
-		v = obj->dir;
 		k = ((t_cone *)obj)->angle * M_PI / 360.0;
 		obj_normal = vec3_sub_vec3(vec3_sub_vec3(point, obj->pos),
-			vec3_mul_double(double_mul_vec3((1 + k * k), v),
-				vec3_dot_vec3(cam->dir, v) * dist
-					+ vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos), v)));
+			vec3_mul_double(double_mul_vec3((1 + k * k), dir),
+				vec3_dot_vec3(cam->dir, dir) * dist
+					+ vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos), dir)));
 	}
 	return (vec3_normalize(obj_normal));
 }
 
-void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color)
+void			send_ray(t_env *env, t_cam *cam, t_dvec3 *color)
 {
 	double			dist;
 	t_uni			*obj;
@@ -120,6 +118,6 @@ void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color)
 		l.obj_normal = get_normal(&env->cam, obj, l.touch_point, dist);
 		l.touch_point = vec3_add_vec3(l.touch_point,
 							vec3_mul_double(l.obj_normal, env->epsilon));
-		*color = get_light(env, &l, obj);
+		get_light(env, &l, obj, color);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 22:22:01 by dromanic          #+#    #+#             */
-/*   Updated: 2018/11/03 22:53:13 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 18:52:13 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int		ft_atoi(const char *str)
 	while (ft_isdigit(str[i]))
 		result = result * 10 + (int)str[i++] - '0';
 	if ((result > 9223372036854775807 && sign == 1)
-		|| (ft_digits_len(str) >= 19 && sign == 1))
+	|| (ft_digits_len(str) >= 19 && sign == 1))
 		return (-1);
 	if (result > 9223372036854775807 && sign == -1)
 		return (0);

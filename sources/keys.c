@@ -39,10 +39,10 @@ static void		keyboard_handle(t_cam *cam, t_flags *f)
 	if (f->is_rotate_z_less)
 		cam->rotate_angle.z -= cam->rotate_speed;
 }
+
 static bool		keyboard_evens(Uint32 etype, SDL_Keycode key_code,
 								t_flags *flags)
-{//need to separate to another pthread
-
+{
 	bool		*flag;
 	bool		value;
 
@@ -63,13 +63,6 @@ static bool		keyboard_evens(Uint32 etype, SDL_Keycode key_code,
 		|| (key_code == SDLK_j && (flag = &flags->is_rotate_z_less))))
 		*flag = value;
 	return (value);
-//	*flag ^= *flag;
-//	*flag &= 0;
-//	*flag |= 1;
-//	if (etype == SDL_KEYUP && key_code == SDLK_2 && flags->mode++ >= 2)
-//		flags->mode = COLOR_TEX;
-//	if (etype == SDL_KEYUP && key_code == SDLK_1)
-//		flags->is_compass_texture = (flags->is_compass_texture) ? false : true;
 }
 
 bool			event_handler(t_cam *cam, t_flags *flags)
@@ -84,7 +77,6 @@ bool			event_handler(t_cam *cam, t_flags *flags)
 		key_code = event.key.keysym.sym;
 		if (event.type == SDL_QUIT || key_code == SDLK_ESCAPE)
 			flags->is_rtv1_over = true;
-//		mouse_events(&event, cam);
 		result += keyboard_evens(event.type, key_code, flags);
 	}
 	keyboard_handle(cam, flags);

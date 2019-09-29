@@ -89,32 +89,32 @@ static char	**init_data(void)
 			new_data[i++] = NULL;
 	}
 	return (new_data);
-	//ft_bzero(new_data, sizeof(char *) * MAX_FD);
 }
 
 int			get_next_line(const int fd, char **line)
 {
 	static char		**data = NULL;
 	int				len;
+	int				len_max;
 	char			*buf;
 
-	if (fd < 0 || fd > MAX_FD || BUFF_SIZE < 1)
+	if (fd < 0 || fd > MAX_FD || BUFF_SIZE < 1 || !(buf = ft_strnew(BUFF_SIZE)))
 		return (-1);
 	if (data == NULL)
 		data = init_data();
-	buf = ft_strnew(BUFF_SIZE);
+	len_max = 0;
 	while ((len = read(fd, buf, BUFF_SIZE)) > 0 && data_mod(data, fd, buf, len))
 	{
-		if (ft_strchr(buf, '\n'))
+		if ((len_max += len) > MAX_LINE
+		|| (ft_strchr(buf, '\n')))
 			break ;
 		ft_bzero(buf, BUFF_SIZE);
 	}
 	free(buf);
 	if (len == -1)
 		return (-1);
-	if (data[fd] == NULL)
+	if (data[fd] == NULL || !(*line = ft_strnew(ln_len(data[fd]))))
 		return (0);
-	*line = ft_strnew(ln_len(data[fd]));
 	if ((*line) && (ft_strncpy(*line, data[fd], ln_len(data[fd]))))
 		return (del_line(data, fd));
 	return (0);

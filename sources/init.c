@@ -6,18 +6,40 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 13:17:08 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 19:37:00 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-bool		init_obj_arr(t_env *env, t_list *lst)
+static void			cnt_obj_type(t_env *env, t_list *lst)
+{
+	size_t		*lights;
+	size_t		*other;
+	t_list		*cur;
+	size_t		type;
+
+	lights = &env->light_arr_len;
+	other = &env->uni_arr_len;
+	cur = lst;
+	while (cur)
+	{
+		if ((type = get_type(cur->content)) != UINT64_MAX)
+		{
+			if (type < 3)
+				(*lights)++;
+			else if (type < OBJ_TYPE_MAX)
+				(*other)++;
+		}
+		cur = cur->next;
+	}
+}
+
+bool				init_obj_arr(t_env *env, t_list *lst)
 {
 	cnt_obj_type(env, lst);
 	if ((env->uni_arr = (t_uni *)malloc(sizeof(t_uni) * env->uni_arr_len))
-		&& (env->light_arr = (t_lght *)malloc(sizeof(t_lght) * env->light_arr_len))
-		)
+	&& (env->light_arr = (t_lght *)malloc(sizeof(t_lght) * env->light_arr_len)))
 		return (true);
 	else
 	{
@@ -36,14 +58,13 @@ static void			init_cam(t_cam *cam)
 	cam->canvas.rate = (double)WIN_WIDTH / WIN_HEIGHT;
 	cam->move_speed = 1.2;
 	cam->rotate_speed = 2.9;
-	cam->t_min = 0; //ray not cam
-	cam->t_max = MAXFLOAT;//ray not cam
-	cam->pos = (t_dvec3){ 0, 0, -10 }; //ray not cam, ray start position
-	cam->rotate_angle = (t_dvec3){ 0, 0, -10 };
+	cam->t_min = 0;
+	cam->t_max = MAXFLOAT;
+	cam->pos = (t_dvec3){ 0, 0, -42 };
+	cam->rotate_angle = (t_dvec3){ 0, 0, 0 };
 }
 
-
-static t_env			*env_def_val(t_env *env)
+static t_env		*env_def_val(t_env *env)
 {
 	if (!env)
 		return (NULL);
@@ -52,30 +73,13 @@ static t_env			*env_def_val(t_env *env)
 	init_cam(&env->cam);
 	if (env->err_id)
 		return (NULL);
-///tmp init obj
-	//                      unsigned, t_dvec3          , double       , t_dvec3     ,	t__mat mat  t_dvec3			, double			,	double;
-	//                       type   ,  pos             , radius       , dir         ,	t__mat mat  diffuse_color	, specular			,	albedo;
-//	env->uni_arr[0] = (t_uni){SPHERE,	(t_dvec3){4, -1, 3}, 	1.0,	(t_dvec3){0		},	(t_dvec3){  0,   0,   0},	10				/*, 1.0*/};//red
-//	env->uni_arr[1] = (t_uni){SPHERE,	(t_dvec3){2,  4, 4},	1.0,	(t_dvec3){0		},	(t_dvec3){  0,   0, 255},	100				/*, 0.5*/}; //blue
-//	env->uni_arr[2] = (t_uni){SPHERE,	(t_dvec3){-2, 4, 4},	1.0,	(t_dvec3){0		},	(t_dvec3){  0, 255,   0},	10				/*, 0.9*/};
-//	env->uni_arr[3] = (t_uni){SPHERE,	(t_dvec3){1, -1, 4},	1.0,	(t_dvec3){0		},	(t_dvec3){255, 255,   0},	1000			/*, 0.1*/};
-//	env->uni_arr[4] = (t_uni){PLANE,	(t_dvec3){0,  5, 0},	0.0,	(t_dvec3){0,1,0 },	(t_dvec3){  0, 255,   0},	1000			/*, 0.1*/};
-//	env->uni_arr[5] = (t_uni){CYLINDER,	(t_dvec3){-5, 0, 0},	1.0,	(t_dvec3){1,1,10},	(t_dvec3){255,   0, 255},	1000			/*, 0.1*/};
-//	env->uni_arr[6] = (t_uni){CONE,		(t_dvec3){0, 0, -3},	15.0,	(t_dvec3){1,1,1 },	(t_dvec3){255,   0, 255},	1000			/*, 0.1*/};
-
-
-//	env->light_arr[0] = (t_lght){AMBIENT,		(t_dvec3){ 0, 0, 0 }, 0.10 };
-//	env->light_arr[1] = (t_lght){POINT,			(t_dvec3){ 0, 0,-10}, 0.6  };
-//	env->light_arr[2] = (t_lght){DIRECTIONAL,	(t_dvec3){ 1, 4, 4 }, 0.4  };
-
 	env->bg_color = (t_dvec3){255, 255, 255};
 	env->epsilon = 0.00001;
 	return (env);
 }
 
-t_env					*init_env(void)
+t_env				*init_env(void)
 {
-	int		cl_stat;
 	t_env	*env;
 
 	if (!(env = (t_env *)malloc(sizeof(t_env)))
@@ -87,14 +91,11 @@ t_env					*init_env(void)
 	|| !(env->screen = SDL_CreateTexture(env->renderer,
 		SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
 		WIN_WIDTH, WIN_HEIGHT))
-//	|| !(env->uni_arr = (t_uni *)malloc(sizeof(t_uni) * (UNI_OJB_CNT)))
-//	|| !(env->light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT))
 	|| (env->uni_arr = NULL)
 	|| (env->light_arr = NULL)
-//	|| !(env->light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT))
 	|| !(env_def_val(env)))
 	{
-//		quit_program(env);
+		quit_program(env);
 		return (NULL);
 	}
 	;

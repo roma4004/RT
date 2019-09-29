@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   float_with_vect3.c                                 :+:      :+:    :+:   */
+/*   double_with_vect3.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/13 13:39:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/24 10:05:50 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 11:43:00 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,22 @@
 t_dvec3				double_add_vec3(double first, t_dvec3 second)
 {
 	return ((t_dvec3){first + second.x,
-					  first + second.y,
-					  first + second.z});
+						first + second.y,
+						first + second.z});
 }
 
 t_dvec3				double_sub_vec3(double first, t_dvec3 second)
 {
 	return ((t_dvec3){first - second.x,
-					  first - second.y,
-					  first - second.z});
+						first - second.y,
+						first - second.z});
 }
 
 t_dvec3				double_mul_vec3(double first, t_dvec3 second)
 {
 	return ((t_dvec3){first * second.x,
-					  first * second.y,
-					  first * second.z});
+						first * second.y,
+						first * second.z});
 }
 
 t_dvec3				double_div_vec3(double first, t_dvec3 second)
@@ -40,6 +40,6 @@ t_dvec3				double_div_vec3(double first, t_dvec3 second)
 	|| second.z == 0.0)
 		return (second);
 	return ((t_dvec3){first / second.x,
-					  first / second.y,
-					  first / second.z});
+						first / second.y,
+						first / second.z});
 }
