@@ -6,13 +6,13 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 19:05:39 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 13:12:28 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static void		set_diffuse_reflection(t_lght_comp *light, t_dvec3 *normal)
+static void		set_diffuse_reflection(t_lght_comp *light, t_dvec3 *normal, double *defuse_val)
 {
 	const double	normal_length = vec3_length(*normal);
 	const double	light_dir_length = vec3_length(light->dir);
@@ -25,9 +25,9 @@ static void		set_diffuse_reflection(t_lght_comp *light, t_dvec3 *normal)
 		intensity = light_intensity * normal_dot_light_dir
 					/ (normal_length * light_dir_length);
 		if (intensity > 0.0f)
-			light->defuse_val += intensity;
-		if (light->defuse_val > 1.0f)
-			light->defuse_val = 1.0f;
+			*defuse_val += intensity;
+		if (*defuse_val > 1.0f)
+			*defuse_val = 1.0f;
 	}
 }
 
@@ -77,27 +77,32 @@ static double		get_specular_reflection(double light_intensity,
 t_dvec3			get_light(t_env *env, t_lght_comp *l, t_uni *obj)
 {
 	unsigned		i;
+	double			defuse_val;
+	double			specul_val;
+	const size_t	len = env->light_arr_len;
 
+	defuse_val = 0.0;
+	specul_val = 0.0;
 	i = -1;
-	while (++i < LIGHTS_CNT && (l->cur = &env->light_arr[i]))
+	while (++i < len && (l->cur = &env->light_arr[i]))
 	{
 		if (l->cur->type == AMBIENT)
-			l->defuse_val += l->cur->intensity;
+			defuse_val += l->cur->intensity;
 		else
 		{
 			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
-			if (is_shadow_ray(env->uni_arr, &l->touch_point, l->dir,
-								(t_dvec){env->epsilon, l->t_max}, obj))
+			if (is_shadow_ray(env, &l->touch_point, l->dir,
+								(t_dvec){env->epsilon, l->t_max}))
 				continue;
-			set_diffuse_reflection(l, &l->obj_normal);
+			set_diffuse_reflection(l, &l->obj_normal, &defuse_val);
 			if (obj->specular > 0.0
-			&& (l->specul_val = get_specular_reflection(l->cur->intensity,
+			&& (specul_val += get_specular_reflection(l->cur->intensity,
 					obj->specular, &l->obj_normal, l->view, &l->dir)))
-				if (l->defuse_val > 0.0
-				&& l->defuse_val + l->specul_val > 1.0)
-					l->defuse_val = 1.0 - l->specul_val;
+				if (defuse_val > 0.0
+				&& defuse_val + specul_val > 1.0)
+					defuse_val = 1.0 - specul_val;
 		}
 	}
-	return (vec3_add_vec3(double_mul_vec3(l->defuse_val, obj->diffuse_color),
-		double_mul_vec3(l->specul_val, (t_dvec3){255, 255, 255})));
+	return (vec3_add_vec3(double_mul_vec3(defuse_val, obj->diffuse_color),
+		double_mul_vec3(specul_val, (t_dvec3){255, 255, 255})));
 }

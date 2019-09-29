@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 10:40:27 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 14:04:43 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,9 +151,9 @@ typedef struct		s_light_calculating
 {
 	t_lght			*cur;
 	t_dvec3			dir;
-	double			defuse_val;
+//	double			defuse_val;
 	double			t_max;
-	double			specul_val;
+//	double			specul_val;
 
 	t_dvec3		touch_point;
 	t_dvec3		obj_normal;
@@ -241,16 +241,12 @@ typedef struct	s_environment
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;
 	SDL_Surface		*surface;
-
 	t_uni			*uni_arr;
 	size_t			uni_arr_len;
 	t_lght			*light_arr;
 	size_t			light_arr_len;
-
 	t_dvec3			bg_color;
 	double			epsilon;
-	t_list			*lst;
-	t_fgrs			*figures;
 }				t_env;
 //# define ERR_USAGE			0
 //# define ERR_MALLOC			1
@@ -305,10 +301,13 @@ enum			e_light_type
 	CAM = 7,
 };
 
-t_env					*parse_scene(t_env *env, char *file_name);
-void					validation_file(t_env *env, char *file_name);
-void					read_data(t_env *env);
-void					print_error(int error, unsigned row);
+bool				init_obj_arr(t_env *env, t_list *lst);
+void				cnt_obj_type(t_env *env, t_list *lst);
+int					count_number(t_env *env, char *str, size_t len);
+size_t				get_type(const char *str);
+bool				is_valid_line(t_env *env, char *line, int len);
+void				set_value(t_env *env, const double *v, int type);
+t_env				*parse_scene(t_env *env, char *file_name);
 
 
 t_env				*init_env(void);
@@ -317,27 +316,25 @@ bool				event_handler(t_cam *cam, t_flags *flags);
 //void				quit_program(t_env *env);
 t_uni				*intersect_obj(t_env *env, t_cam *cam, double *dist);
 t_dvec3				get_light(t_env *env, t_lght_comp *l, t_uni *obj);
-t_dvec3				discriminant_comput(t_dvec3 *tmp);
+const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
+									t_dvec3 direction, t_dvec limits);
+void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *plane_toch);
 double				vec3_length(t_dvec3 vec);
 void				rerender_scene(t_env *env);
 
 void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color);
 
 
-void				intersect_sphere(t_dvec3 *ray_pos, t_uni *obj,
+void				intersect_sphere(t_dvec3 *ray_pos, const t_uni *obj,
 									t_dvec3 ray_dir, t_dvec3 *plane_toch);
-void				intersect_plane(t_dvec3 *ray_pos, t_uni *obj,
+void				intersect_plane(t_dvec3 *ray_pos, const t_uni *obj,
 									t_dvec3 ray_dir, t_dvec3 *plane_toch);
-void				intersect_cylinder(t_dvec3 *ray_pos, t_uni *obj,
+void				intersect_cylinder(t_dvec3 *ray_pos, const t_uni *obj,
 									t_dvec3 ray_dir, t_dvec3 *plane_toch);
-void				intersect_cone(t_dvec3 *ray_pos, t_uni *obj,
+void				intersect_cone(t_dvec3 *ray_pos, const t_uni *obj,
 									t_dvec3 ray_dir, t_dvec3 *plane_toch);
 
-t_uni				*intersect_obj(t_env *env, t_cam *cam, double *dist);
-t_uni				*is_shadow_ray(t_uni *uni_arr, t_dvec3 *ray_pos,
-									t_dvec3 direction, t_dvec limits, t_uni *obj);
 
-//t_dvec3				convert_to_viewport(double x, double y);
 
 void rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle);
 

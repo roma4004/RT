@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 09:58:44 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 15:29:51 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,47 +33,19 @@ void			quit_program(t_env *env)
 	SDL_Quit();
 }
 
-//recurcive or iterated spawn of reflected and refracted rays
-//
-// list->list of rays which saves spot, when ray spawn new two rays reflect
-// and refract
-
-//ray_max_bounced
-
-//list-
-
-//list->root_pos
-//list->root_dir
-//list->reflect_pos
-//list->reflect_dir
-//list->refracted_pos
-//list->refracted_dir
-
-
-//cur->pos
-//cur->rotate_state{x,y,z}
-//cur->color
-//cur->is_reflected
-//cur->is_refracted
-//cur->is_light_source
-//cur->name;
-//cur->type;
-//cur->opacity;
-
 int				main(int argc, char **argv)
 {
 	t_env *env;
-
+	//todo: err hangling
 	env = init_env();
-	if (argc != 1)
+	if (argc != 1 && parse_scene(env, argv[1]))
 	{
-		parse_scene(env, argv[1]);
 		rerender_scene(env);
 		while (!env->flags.is_rtv1_over)
 			if (event_handler(&env->cam, &env->flags))
 				rerender_scene(env);
 	}
 	else
-		ft_putendl("Usage : ./RTv1 <the scenne>");
+		ft_putendl("Usage : ./RTv1 scenne_file");
 	return (0);
 }

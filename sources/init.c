@@ -6,20 +6,37 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 11:22:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 13:17:08 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+bool		init_obj_arr(t_env *env, t_list *lst)
+{
+	cnt_obj_type(env, lst);
+	if ((env->uni_arr = (t_uni *)malloc(sizeof(t_uni) * env->uni_arr_len))
+		&& (env->light_arr = (t_lght *)malloc(sizeof(t_lght) * env->light_arr_len))
+		)
+		return (true);
+	else
+	{
+		if (env->uni_arr)
+			ft_memdel((void **)&env->uni_arr);
+		if (env->light_arr)
+			ft_memdel((void **)&env->light_arr);
+	}
+	return (false);
+}
 
 static void			init_cam(t_cam *cam)
 {
 	ft_bzero(cam, sizeof(t_cam));
 	cam->canvas.half = (t_dvec){ WIN_WIDTH / 2., WIN_HEIGHT / 2.};
 	cam->canvas.rate = (double)WIN_WIDTH / WIN_HEIGHT;
-	cam->move_speed = 1.2 ;
+	cam->move_speed = 1.2;
 	cam->rotate_speed = 2.9;
-	cam->t_min = 1; //ray not cam
+	cam->t_min = 0; //ray not cam
 	cam->t_max = MAXFLOAT;//ray not cam
 	cam->pos = (t_dvec3){ 0, 0, -10 }; //ray not cam, ray start position
 	cam->rotate_angle = (t_dvec3){ 0, 0, -10 };
@@ -47,18 +64,18 @@ static t_env			*env_def_val(t_env *env)
 //	env->uni_arr[6] = (t_uni){CONE,		(t_dvec3){0, 0, -3},	15.0,	(t_dvec3){1,1,1 },	(t_dvec3){255,   0, 255},	1000			/*, 0.1*/};
 
 
-	env->light_arr[0] = (t_lght){AMBIENT,		(t_dvec3){ 0, 0, 0 }, 0.10 };
-	env->light_arr[1] = (t_lght){POINT,			(t_dvec3){ 0, 0,-10}, 0.6  };
-	env->light_arr[2] = (t_lght){DIRECTIONAL,	(t_dvec3){ 1, 4, 4 }, 0.4  };
+//	env->light_arr[0] = (t_lght){AMBIENT,		(t_dvec3){ 0, 0, 0 }, 0.10 };
+//	env->light_arr[1] = (t_lght){POINT,			(t_dvec3){ 0, 0,-10}, 0.6  };
+//	env->light_arr[2] = (t_lght){DIRECTIONAL,	(t_dvec3){ 1, 4, 4 }, 0.4  };
 
 	env->bg_color = (t_dvec3){255, 255, 255};
-	env->epsilon = 0.000001;
+	env->epsilon = 0.00001;
 	return (env);
 }
 
 t_env					*init_env(void)
 {
-	int cl_stat;
+	int		cl_stat;
 	t_env	*env;
 
 	if (!(env = (t_env *)malloc(sizeof(t_env)))
@@ -73,8 +90,8 @@ t_env					*init_env(void)
 //	|| !(env->uni_arr = (t_uni *)malloc(sizeof(t_uni) * (UNI_OJB_CNT)))
 //	|| !(env->light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT))
 	|| (env->uni_arr = NULL)
-//	|| (env->light_arr = NULL)
-	|| !(env->light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT))
+	|| (env->light_arr = NULL)
+//	|| !(env->light_arr = (t_lght *)malloc(sizeof(t_lght) * LIGHTS_CNT))
 	|| !(env_def_val(env)))
 	{
 //		quit_program(env);
