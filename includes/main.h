@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 19:50:19 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 10:40:27 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 //tmp defines
 
 #define PARSE_PARAM_CNT 6
+#define OBJ_TYPE_MAX 7
 
 #define SPHERE_CNT 4
 #define LIGHTS_CNT 3
@@ -144,20 +145,7 @@ typedef struct	light {
 	unsigned	type;
 	t_dvec3		pos;
 	double		intensity;
-	t_dvec3		color;
 }				t_lght;
-
-
-typedef struct			s_lght
-{
-
-	int					type;
-	double				intensity;
-	t_dvec3				dir;
-
-
-	struct s_lght		*next;
-}						t_llght;
 
 typedef struct		s_light_calculating
 {
@@ -254,20 +242,37 @@ typedef struct	s_environment
 	SDL_Texture		*screen;
 	SDL_Surface		*surface;
 
-	t_uni			*uni_lst;
-	size_t			*uni_arr_len;
+	t_uni			*uni_arr;
+	size_t			uni_arr_len;
 	t_lght			*light_arr;
-	size_t			*light_arr_len;
+	size_t			light_arr_len;
 
 	t_dvec3			bg_color;
 	double			epsilon;
 	t_list			*lst;
 	t_fgrs			*figures;
 }				t_env;
+//# define ERR_USAGE			0
+//# define ERR_MALLOC			1
+//# define ERR_SDL			2
+//# define ERR_ARGV			3
+//# define ERR_LEN			4
+//# define ERR_ROWS			5
+//
+//# define ERR_WRONG_SYMBOL	9
+//# define ERR_PIPE			10
+//# define ERR_DOT			12
+//# define ERR_NBR			13
+//# define ERR_MINUS			14
+//
+//# define ERR_LINE			15
 
+# define MAX_LEN		200
+# define MAX_ROWS		400
+#define VALUES_PER_OBJ 11
 enum			e_errors
 {
-	MAP_ERR = 404,
+	SCENE_ERR = 404,
 	READ_ERR = 405,
 	MAP_SIZE_ERR = 406,
 	INVALID_RESOURCE = 407,
@@ -297,11 +302,13 @@ enum			e_light_type
 	PLANE = 4,
 	CYLINDER = 5,
 	CONE = 6,
+	CAM = 7,
 };
 
-void					validation_file(t_env *env, int fd);
+t_env					*parse_scene(t_env *env, char *file_name);
+void					validation_file(t_env *env, char *file_name);
 void					read_data(t_env *env);
-void					print_error(int error, int row);
+void					print_error(int error, unsigned row);
 
 
 t_env				*init_env(void);

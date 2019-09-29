@@ -86,7 +86,7 @@ t_dvec3			get_light(t_env *env, t_lght_comp *l, t_uni *obj)
 		else
 		{
 			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
-			if (is_shadow_ray(env->uni_lst, &l->touch_point, l->dir,
+			if (is_shadow_ray(env->uni_arr, &l->touch_point, l->dir,
 								(t_dvec){env->epsilon, l->t_max}, obj))
 				continue;
 			set_diffuse_reflection(l, &l->obj_normal);

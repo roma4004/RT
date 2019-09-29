@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 18:16:54 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/28 12:02:26 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,43 +41,19 @@ t_dvec3			discriminant_comput(t_dvec3 *tmp)
 
 
 
-void print_error(int err_nb, int row)
+void print_error(int err_nb, unsigned row)
 {
 	system("leaks -q RTv1");
 	printf("\n");
-
-	if(row >= 0)
+	if(row)
 	{
-		ft_putstr("Line ");
+		ft_putstr("Error in line ");
 		ft_putnbr(row + 1);
-		ft_putstr(": ");
 	}
-	if (err_nb == ERR_MALLOC)
-		ft_putendl("Malloc failed");
-	else if (err_nb == ERR_SDL)
-	{
-		ft_putendl("SDL failed:");
-		ft_putendl(SDL_GetError());
-	}
-	else if (err_nb == ERR_USAGE)
-		ft_putendl("Usage : ./RTv1 <the scenne>");
-	else if (err_nb == ERR_WRONG_SYMBOL)
-		ft_putendl("Detected invalid symbol");
-	else if (err_nb == ERR_LINE)
-		ft_putendl("Missed some parameters");
-	else if (err_nb == ERR_ARGV)
-		ft_putendl("Invalid argument or empty scenne");
-	else if (err_nb == ERR_PIPE)
-		ft_putendl("Too many '|' in line");
-	else if (err_nb == ERR_DOT)
-		ft_putendl("No number around '.' or too many '.' in the number");
-	else if (err_nb == ERR_NBR)
-		ft_putendl("Wrong number of numbers");
-	else if (err_nb == ERR_MINUS)
-		ft_putendl("Wrong  symbol's '-' position");
-	else if (err_nb == ERR_LEN)
-		ft_putendl("String contains more than 200 characters");
-	else if (err_nb == ERR_ROWS)
-		ft_putendl("Too many rows in the file");
+//	if (err_nb == ERR_SDL)
+//	{
+//		ft_putendl("SDL failed:");
+//		ft_putendl(SDL_GetError());
+//	}
 	exit(err_nb);
 }

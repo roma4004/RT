@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 18:16:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 09:58:44 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,17 +65,15 @@ int				main(int argc, char **argv)
 	t_env *env;
 
 	env = init_env();
-
-
-//	int fd = open(argv[1], O_RDONLY);
-//	validation_file(env, fd);
-//	close(fd);
-//	read_data(env);
-
-
-	rerender_scene(env);
-	while (!env->flags.is_rtv1_over)
-		if (event_handler(&env->cam, &env->flags))
-			rerender_scene(env);
+	if (argc != 1)
+	{
+		parse_scene(env, argv[1]);
+		rerender_scene(env);
+		while (!env->flags.is_rtv1_over)
+			if (event_handler(&env->cam, &env->flags))
+				rerender_scene(env);
+	}
+	else
+		ft_putendl("Usage : ./RTv1 <the scenne>");
 	return (0);
 }

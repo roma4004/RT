@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 19:05:39 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 11:21:25 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,23 @@ t_uni			*intersect_obj(t_env *env, t_cam *cam, double *dist)//dist need move to 
 	i = -1;
 	while (++i < UNI_OJB_CNT)
 	{
-		if (env->uni_lst[i].type == SPHERE)
-			intersect_sphere(&cam->pos, &env->uni_lst[i], cam->dir, &touch);
-		else if (env->uni_lst[i].type == PLANE)
-			intersect_plane(&cam->pos, &env->uni_lst[i], cam->dir, &touch);
-		else if (env->uni_lst[i].type == CYLINDER)
-			intersect_cylinder(&cam->pos, &env->uni_lst[i], cam->dir, &touch);
-		else if (env->uni_lst[i].type == CONE)
-			intersect_cone(&cam->pos, &env->uni_lst[i], cam->dir, &touch);
+		if (env->uni_arr[i].type == SPHERE)
+			intersect_sphere(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
+		else if (env->uni_arr[i].type == PLANE)
+			intersect_plane(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
+		else if (env->uni_arr[i].type == CYLINDER)
+			intersect_cylinder(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
+		else if (env->uni_arr[i].type == CONE)
+			intersect_cone(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
 		if (touch.x < *dist //compute nearly obj
 			&& cam->t_min < touch.x
 			&& touch.x < cam->t_max
-			&& (cur_obj = &env->uni_lst[i]))
+			&& (cur_obj = &env->uni_arr[i]))
 			*dist = touch.x;
 		if (touch.y < *dist
 			&& cam->t_min < touch.y
 			&& touch.y < cam->t_max
-			&& (cur_obj = &env->uni_lst[i]))
+			&& (cur_obj = &env->uni_arr[i]))
 			*dist = touch.y;
 	}
 	return (cur_obj);
@@ -61,7 +61,7 @@ t_uni		*is_shadow_ray(t_uni *uni_arr, t_dvec3 *ray_pos,
 //			if (touch.x < MAXFLOAT
 //				&& limits.x < touch.x
 //				&& touch.x < limits.y)
-//			return (&uni_lst[i]);
+//			return (&uni_arr[i]);
 //		}
 		else if (uni_arr[i].type == CYLINDER)
 			intersect_cylinder(ray_pos, &uni_arr[i], direction,  &touch);
