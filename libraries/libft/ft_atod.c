@@ -20,8 +20,7 @@ static double	after_dot(const char *str, int i)
 	while (str[i] != '\0')
 		i++;
 	i--;
-	while (str[i] >= '0'
-	&& str[i] <= '9')
+	while (ft_isdigit(str[i]))
 	{
 		result = result * 0.1 + (str[i] - '0');
 		i--;
