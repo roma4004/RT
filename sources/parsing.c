@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 19:51:52 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/09/29 21:18:04 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static double		after_dot(const char *str, double nbr)
 	return (res * sign);
 }
 
-static void			get_value_from_line(t_env *env, t_list *lst, int type)
+static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
 {
 	const size_t	len = lst->content_size;
 	const char		*str = lst->content;
@@ -41,6 +41,8 @@ static void			get_value_from_line(t_env *env, t_list *lst, int type)
 	size_t			j;
 	double			arr[VALUES_PER_OBJ];
 
+	if (type == UINT64_MAX)
+		return ;
 	i = UINT64_MAX;
 	j = 0;
 	while (++i < len && str[i] != '#')
