@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 15:26:35 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 15:34:56 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,9 @@ static bool		keyboard_evens(Uint32 event_type, SDL_Keycode k,
 
 _Bool			event_handler(t_cam *cam, t_flags *flags)
 {
-	SDL_Event		event;
-	SDL_Keycode		key_code;
-	unsigned char	result;
+	SDL_Event			event;
+	SDL_Keycode			key_code;
+	unsigned char		result;
 
 	result = 0;
 	ft_bzero(flags, sizeof(t_flags));
@@ -61,6 +61,7 @@ _Bool			event_handler(t_cam *cam, t_flags *flags)
 			flags->is_rtv1_over = true;
 		result += keyboard_evens(event.type, key_code, flags);
 	}
-	keyboard_handle(cam, &cam->speed, flags);
+	if (result)
+		keyboard_handle(cam, &cam->speed, flags);
 	return (result);
 }

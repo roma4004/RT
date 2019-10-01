@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 15:29:40 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 20:12:50 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void			cnt_obj_type(t_env *env, t_list *lst)
 	{
 		if ((type = get_type(cur->content)) != UINT64_MAX)
 		{
-			if (type < 3)
+			if (type < 3u)
 				(*lights)++;
 			else if (type < OBJ_TYPE_MAX)
 				(*other)++;
@@ -54,13 +54,13 @@ _Bool				init_obj_arr(t_env *env, t_list *lst)
 static void			init_cam(t_cam *cam)
 {
 	ft_bzero(cam, sizeof(t_cam));
-	cam->canvas.half = (t_dvec){ WIN_WIDTH / 2., WIN_HEIGHT / 2.};
+	cam->canvas.half = (t_dvec){ WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0};
 	cam->canvas.rate = (double)WIN_WIDTH / WIN_HEIGHT;
 	cam->speed = (t_speed){.move = 1.2, .rotate = 2.9};
 	cam->t_min = 0;
 	cam->t_max = (double)MAXFLOAT;
-	cam->pos = (t_dvec3){ 0, 0, -42, 0};
-	cam->rotate_angle = (t_dvec3){ 0, 0, 0, 0};
+	cam->pos = (t_dvec3){0.0, 0.0, -42.0, 0.0};
+	cam->rotate_angle = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 }
 
 static t_env		*env_def_val(t_env *env)
@@ -72,8 +72,9 @@ static t_env		*env_def_val(t_env *env)
 	init_cam(&env->cam);
 	if (env->err_id)
 		return (NULL);
-	env->bg_color = (t_dvec3){255, 255, 255, 0};
+	env->bg_color = (t_dvec3){255.0, 255.0, 255.0, 0.0};
 	env->epsilon = 0.00001;
+	env->threads = 4;
 	return (env);
 }
 

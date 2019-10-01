@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 19:35:12 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 15:55:41 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,10 @@ int				main(int argc, char **argv)
 		if (parse_scene(env, argv[1]))
 		{
 			is_over = &env->flags.is_rtv1_over;
-			rerender_scene(env);
+			draw_scene(env, env->threads);
 			while (!(*is_over))
 				if (event_handler(&env->cam, &env->flags))
-					rerender_scene(env);
+					draw_scene(env, env->threads);
 		}
 		else
 			quit_program(env);

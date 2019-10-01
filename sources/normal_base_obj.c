@@ -6,46 +6,46 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 13:22:37 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 20:43:13 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static void		get_normal_sphere(t_cam *cam, const t_uni *obj,
+static void		get_normal_sphere(t_ray *ray, const t_uni *obj,
 								double dist, t_dvec3 *normal)
 {
-	(void)cam;
+	(void)ray;
 	(void)dist;
-	*normal = vec3_normalize(vec3_sub_vec3(obj->touch_point, obj->pos));
+	*normal = vec3_normalize(vec3_sub_vec3(ray->touch_point, obj->pos));
 }
 
-static void		get_normal_plane(t_cam *cam, const t_uni *obj,
+static void		get_normal_plane(t_ray *ray, const t_uni *obj,
 								double dist, t_dvec3 *normal)
 {
-	(void)cam;
+	(void)ray;
 	(void)dist;
 	*normal = vec3_normalize(obj->dir);
 }
 
-static void		get_normal_cylinder(t_cam *cam, const t_uni *obj,
+static void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
 								double dist, t_dvec3 *normal)
 {
-	(void)cam;
+	(void)ray;
 	*normal = vec3_normalize(
 				vec3_sub_vec3(
-					vec3_sub_vec3(obj->touch_point, obj->pos),
+					vec3_sub_vec3(ray->touch_point, obj->pos),
 					vec3_mul_double(obj->dir,
-						vec3_dot_vec3(cam->dir, obj->dir)
+						vec3_dot_vec3(ray->dir, obj->dir)
 						* dist
-						+ vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos),
+						+ vec3_dot_vec3(vec3_sub_vec3(ray->pos, obj->pos),
 							obj->dir)
 					)
 				)
 			);
 }
 
-static void		get_normal_cone(t_cam *cam, const t_uni *obj,
+static void		get_normal_cone(t_ray *ray, const t_uni *obj,
 								double dist, t_dvec3 *normal)
 {
 	const t_cone	*cone = (const t_cone *)obj;
@@ -53,11 +53,11 @@ static void		get_normal_cone(t_cam *cam, const t_uni *obj,
 
 	k = cone->angle * M_PI / 360.0;
 	*normal = vec3_normalize(
-				vec3_sub_vec3(vec3_sub_vec3(obj->touch_point, obj->pos),
+				vec3_sub_vec3(vec3_sub_vec3(ray->touch_point, obj->pos),
 					vec3_mul_double(double_mul_vec3((1 + k * k), obj->dir),
-						vec3_dot_vec3(cam->dir, obj->dir)
+						vec3_dot_vec3(ray->dir, obj->dir)
 						* dist
-						+ vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos),
+						+ vec3_dot_vec3(vec3_sub_vec3(ray->pos, obj->pos),
 										obj->dir)
 					)
 				)
@@ -65,7 +65,7 @@ static void		get_normal_cone(t_cam *cam, const t_uni *obj,
 }
 
 void				(*normal_catalog(size_t type))
-						(t_cam *, const t_uni *, double, t_dvec3 *)
+						(t_ray *, const t_uni *, double, t_dvec3 *)
 {
 	if (type == SPHERE)
 		return (get_normal_sphere);

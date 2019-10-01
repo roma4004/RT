@@ -6,15 +6,15 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 15:28:36 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 21:04:30 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
 # define WIN_NAME "RTv1 by dromanic (@Dentair)"
-# define WIN_WIDTH 800u
-# define WIN_HEIGHT 600u
+# define WIN_WIDTH 1000u
+# define WIN_HEIGHT 1000u
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 11
@@ -82,15 +82,25 @@ typedef struct		s_canvas_parameter
 	double			rate;
 }					t_canvas_par;
 
-typedef struct		s_camera
+typedef struct		s_ray
 {
-	t_speed			speed;
 	double			t_min;
 	double			t_max;
 	t_dvec3			dir;
 	t_dvec3			pos;
+	t_dvec3			touch_point;
+}					t_ray;
+
+typedef struct		s_camera
+{
+
+	double			t_min;
+	double			t_max;
+	t_dvec3			pos;
+	t_speed			speed;
 	t_dvec3			rotate_angle;
 	t_canvas_par	canvas;
+//	t_ray			ray;
 }					t_cam;
 
 typedef struct		s_universal_object
@@ -102,11 +112,8 @@ typedef struct		s_universal_object
 	double			specular;
 	void 			(*get_intersect)(const struct s_universal_object *,
 										t_dvec3 *, t_dvec3 *, t_dvec3 *);
-	void			(*get_normal)(t_cam *, const struct s_universal_object *,
+	void			(*get_normal)(t_ray *, const struct s_universal_object *,
 									double, t_dvec3 *normal);
-	size_t			type;
-
-	t_dvec3			touch_point;
 }					t_uni;
 
 typedef struct		s_cone
@@ -135,6 +142,9 @@ typedef struct		s_light_calculating
 //	t_dvec3			touch_point;
 	t_dvec3			obj_normal;
 	t_dvec3			view;
+//	t_ray			ray;
+
+	t_dvec3			touch_point;
 }					t_lght_comp;
 
 typedef struct		s_flags
@@ -162,7 +172,15 @@ typedef struct		s_environment
 	t_dvec3			bg_color;
 	double			epsilon;
 	t_list			*lst;
+
+	size_t			threads;
 }					t_env;
+
+typedef struct		s_pthread_data
+{
+	t_env			*env;
+	size_t			id;
+}					t_pth_dt;
 
 enum				e_errors
 {
@@ -203,15 +221,15 @@ t_env				*parse_scene(t_env *env, char *file_name);
 void				(*intersect_catalog(size_t type))
 						(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *);
 void				(*normal_catalog(size_t type))
-						(t_cam *, const t_uni *, double, t_dvec3 *);
+						(t_ray *, const t_uni *, double, t_dvec3 *);
 
 _Bool				event_handler(t_cam *cam, t_flags *flags);
-void				rerender_scene(t_env *env);
+void				draw_scene(t_env *env, size_t threads);
 
 void				get_light(t_env *env, t_lght_comp *l,
 								t_uni *obj, t_dvec3 *col);
 
-void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color);
+void				send_ray(t_env *env, t_ray *ray, t_dvec3 *color);
 const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 									t_dvec3 *direction, t_dvec limits);
 

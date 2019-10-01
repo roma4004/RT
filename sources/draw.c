@@ -6,51 +6,82 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 15:26:35 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 20:50:11 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static t_dvec3		convert_to_viewport(t_dvec pt, double rate)
+static t_dvec3		convert_to_viewport(double x, double y, double rate)
 {
-	return ((t_dvec3){pt.x * (VIEWPORT_SIZE * rate) / WIN_WIDTH,
-						pt.y * VIEWPORT_SIZE / WIN_HEIGHT,
+	return ((t_dvec3){x * (VIEWPORT_SIZE * rate) / WIN_WIDTH,
+						y * VIEWPORT_SIZE / WIN_HEIGHT,
 						DISTANCE_TO_PLANE, 0.0});
 }
 
 static void			put_px(t_env *env, const t_dvec *canvas_half,
-							t_dvec pt, t_dvec3 *color)
+							double x, double y, t_dvec3 *color)
 {
-	pt.x += canvas_half->x;
-	pt.y = canvas_half->y - pt.y - 1.0;
-	if (pt.x < 0.0 || pt.x >= WIN_WIDTH
-	|| pt.y < 0.0 || pt.y >= WIN_HEIGHT)
+	x = canvas_half->x + x;
+	y = canvas_half->y - y - 1.0;
+	if (x < 0.0 || x >= WIN_WIDTH
+	|| y < 0.0 || y >= WIN_HEIGHT)
 		return ;
-	env->buff[(int)pt.y][(int)pt.x] = (((uint32_t)color->x) << 16u)
+	env->buff[(int)y][(int)(x)] = (((uint32_t)color->x) << 16u)
 									| (((uint32_t)color->y) << 8u)
 									| (((uint32_t)color->z));
 }
 
-void				rerender_scene(t_env *env)
+static void			*render_frame(void *thread_data)
 {
-	const t_dvec	half = env->cam.canvas.half;
-	const double	rate = env->cam.canvas.rate;
-	t_dvec			pt;
-	t_dvec3			color;
+	t_env						*env = ((t_pth_dt *)thread_data)->env;
+	register const size_t		thread_id = ((t_pth_dt *)thread_data)->id;
+	const double				rate = env->cam.canvas.rate;
+	const t_dvec				half = env->cam.canvas.half;
+	t_ray						ray;
+	t_dvec						pt;
+	t_dvec3						color;
 
+	ray = (t_ray){env->cam.t_min, env->cam.t_max,
+				(t_dvec3){0, 0, 0, 0}, env->cam.pos, (t_dvec3){0, 0, 0, 0}};
 	pt.y = -half.y - 1.0;
 	while (++pt.y < half.y)
 	{
-		pt.x = -half.x - 1.0;
-		while (++pt.x < half.x)
+		pt.x = -half.x - env->threads;
+		while ((pt.x += env->threads) < half.x)
 		{
-			env->cam.dir = convert_to_viewport(pt, rate);
-			rotate_cam(&env->cam.dir, &env->cam.rotate_angle);
-			send_ray(env, &env->cam, &color);
-			put_px(env, &half, pt, &color);
+			ray.dir = convert_to_viewport(pt.x + thread_id, pt.y, rate);
+			rotate_cam(&ray.dir, &env->cam.rotate_angle);
+			send_ray(env, &ray, &color);
+			put_px(env, &half, pt.x + thread_id, pt.y, &color);
 		}
 	}
+	return (NULL);
+}
+
+void				draw_scene(t_env *env, size_t threads)
+{
+	size_t		id;
+	t_pth_dt	*data;
+	pthread_t	*threads_arr;
+
+	if (!env || !(data = (t_pth_dt *)malloc(threads * sizeof(t_pth_dt))))
+		return ;
+	if (!(threads_arr = (pthread_t *)malloc(threads * sizeof(pthread_t))))
+	{
+		free(data);
+		return ;
+	}
+	id = UINT64_MAX;
+	while (++id < threads)
+	{
+		data[id].env = env;
+		data[id].id = id;
+		pthread_create(&threads_arr[id], NULL, render_frame, &data[id]);
+	}
+	id = UINT64_MAX;
+	while (++id < threads)
+		pthread_join(threads_arr[id], NULL);
 	SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2u);
 	SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
 	SDL_RenderPresent(env->renderer);
