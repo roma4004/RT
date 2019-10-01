@@ -6,11 +6,11 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 20:01:54 by dromanic          #+#    #+#             */
-/*   Updated: 2018/11/03 14:33:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 14:29:50 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "libft.h"
 
 size_t	ft_num_width(long long int num)
 {

@@ -6,13 +6,13 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:31:32 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 19:51:19 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 11:48:00 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static int		is_dot_in_double(char *str, int i)
+static int		is_dot_in_double(char *str, size_t i)
 {
 	if (str
 	&& i != 0
@@ -22,13 +22,13 @@ static int		is_dot_in_double(char *str, int i)
 	return (0);
 }
 
-bool			is_valid_line(t_env *env, char *line, int len)
+_Bool			is_valid_line(t_env *env, char *line, size_t len)
 {
-	int		i;
+	size_t		i;
 
 	if (!line)
 		return (false);
-	i = -1;
+	i = UINT64_MAX;
 	while (++i < len && line[i] != '#')
 	{
 		if (!((line[i] == '+' && ft_isdigit(line[i + 1]))
@@ -85,11 +85,11 @@ size_t			get_type(const char *str)
 	return (type);
 }
 
-int				count_number(t_env *env, char *str, size_t len)
+size_t			count_number(t_env *env, char *str, size_t len)
 {
 	size_t		i;
-	int			digits;
-	int			dots;
+	size_t		digits;
+	size_t		dots;
 
 	i = UINT64_MAX;
 	digits = 0;

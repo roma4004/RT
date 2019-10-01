@@ -12,8 +12,8 @@
 
 #include "libft.h"
 
-int		ft_switch(bool *bits)
+int		ft_switch(_Bool *bits)
 {
-	*bits = (*bits) ? false : true;
+	*bits = (*bits) ? 0 : 1;
 	return (1);
 }

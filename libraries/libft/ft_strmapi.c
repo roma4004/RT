@@ -11,18 +11,17 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <stdlib.h>
 
 char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	size_t	i;
-	char	*alloc;
+	char			*alloc;
+	unsigned int	i;
 
 	if (!s || !f)
 		return (NULL);
 	if ((alloc = ft_strnew(ft_strlen(s))))
 	{
-		i = -1;
+		i = ~0u;
 		while (s[++i])
 			alloc[i] = f(i, s[i]);
 	}

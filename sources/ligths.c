@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 20:04:29 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 12:55:58 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void			set_diffuse_reflection(t_lght_comp *light, t_dvec3 *normal,
 	}
 }
 
-void				point_or_directional(t_lght *light, t_dvec3 *light_vector,
+static void			point_or_directional(t_lght *light, t_dvec3 *light_vector,
 											double *t_max, t_dvec3 *point)
 {
 	if (light->type == POINT)
@@ -41,7 +41,7 @@ void				point_or_directional(t_lght *light, t_dvec3 *light_vector,
 	else
 	{
 		*light_vector = light->pos;
-		*t_max = MAXFLOAT;
+		*t_max = (double)MAXFLOAT;
 	}
 }
 
@@ -57,11 +57,11 @@ static double		get_specular_reflection(t_lght_comp *l, double specular)
 		light_dot_normal = vec3_dot_vec3(l->obj_normal, l->dir);
 		vec_reflect =
 			vec3_sub_vec3(
-				double_mul_vec3(2.0f * light_dot_normal, l->obj_normal),
+				double_mul_vec3(2.0 * light_dot_normal, l->obj_normal),
 					l->dir);
 		if ((reflect_dot_view = vec3_dot_vec3(vec_reflect, l->view)) > 0.0)
 		{
-			intensity_spec = l->cur->intensity * powf(reflect_dot_view
+			intensity_spec = l->cur->intensity * pow(reflect_dot_view
 				/ (vec3_length(vec_reflect) * vec3_length(l->view)), specular);
 			if (intensity_spec > 1.0)
 				intensity_spec = 1.0;
@@ -74,18 +74,18 @@ static double		get_specular_reflection(t_lght_comp *l, double specular)
 void				get_light(t_env *env, t_lght_comp *l,
 								t_uni *obj, t_dvec3 *col)
 {
-	unsigned		i;
+	size_t			i;
 	const size_t	len = env->light_arr_len;
 
-	i = -1;
+	i = UINT64_MAX;
 	while (++i < len && (l->cur = &env->light_arr[i]))
 	{
 		if (l->cur->type == AMBIENT)
 			l->defuse_val += l->cur->intensity;
 		else
 		{
-			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
-			if (is_shadow_ray(env, &l->touch_point, l->dir,
+			point_or_directional(l->cur, &l->dir, &l->t_max, &obj->touch_point);
+			if (is_shadow_ray(env, &obj->touch_point, &l->dir,
 								(t_dvec){env->epsilon, l->t_max}))
 				continue;
 			set_diffuse_reflection(l, &l->obj_normal, &l->defuse_val);
@@ -95,5 +95,5 @@ void				get_light(t_env *env, t_lght_comp *l,
 	}
 	*col = (vec3_add_vec3_col(
 		double_mul_vec3_col(l->defuse_val, obj->diffuse_color),
-			double_mul_vec3_col(l->specul_val, (t_dvec3){255, 255, 255})));
+			double_mul_vec3_col(l->specul_val, (t_dvec3){255, 255, 255, 0})));
 }

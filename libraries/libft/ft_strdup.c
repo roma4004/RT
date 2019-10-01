@@ -22,7 +22,7 @@ char	*ft_strdup(const char *s1)
 	len = ft_strlen(s1);
 	if (!(new_str = ft_strnew(len)))
 		return (NULL);
-	i = -1;
+	i = ~0u;
 	while (++i < len)
 		new_str[i] = s1[i];
 	return (new_str);

@@ -14,8 +14,8 @@
 
 long long	ft_i_atoi(const char *str, size_t *i, size_t max_i)
 {
-	int					sign;
-	unsigned long long	result;
+	int			sign;
+	long long	result;
 
 	sign = 1;
 	result = 0;

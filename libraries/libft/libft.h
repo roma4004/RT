@@ -6,14 +6,13 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 20:14:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/01/01 18:08:42 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 14:36:51 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef LIBFT_H
 # define LIBFT_H
 # include <string.h>
-# include <stdbool.h>
 
 typedef struct	s_list
 {
@@ -110,15 +109,15 @@ void			ft_skip_white_spases(const char *str, size_t *i);
 int				ft_destroy_lst(t_list *lst);
 char			*ft_lltoa(long long n);
 long long		ft_i_atoi(const char *str, size_t *i, size_t max_i);
-long long		ft_atol_base(const char *str, int base);
-double			ft_pow(double num, int exp);
+long long		ft_atol_base(const char *str, size_t base);
+double			ft_pow(double num, unsigned exp);
 size_t			ft_digits_len(const char *s);
 size_t			ft_word_len(const char *str, char c);
 size_t			ft_num_width(long long int num);
 size_t			ft_count_words(const char *str, size_t max_i, char separator);
 int				ft_get_processors_num(void);
 void			ft_free_arr(char **arr);
-int				ft_switch(bool *bits);
+int				ft_switch(_Bool *bits);
 float			ft_q_rsqrt(float number);
 double			ft_atod(const char *str);
 

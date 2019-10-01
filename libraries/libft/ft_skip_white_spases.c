@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <string.h>
+#include "libft.h"
 
 void	ft_skip_white_spases(const char *str, size_t *i)
 {

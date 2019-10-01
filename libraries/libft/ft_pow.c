@@ -10,16 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-double	ft_pow(double num, int exp)
+#include "libft.h"
+
+double	ft_pow(double num, unsigned exp)
 {
 	double	result;
 
 	result = 1.0;
 	while (exp)
 	{
-		if (exp & 1)
+		if (exp & 1u)
 			result *= num;
-		exp >>= 1;
+		exp >>= 1u;
 		num *= num;
 	}
 	return (result);

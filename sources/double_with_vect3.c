@@ -16,21 +16,24 @@ t_dvec3				double_add_vec3(double first, t_dvec3 second)
 {
 	return ((t_dvec3){first + second.x,
 						first + second.y,
-						first + second.z});
+						first + second.z,
+						0.0});
 }
 
 t_dvec3				double_sub_vec3(double first, t_dvec3 second)
 {
 	return ((t_dvec3){first - second.x,
 						first - second.y,
-						first - second.z});
+						first - second.z,
+						0.0});
 }
 
 t_dvec3				double_mul_vec3(double first, t_dvec3 second)
 {
 	return ((t_dvec3){first * second.x,
 						first * second.y,
-						first * second.z});
+						first * second.z,
+						0.0});
 }
 
 t_dvec3				double_div_vec3(double first, t_dvec3 second)
@@ -41,5 +44,6 @@ t_dvec3				double_div_vec3(double first, t_dvec3 second)
 		return (second);
 	return ((t_dvec3){first / second.x,
 						first / second.y,
-						first / second.z});
+						first / second.z,
+						0.0});
 }

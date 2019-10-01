@@ -6,22 +6,20 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 21:58:59 by dromanic          #+#    #+#             */
-/*   Updated: 2018/11/03 20:22:09 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 14:29:50 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "libft.h"
 
 int		ft_memcmp(const void *memptr1, const void *memptr2, size_t num)
 {
-	size_t			i;
-	unsigned char	*str1;
-	unsigned char	*str2;
+	const unsigned char		*str1 = (const unsigned char *)memptr1;
+	const unsigned char		*str2 = (const unsigned char *)memptr2;
+	size_t					i;
 
 	if (memptr1 == memptr2 || num == 0)
 		return (0);
-	str1 = (unsigned char *)memptr1;
-	str2 = (unsigned char *)memptr2;
 	i = 0;
 	while (num--)
 	{

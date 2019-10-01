@@ -69,14 +69,16 @@ void			quit_program(t_env *env)
 
 int				main(int argc, char **argv)
 {
-	t_env *env;
+	t_env	*env;
+	_Bool	*is_over;
 
 	if (argc == 2 && (env = init_env()))
 	{
 		if (parse_scene(env, argv[1]))
 		{
+			is_over = &env->flags.is_rtv1_over;
 			rerender_scene(env);
-			while (!env->flags.is_rtv1_over)
+			while (!(*is_over))
 				if (event_handler(&env->cam, &env->flags))
 					rerender_scene(env);
 		}

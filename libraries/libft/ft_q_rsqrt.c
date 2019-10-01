@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/01 17:29:55 by dromanic          #+#    #+#             */
-/*   Updated: 2019/01/01 17:58:34 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 14:25:56 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 ** from Quake III Arena, stripped of C preprocessor directives,
 ** but including the exact original comment text
 */
+
+#include "libft.h"
 
 float	ft_q_rsqrt(float number)
 {

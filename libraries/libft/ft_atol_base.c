@@ -12,9 +12,9 @@
 
 #include "libft.h"
 
-static long long	ft_atol_base2(const char *str, int base)
+static long long	ft_atol_base2(const char *str, size_t base)
 {
-	long long	res;
+	long		res;
 	char		*dig;
 	char		*tmp;
 	int			i;
@@ -24,13 +24,13 @@ static long long	ft_atol_base2(const char *str, int base)
 	i = 0;
 	while (str[i] && (tmp = (char *)ft_memchr(dig, ft_tolower(str[i]), base)))
 	{
-		res = (long long int)((res * base) + (tmp - dig));
+		res = res * (long)base + (tmp - dig);
 		i++;
 	}
 	return (res);
 }
 
-long long			ft_atol_base(const char *str, int base)
+long long			ft_atol_base(const char *str, size_t base)
 {
 	long long	result;
 	int			sign;

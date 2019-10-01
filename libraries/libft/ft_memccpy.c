@@ -10,24 +10,23 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "libft.h"
 
 void	*ft_memccpy(void *dest, const void *src, int c, size_t n)
 {
-	size_t			i;
-	unsigned char	ch_sym;
-	unsigned char	*ch_src;
-	unsigned char	*ch_dst;
+	const unsigned char	*ch_src = (const unsigned char *)src;
+	unsigned char		*ch_dst;
+	size_t				i;
+	unsigned char		ch_sym;
 
 	ch_sym = (unsigned char)c;
-	ch_src = (unsigned char *)src;
 	ch_dst = (unsigned char *)dest;
 	i = 0;
 	while (i < n)
 	{
 		ch_dst[i] = ch_src[i];
 		if (ch_dst[i] == ch_sym)
-			return (dest + i + 1);
+			return (__extension__(dest + i + 1));
 		i++;
 	}
 	return (NULL);

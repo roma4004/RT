@@ -6,72 +6,54 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/27 10:17:10 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 15:26:35 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static void		keyboard_handle(t_cam *cam, t_flags *f)
+static void		keyboard_handle(t_cam *restrict cam, t_speed *restrict sp,
+								t_flags *restrict f)
 {
-	if (f->is_move_x_more)
-		cam->pos.x += cam->move_speed;
-	if (f->is_move_x_less)
-		cam->pos.x -= cam->move_speed;
-	if (f->is_move_y_more)
-		cam->pos.y += cam->move_speed;
-	if (f->is_move_y_less)
-		cam->pos.y -= cam->move_speed;
-	if (f->is_move_z_more)
-		cam->pos.z += cam->move_speed;
-	if (f->is_move_z_less)
-		cam->pos.z -= cam->move_speed;
-	if (f->is_rotate_x_more)
-		cam->rotate_angle.x += cam->rotate_speed;
-	if (f->is_rotate_x_less)
-		cam->rotate_angle.x -= cam->rotate_speed;
-	if (f->is_rotate_y_more)
-		cam->rotate_angle.y += cam->rotate_speed;
-	if (f->is_rotate_y_less)
-		cam->rotate_angle.y -= cam->rotate_speed;
-	if (f->is_rotate_z_more)
-		cam->rotate_angle.z += cam->rotate_speed;
-	if (f->is_rotate_z_less)
-		cam->rotate_angle.z -= cam->rotate_speed;
+	cam->pos.x += f->move.x * sp->move;
+	cam->pos.y += f->move.y * sp->move;
+	cam->pos.z += f->move.z * sp->move;
+	cam->rotate_angle.x += f->rotate.x * sp->rotate;
+	cam->rotate_angle.y += f->rotate.y * sp->rotate;
+	cam->rotate_angle.z += f->rotate.z * sp->rotate;
 }
 
-static bool		keyboard_evens(Uint32 etype, SDL_Keycode key_code,
-								t_flags *flags)
+static bool		keyboard_evens(Uint32 event_type, SDL_Keycode k,
+								t_flags *restrict f)
 {
-	bool		*flag;
-	bool		value;
-
-	value = false;
-	if (((etype == SDL_KEYDOWN && (value = true))
-		|| (etype == SDL_KEYUP && !(value = false)))
-	&& ((key_code == SDLK_a && (flag = &flags->is_move_x_less))
-		|| (key_code == SDLK_d && (flag = &flags->is_move_x_more))
-		|| (key_code == SDLK_w && (flag = &flags->is_move_y_more))
-		|| (key_code == SDLK_s && (flag = &flags->is_move_y_less))
-		|| (key_code == SDLK_e && (flag = &flags->is_move_z_more))
-		|| (key_code == SDLK_q && (flag = &flags->is_move_z_less))
-		|| (key_code == SDLK_t && (flag = &flags->is_rotate_x_more))
-		|| (key_code == SDLK_g && (flag = &flags->is_rotate_x_less))
-		|| (key_code == SDLK_y && (flag = &flags->is_rotate_y_more))
-		|| (key_code == SDLK_h && (flag = &flags->is_rotate_y_less))
-		|| (key_code == SDLK_u && (flag = &flags->is_rotate_z_more))
-		|| (key_code == SDLK_j && (flag = &flags->is_rotate_z_less))))
-		*flag = value;
-	return (value);
+	if (event_type == SDL_KEYDOWN
+	&& (((k == SDLK_a || k == SDLK_d) && (f->move.x = k == SDLK_a ? NEG : POS))
+	|| ((k == SDLK_w || k == SDLK_s) && (f->move.y = k == SDLK_w ? NEG : POS))
+	|| ((k == SDLK_q || k == SDLK_e) && (f->move.z = k == SDLK_q ? NEG : POS))
+	|| ((k == SDLK_t || k == SDLK_g) && (f->rotate.x = k == SDLK_t ? NEG : POS))
+	|| ((k == SDLK_y || k == SDLK_h) && (f->rotate.y = k == SDLK_y ? NEG : POS))
+	|| ((k == SDLK_u || k == SDLK_j) && (f->rotate.z = k == SDLK_u ? NEG : POS))
+	))
+		return (true);
+//	if (event_type == SDL_KEYUP
+//	&& (((k == SDLK_a || k == SDLK_d) && (f->move.x = NON))
+//	|| ((k == SDLK_w || k == SDLK_s) && (f->move.y = NON))
+//	|| ((k == SDLK_q || k == SDLK_e) && (f->move.z = NON))
+//	|| ((k == SDLK_t || k == SDLK_g) && (f->rotate.x = NON))
+//	|| ((k == SDLK_y || k == SDLK_h) && (f->rotate.y = NON))
+//	|| ((k == SDLK_u || k == SDLK_j) && (f->rotate.z = NON))))
+//		return (false);
+	return (false);
 }
 
-bool			event_handler(t_cam *cam, t_flags *flags)
+_Bool			event_handler(t_cam *cam, t_flags *flags)
 {
 	SDL_Event		event;
 	SDL_Keycode		key_code;
 	unsigned char	result;
 
 	result = 0;
+	ft_bzero(flags, sizeof(t_flags));
 	while (SDL_PollEvent(&event))
 	{
 		key_code = event.key.keysym.sym;
@@ -79,6 +61,6 @@ bool			event_handler(t_cam *cam, t_flags *flags)
 			flags->is_rtv1_over = true;
 		result += keyboard_evens(event.type, key_code, flags);
 	}
-	keyboard_handle(cam, flags);
+	keyboard_handle(cam, &cam->speed, flags);
 	return (result);
 }

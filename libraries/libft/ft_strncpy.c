@@ -6,17 +6,17 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/18 21:00:30 by dromanic          #+#    #+#             */
-/*   Updated: 2018/11/02 21:16:48 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 14:29:50 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <string.h>
+#include "libft.h"
 
 char	*ft_strncpy(char *dest, const char *src, size_t n)
 {
 	size_t	i;
 
-	i = -1;
+	i = ~0ul;
 	while (src[++i] && i < n)
 		dest[i] = src[i];
 	while (i < n)

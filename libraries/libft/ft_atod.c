@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static double	after_dot(const char *str, int i)
+static double	after_dot(const char *str, size_t i)
 {
 	double	result;
 

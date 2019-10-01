@@ -6,13 +6,13 @@
 #    By: dromanic <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/09 11:13:10 by akolinko          #+#    #+#              #
-#    Updated: 2019/09/29 20:57:18 by dromanic         ###   ########.fr        #
+#    Updated: 2019/09/29 21:30:10 by dromanic         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME 	=	rtv1
 
-CC			= gcc
+CC			= gcc -Wall -Wextra -Werror
 OBJ_PATH	= objectives
 SRC_PATH	= sources
 INC_PATH	= includes
@@ -50,12 +50,11 @@ LIBKEY	=	-F $(LIBS_PATH)/											\
 			-rpath $(LIBS_PATH)/										\
 			-framework SDL2
 
-objdir:
-	mkdir -p $(OBJ_PATH)
-
-all: objdir
+all: objdir $(NAME)
 	@make -C $(LIBFT_PATH)/
-	@make $(NAME)
+
+objdir:
+	@mkdir -p $(OBJ_PATH)
 
 $(NAME): LIBS $(OBJ)
 	$(CC) $(LIBKEY) $(OBJ) $(LIBS) -o $(NAME)
@@ -74,7 +73,7 @@ norm:
 
 clean:
 	@make clean -C $(LIBFT_PATH)/
-	@/bin/rm -f $(OBJ)
+	@/bin/rm -rf $(OBJ_PATH)/
 
 fclean: clean
 	@make fclean -C $(LIBFT_PATH)/

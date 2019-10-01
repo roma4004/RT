@@ -13,6 +13,7 @@
 #include <string.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
+#include "libft.h"
 
 /*
 ** on macOS detecting number of processors on machine:

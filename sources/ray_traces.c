@@ -6,13 +6,13 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 20:01:27 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/01 13:50:28 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-t_uni			*intersect_obj(t_env *env, t_cam *cam, double *dist)
+static t_uni		*intersect_obj(t_env *env, t_cam *cam, double *dist)
 {
 	const size_t	len = env->uni_arr_len;
 	size_t			i;
@@ -20,17 +20,11 @@ t_uni			*intersect_obj(t_env *env, t_cam *cam, double *dist)
 	t_dvec3			touch;
 
 	cur_obj = NULL;
-	i = -1;
+	i = UINT64_MAX;
 	while (++i < len)
 	{
-		if (env->uni_arr[i].type == SPHERE)
-			intersect_sphere(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
-		else if (env->uni_arr[i].type == PLANE)
-			intersect_plane(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
-		else if (env->uni_arr[i].type == CYLINDER)
-			intersect_cylinder(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
-		else if (env->uni_arr[i].type == CONE)
-			intersect_cone(&cam->pos, &env->uni_arr[i], cam->dir, &touch);
+		env->uni_arr[i].get_intersect(&env->uni_arr[i], &cam->pos,
+										&cam->dir, &touch);
 		if (touch.x < *dist && cam->t_min < touch.x && touch.x < cam->t_max
 			&& (cur_obj = &env->uni_arr[i]))
 			*dist = touch.x;
@@ -41,29 +35,22 @@ t_uni			*intersect_obj(t_env *env, t_cam *cam, double *dist)
 	return (cur_obj);
 }
 
-const t_uni		*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-								t_dvec3 direction, t_dvec limits)
+const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
+									t_dvec3 *direction, t_dvec limits)
 {
 	const t_uni		*objects = env->uni_arr;
 	const size_t	len = env->uni_arr_len;
 	size_t			i;
 	t_dvec3			touch;
 
-	i = -1;
+	i = UINT64_MAX;
 	while (++i < len)
 	{
-		if (objects[i].type == SPHERE)
-			intersect_sphere(ray_pos, &objects[i], direction, &touch);
-		else if (objects[i].type == PLANE)
-			intersect_plane(ray_pos, &objects[i], direction, &touch);
-		else if (objects[i].type == CYLINDER)
-			intersect_cylinder(ray_pos, &objects[i], direction, &touch);
-		else if (objects[i].type == CONE)
-			intersect_cone(ray_pos, &objects[i], direction, &touch);
-		if ((touch.x < MAXFLOAT
+		objects[i].get_intersect(&objects[i], ray_pos, direction, &touch);
+		if ((touch.x < (double)MAXFLOAT
 			&& limits.x < touch.x
 			&& touch.x < limits.y)
-		|| (touch.y < MAXFLOAT
+		|| (touch.y < (double)MAXFLOAT
 			&& limits.x < touch.y
 			&& touch.y < limits.y))
 			return (&objects[i]);
@@ -71,52 +58,23 @@ const t_uni		*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 	return (NULL);
 }
 
-t_dvec3			get_normal(t_cam *cam, t_uni *obj,
-							t_dvec3 point, double dist)
-{
-	const t_dvec3		dir = obj->dir;
-	t_dvec3				obj_normal;
-	double				k;
-
-	obj_normal = (t_dvec3){0, 0, 0};
-	if (obj->type == SPHERE)
-		obj_normal = vec3_sub_vec3(point, obj->pos);
-	if (obj->type == PLANE)
-		obj_normal = dir;
-	if (obj->type == CYLINDER)
-	{
-		obj_normal = (vec3_sub_vec3(vec3_sub_vec3(point, obj->pos),
-			vec3_mul_double(dir, vec3_dot_vec3(cam->dir, dir)
-			* dist + vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos), dir))));
-	}
-	if (obj->type == CONE)
-	{
-		k = ((t_cone *)obj)->angle * M_PI / 360.0;
-		obj_normal = vec3_sub_vec3(vec3_sub_vec3(point, obj->pos),
-			vec3_mul_double(double_mul_vec3((1 + k * k), dir),
-				vec3_dot_vec3(cam->dir, dir) * dist
-					+ vec3_dot_vec3(vec3_sub_vec3(cam->pos, obj->pos), dir)));
-	}
-	return (vec3_normalize(obj_normal));
-}
-
-void			send_ray(t_env *env, t_cam *cam, t_dvec3 *color)
+void				send_ray(t_env *env, t_cam *cam, t_dvec3 *color)
 {
 	double			dist;
 	t_uni			*obj;
 	t_lght_comp		l;
 
-	dist = MAXFLOAT;
+	dist = (double)MAXFLOAT;
 	ft_bzero(&l, sizeof(t_lght_comp));
 	if (!(obj = intersect_obj(env, &env->cam, &dist)))
 		*color = env->bg_color;
 	else
 	{
-		l.touch_point =
+		obj->touch_point =
 			vec3_add_vec3(cam->pos, double_mul_vec3(dist, cam->dir));
 		l.view = double_mul_vec3(-1, cam->dir);
-		l.obj_normal = get_normal(&env->cam, obj, l.touch_point, dist);
-		l.touch_point = vec3_add_vec3(l.touch_point,
+		obj->get_normal(&env->cam, obj, dist, &l.obj_normal);
+		obj->touch_point = vec3_add_vec3(obj->touch_point,
 							vec3_mul_double(l.obj_normal, env->epsilon));
 		get_light(env, &l, obj, color);
 	}

@@ -26,7 +26,7 @@ double		vec3_dot_vec3(t_dvec3 first, t_dvec3 second)
 
 double		vec3_length(t_dvec3 first)
 {
-	return (sqrtf(first.x * first.x
+	return (sqrt(first.x * first.x
 				+ first.y * first.y
 				+ first.z * first.z));
 }

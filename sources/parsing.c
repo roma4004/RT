@@ -25,7 +25,7 @@ static double		after_dot(const char *str, double nbr)
 	while (str[i] && str[i] != '#' && ft_isdigit(str[i]))
 		i++;
 	res = ft_atoi(str);
-	if (res != 0)
+	if (res != 0.0)
 	{
 		while (--i > -1)
 			res /= 10;

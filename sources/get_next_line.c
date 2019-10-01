@@ -12,10 +12,10 @@
 
 #include "get_next_line.h"
 
-static int	ln_len(char *str)
+static size_t	ln_len(const char *str)
 {
-	int i;
-	int	len;
+	size_t	i;
+	size_t	len;
 
 	if (str == NULL)
 		return (0);
@@ -26,11 +26,10 @@ static int	ln_len(char *str)
 	return (len);
 }
 
-static int	data_mod(char **data, int fd, char *buf, unsigned int line_len)
+static int	data_mod(char **data, int fd, char *buf, size_t line_len)
 {
 	char	*temp;
 
-	temp = NULL;
 	if (data == NULL || buf == NULL || line_len == 0)
 		return (0);
 	if (data[fd] == NULL)
@@ -50,11 +49,11 @@ static int	data_mod(char **data, int fd, char *buf, unsigned int line_len)
 
 static int	del_line(char **data, int fd)
 {
-	unsigned int	i;
-	unsigned int	j;
-	unsigned int	rem_size;
-	char			*nline;
-	int				line_len;
+	char	*nline;
+	size_t	i;
+	size_t	j;
+	size_t	line_len;
+	size_t	rem_size;
 
 	if (data[fd] == NULL)
 		return (0);
@@ -94,7 +93,7 @@ static char	**init_data(void)
 int			get_next_line(const int fd, char **line)
 {
 	static char		**data = NULL;
-	int				len;
+	size_t			len;
 	int				len_max;
 	char			*buf;
 
@@ -103,15 +102,15 @@ int			get_next_line(const int fd, char **line)
 	if (data == NULL)
 		data = init_data();
 	len_max = 0;
-	while ((len = read(fd, buf, BUFF_SIZE)) > 0 && data_mod(data, fd, buf, len))
+	while ((len = (size_t)read(fd, buf, BUFF_SIZE)) > 0
+	&& data_mod(data, fd, buf, len))
 	{
-		if ((len_max += len) > MAX_LINE
-		|| (ft_strchr(buf, '\n')))
+		if ((len_max += len) > MAX_LINE || (ft_strchr(buf, '\n')))
 			break ;
 		ft_bzero(buf, BUFF_SIZE);
 	}
 	free(buf);
-	if (len == -1)
+	if (len == ~0ul)
 		return (-1);
 	if (data[fd] == NULL || !(*line = ft_strnew(ln_len(data[fd]))))
 		return (0);
