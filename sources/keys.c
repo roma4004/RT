@@ -6,43 +6,40 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 15:34:56 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/02 11:47:32 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static void		keyboard_handle(t_cam *restrict cam, t_speed *restrict sp,
-								t_flags *restrict f)
+static void		keyboard_handle(t_cam *restrict cam, t_flags *restrict f,
+								double move_speed, double rotate_speed)
 {
-	cam->pos.x += f->move.x * sp->move;
-	cam->pos.y += f->move.y * sp->move;
-	cam->pos.z += f->move.z * sp->move;
-	cam->rotate_angle.x += f->rotate.x * sp->rotate;
-	cam->rotate_angle.y += f->rotate.y * sp->rotate;
-	cam->rotate_angle.z += f->rotate.z * sp->rotate;
+	cam->pos.x += f->move.x * move_speed;
+	cam->pos.y += f->move.y * move_speed;
+	cam->pos.z += f->move.z * move_speed;
+	cam->rotate_angle.x += f->rotate.x * rotate_speed;
+	cam->rotate_angle.y += f->rotate.y * rotate_speed;
+	cam->rotate_angle.z += f->rotate.z * rotate_speed;
 }
 
-static bool		keyboard_evens(Uint32 event_type, SDL_Keycode k,
+static _Bool	keyboard_evens(Uint32 event_type, SDL_Keycode k,
 								t_flags *restrict f)
 {
-	if (event_type == SDL_KEYDOWN
-	&& (((k == SDLK_a || k == SDLK_d) && (f->move.x = k == SDLK_a ? NEG : POS))
-	|| ((k == SDLK_w || k == SDLK_s) && (f->move.y = k == SDLK_w ? NEG : POS))
-	|| ((k == SDLK_q || k == SDLK_e) && (f->move.z = k == SDLK_q ? NEG : POS))
-	|| ((k == SDLK_t || k == SDLK_g) && (f->rotate.x = k == SDLK_t ? NEG : POS))
-	|| ((k == SDLK_y || k == SDLK_h) && (f->rotate.y = k == SDLK_y ? NEG : POS))
-	|| ((k == SDLK_u || k == SDLK_j) && (f->rotate.z = k == SDLK_u ? NEG : POS))
-	))
+	if (event_type == SDL_KEYDOWN && (is_x_move_down(k, &f->move)
+									|| is_y_move_down(k, &f->move)
+									|| is_z_move_down(k, &f->move)
+									|| is_x_rotate_down(k, &f->rotate)
+									|| is_y_rotate_down(k, &f->rotate)
+									|| is_z_rotate_down(k, &f->rotate)))
 		return (true);
-//	if (event_type == SDL_KEYUP
-//	&& (((k == SDLK_a || k == SDLK_d) && (f->move.x = NON))
-//	|| ((k == SDLK_w || k == SDLK_s) && (f->move.y = NON))
-//	|| ((k == SDLK_q || k == SDLK_e) && (f->move.z = NON))
-//	|| ((k == SDLK_t || k == SDLK_g) && (f->rotate.x = NON))
-//	|| ((k == SDLK_y || k == SDLK_h) && (f->rotate.y = NON))
-//	|| ((k == SDLK_u || k == SDLK_j) && (f->rotate.z = NON))))
-//		return (false);
+	if (event_type == SDL_KEYUP && (is_x_move_up(k, &f->move)
+								|| is_y_move_up(k, &f->move)
+								|| is_z_move_up(k, &f->move)
+								|| is_x_rotate_up(k, &f->rotate)
+								|| is_y_rotate_up(k, &f->rotate)
+								|| is_z_rotate_up(k, &f->rotate)))
+		return (false);
 	return (false);
 }
 
@@ -53,7 +50,6 @@ _Bool			event_handler(t_cam *cam, t_flags *flags)
 	unsigned char		result;
 
 	result = 0;
-	ft_bzero(flags, sizeof(t_flags));
 	while (SDL_PollEvent(&event))
 	{
 		key_code = event.key.keysym.sym;
@@ -62,6 +58,6 @@ _Bool			event_handler(t_cam *cam, t_flags *flags)
 		result += keyboard_evens(event.type, key_code, flags);
 	}
 	if (result)
-		keyboard_handle(cam, &cam->speed, flags);
+		keyboard_handle(cam,flags, cam->move_speed, cam->rotate_speed);
 	return (result);
 }

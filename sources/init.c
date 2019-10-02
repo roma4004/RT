@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 20:12:50 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/02 11:49:07 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ static void			init_cam(t_cam *cam)
 	ft_bzero(cam, sizeof(t_cam));
 	cam->canvas.half = (t_dvec){ WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0};
 	cam->canvas.rate = (double)WIN_WIDTH / WIN_HEIGHT;
-	cam->speed = (t_speed){.move = 1.2, .rotate = 2.9};
+	cam->move_speed = 1.2;
+	cam->rotate_speed = 2.9;
 	cam->t_min = 0;
 	cam->t_max = (double)MAXFLOAT;
 	cam->pos = (t_dvec3){0.0, 0.0, -42.0, 0.0};
@@ -75,6 +76,7 @@ static t_env		*env_def_val(t_env *env)
 	env->bg_color = (t_dvec3){255.0, 255.0, 255.0, 0.0};
 	env->epsilon = 0.00001;
 	env->threads = 4;
+	errno = 0;
 	return (env);
 }
 

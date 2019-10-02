@@ -6,20 +6,21 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 13:49:18 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/02 20:09:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *plane_toch)
+void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch)
 {
 	const double	discriminant = tmp->y * tmp->y - 4 * tmp->x * tmp->z;
 
 	if (discriminant < 0.0)
-		*plane_toch = (t_dvec3){(double)INFINITY, (double)INFINITY, 0.0, 0.0};
-	*plane_toch = (t_dvec3){(-tmp->y + sqrt(discriminant)) / (2.0 * tmp->x),
-					(-tmp->y - sqrt(discriminant)) / (2.0 * tmp->x), 0.0, 0.0};
+		*touch = (t_dvec3){(double)INFINITY, (double)INFINITY, 0.0, 0.0};
+	*touch = (t_dvec3){(-tmp->y + sqrt(discriminant)) / (2.0 * tmp->x),
+							(-tmp->y - sqrt(discriminant)) / (2.0 * tmp->x),
+							0.0, 0.0};
 }
 
 static t_dvec3		vec3_clamp_col_cpy(t_dvec3 first)

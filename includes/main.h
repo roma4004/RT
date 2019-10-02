@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 21:04:30 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/02 16:19:56 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,12 +70,6 @@ typedef struct		s_vector_double
 	double			y;
 }					t_dvec;
 
-typedef struct		s_cam_speed_parameter
-{
-	double			move;
-	double			rotate;
-}					t_speed;
-
 typedef struct		s_canvas_parameter
 {
 	t_dvec			half;
@@ -97,7 +91,8 @@ typedef struct		s_camera
 	double			t_min;
 	double			t_max;
 	t_dvec3			pos;
-	t_speed			speed;
+	double			move_speed;
+	double			rotate_speed;
 	t_dvec3			rotate_angle;
 	t_canvas_par	canvas;
 //	t_ray			ray;
@@ -209,6 +204,19 @@ enum				e_orient
 	NON = 0
 };
 
+_Bool				is_x_move_up(SDL_Keycode k, t_ivec3 *restrict move);
+_Bool				is_y_move_up(SDL_Keycode k, t_ivec3 *restrict move);
+_Bool				is_z_move_up(SDL_Keycode k, t_ivec3 *restrict move);
+_Bool				is_x_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate);
+_Bool				is_y_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate);
+_Bool				is_z_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate);
+_Bool				is_x_move_down(SDL_Keycode k, t_ivec3 *restrict move);
+_Bool				is_y_move_down(SDL_Keycode k, t_ivec3 *restrict move);
+_Bool				is_z_move_down(SDL_Keycode k, t_ivec3 *restrict move);
+_Bool				is_x_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
+_Bool				is_y_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
+_Bool				is_z_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
+
 t_env				*init_env(void);
 _Bool				init_obj_arr(t_env *env, t_list *lst);
 
@@ -218,8 +226,12 @@ _Bool				is_valid_line(t_env *env, char *line, size_t len);
 void				set_value(t_env *env, const double *v, size_t type);
 t_env				*parse_scene(t_env *env, char *file_name);
 
-void				(*intersect_catalog(size_t type))
-						(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *);
+
+typedef void		(*intersect)(const t_uni *, t_dvec3 *,
+									t_dvec3 *, t_dvec3 *);
+intersect			intersect_catalog(size_t type);
+
+typedef void		(*normal)(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *);
 void				(*normal_catalog(size_t type))
 						(t_ray *, const t_uni *, double, t_dvec3 *);
 
@@ -233,19 +245,19 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *color);
 const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 									t_dvec3 *direction, t_dvec limits);
 
-void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *plane_toch);
+void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch);
 double				vec3_length(t_dvec3 vec);
 uint8_t				double_clamp(double x);
 t_dvec3				double_mul_vec3_col(double first, t_dvec3 second);
 t_dvec3				vec3_add_vec3_col(t_dvec3 first, t_dvec3 second);
 
-void				get_intersect_sphere(const t_uni *obj, t_dvec3 *ray_pos,
+void				get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
 											t_dvec3 *ray_dir, t_dvec3 *touch);
 void				get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
 											t_dvec3 *ray_dir, t_dvec3 *touch);
-void				get_intersect_cylinder(const t_uni *obj, t_dvec3 *ray_pos,
-											t_dvec3 *ray_dir, t_dvec3 *touch);
-void				get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
+void				get_intersect_cylinder(const t_uni *cylinder,
+							t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch);
+void				get_intersect_cone(const t_uni *cone, t_dvec3 *ray_pos,
 											t_dvec3 *ray_dir, t_dvec3 *touch);
 
 void				rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle);

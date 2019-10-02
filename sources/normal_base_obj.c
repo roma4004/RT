@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 20:43:13 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/02 17:51:30 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ static void		get_normal_plane(t_ray *ray, const t_uni *obj,
 {
 	(void)ray;
 	(void)dist;
-	*normal = vec3_normalize(obj->dir);
+	*normal = vec3_normalize(
+							vec3_dot_vec3(ray->dir, obj->dir) > 0
+							? vec3_mul_double(obj->dir, -1)
+							: obj->dir);
 }
 
 static void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
