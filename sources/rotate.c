@@ -12,33 +12,39 @@
 
 #include "main.h"
 
-static t_dvec3		rotate_y(t_dvec3 *pt, double angle)
+static void		rotate_y(t_dvec3 *destination,
+								const t_dvec3 *restrict pt,
+								double angle)
 {
-	return ((t_dvec3){pt->x,
-						pt->y * cos(angle) + pt->z * sin(angle),
-						-pt->y * sin(angle) + pt->z * cos(angle), 0});
+	*destination = (t_dvec3){.x = pt->x,
+							.y = pt->y * cos(angle) + pt->z * sin(angle),
+							.z = -pt->y * sin(angle) + pt->z * cos(angle)};
 }
 
-static t_dvec3		rotate_x(t_dvec3 *pt, double angle)
+static void		rotate_x(t_dvec3 *destination,
+								const t_dvec3 *restrict pt,
+								double angle)
 {
-	return ((t_dvec3){ pt->x * cos(angle) + pt->z * sin(angle),
-						pt->y,
-						-pt->x * sin(angle) + pt->z * cos(angle), 0});
+	*destination = (t_dvec3){.x = pt->x * cos(angle) + pt->z * sin(angle),
+							.y = pt->y,
+							.z = -pt->x * sin(angle) + pt->z * cos(angle)};
 }
 
-static t_dvec3		rotate_z(t_dvec3 *pt, double angle)
+static void		rotate_z(t_dvec3 *destination,
+								const t_dvec3 *restrict pt,
+								double angle)
 {
-	return ((t_dvec3){pt->x * cos(angle) - pt->y * sin(angle),
-						pt->x * sin(angle) + pt->y * cos(angle),
-						pt->z, 0});
+	*destination = (t_dvec3){.x = pt->x * cos(angle) - pt->y * sin(angle),
+							.y = pt->x * sin(angle) + pt->y * cos(angle),
+							.z = pt->z};
 }
 
 void				rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle)
 {
 	if (rotate_angle->x != 0.0)
-		*dir = rotate_x(dir, rotate_angle->x * M_PI / 180);
+		rotate_x(dir, dir, rotate_angle->x * M_PI / 180);
 	if (rotate_angle->y != 0.0)
-		*dir = rotate_y(dir, rotate_angle->y * M_PI / 180);
+		rotate_y(dir, dir, rotate_angle->y * M_PI / 180);
 	if (rotate_angle->z != 0.0)
-		*dir = rotate_z(dir, rotate_angle->z * M_PI / 180);
+		rotate_z(dir, dir, rotate_angle->z * M_PI / 180);
 }

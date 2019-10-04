@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/04 12:49:28 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 17:12:04 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,12 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *color)
 		*color = env->bg_color;
 	else
 	{
-		ray_len = double_mul_vec3(dist, &ray->dir);
-		ray->touch_point = vec3_add_vec3(&ray->pos, &ray_len);
-		l.view = double_mul_vec3(-1, &ray->dir);
+		double_mul_vec3(&ray_len, dist, &ray->dir);
+		vec3_add_vec3(&ray->touch_point, &ray->pos, &ray_len);
+		double_mul_vec3(&l.view,-1, &ray->dir);
 		obj->get_normal(ray, obj, dist, &l.normal);
-		epsi_normal = vec3_mul_double(&l.normal, env->epsilon);
-		ray->touch_point = vec3_add_vec3(&ray->touch_point, &epsi_normal);
+		vec3_mul_double(&epsi_normal, &l.normal, env->epsilon);
+		vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
 		l.touch_point = ray->touch_point;
 		get_light(env, &l, obj, color);
 	}

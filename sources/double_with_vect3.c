@@ -6,44 +6,48 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/13 13:39:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 11:43:00 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 17:21:28 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-t_dvec3		double_add_vec3(double first, const t_dvec3 *restrict second)
+void	double_add_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second)
 {
-	return ((t_dvec3){first + second->x,
-						first + second->y,
-						first + second->z,
-						0.0});
+	*destination = (t_dvec3){.x = first + second->x,
+							.y = first + second->y,
+							.z = first + second->z};
 }
 
-t_dvec3		double_sub_vec3(double first, const t_dvec3 *restrict second)
+void	double_sub_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second)
 {
-	return ((t_dvec3){first - second->x,
-						first - second->y,
-						first - second->z,
-						0.0});
+	*destination = (t_dvec3){.x = first - second->x,
+							.y = first - second->y,
+							.z = first - second->z};
 }
 
-t_dvec3		double_mul_vec3(double first, const t_dvec3 *restrict second)
+void	double_mul_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second)
 {
-	return ((t_dvec3){first * second->x,
-						first * second->y,
-						first * second->z,
-						0.0});
+	*destination = (t_dvec3){.x = first * second->x,
+							.y = first * second->y,
+							.z = first * second->z};
 }
 
-t_dvec3		double_div_vec3(double first, const t_dvec3 *restrict second)
+void		double_div_vec3(t_dvec3 *destination,
+							double first,
+							const t_dvec3 *restrict second)
 {
 	if (second->x == 0.0
 	|| second->y == 0.0
 	|| second->z == 0.0)
-		return (*second);
-	return ((t_dvec3){first / second->x,
-						first / second->y,
-						first / second->z,
-						0.0});
+		return ;
+	*destination = (t_dvec3){.x = first / second->x,
+							.y = first / second->y,
+							.z = first / second->z};
 }

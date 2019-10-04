@@ -12,19 +12,19 @@
 
 #include "main.h"
 
-_Bool			is_x_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate)
+_Bool		is_x_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate)
 {
 	return ((k == SDLK_t && (rotate->x = NEG))
 		|| (k == SDLK_g && (rotate->x = POS)));
 }
 
-_Bool			is_y_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate)
+_Bool		is_y_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate)
 {
 	return ((k == SDLK_y && (rotate->y = NEG))
 		|| (k == SDLK_h && (rotate->y = POS)));
 }
 
-_Bool			is_z_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate)
+_Bool		is_z_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate)
 {
 	return ((k == SDLK_u && (rotate->z = NEG))
 		|| (k == SDLK_j && (rotate->z = POS)));

@@ -6,11 +6,24 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/02 11:47:32 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 20:11:44 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
+
+
+
+static _Bool	is_cam_reset(SDL_Keycode k, t_cam *restrict cam)
+{
+	if (k == SDLK_r)
+	{
+		cam->pos = cam->parse_pos;
+		cam->rotate_angle = cam->parse_rotate_angle;
+		return (true);
+	}
+	return (false);
+}
 
 static void		keyboard_handle(t_cam *restrict cam, t_flags *restrict f,
 								double move_speed, double rotate_speed)
@@ -23,7 +36,7 @@ static void		keyboard_handle(t_cam *restrict cam, t_flags *restrict f,
 	cam->rotate_angle.z += f->rotate.z * rotate_speed;
 }
 
-static _Bool	keyboard_evens(Uint32 event_type, SDL_Keycode k,
+static _Bool	keyboard_evens(t_cam *cam,Uint32 event_type, SDL_Keycode k,
 								t_flags *restrict f)
 {
 	if (event_type == SDL_KEYDOWN && (is_x_move_down(k, &f->move)
@@ -31,15 +44,16 @@ static _Bool	keyboard_evens(Uint32 event_type, SDL_Keycode k,
 									|| is_z_move_down(k, &f->move)
 									|| is_x_rotate_down(k, &f->rotate)
 									|| is_y_rotate_down(k, &f->rotate)
-									|| is_z_rotate_down(k, &f->rotate)))
+									|| is_z_rotate_down(k, &f->rotate)
+									|| is_cam_reset(k,cam)))
 		return (true);
-	if (event_type == SDL_KEYUP && (is_x_move_up(k, &f->move)
-								|| is_y_move_up(k, &f->move)
-								|| is_z_move_up(k, &f->move)
-								|| is_x_rotate_up(k, &f->rotate)
-								|| is_y_rotate_up(k, &f->rotate)
-								|| is_z_rotate_up(k, &f->rotate)))
-		return (false);
+//	if (event_type == SDL_KEYUP && (is_x_move_up(k, &f->move)
+//								|| is_y_move_up(k, &f->move)
+//								|| is_z_move_up(k, &f->move)
+//								|| is_x_rotate_up(k, &f->rotate)
+//								|| is_y_rotate_up(k, &f->rotate)
+//								|| is_z_rotate_up(k, &f->rotate)))
+//		return (false);
 	return (false);
 }
 
@@ -49,13 +63,14 @@ _Bool			event_handler(t_cam *cam, t_flags *flags)
 	SDL_Keycode			key_code;
 	unsigned char		result;
 
+	ft_bzero(flags, sizeof(t_flags));
 	result = 0;
 	while (SDL_PollEvent(&event))
 	{
 		key_code = event.key.keysym.sym;
 		if (event.type == SDL_QUIT || key_code == SDLK_ESCAPE)
 			flags->is_rtv1_over = true;
-		result += keyboard_evens(event.type, key_code, flags);
+		result += keyboard_evens(cam, event.type, key_code, flags);
 	}
 	if (result)
 		keyboard_handle(cam,flags, cam->move_speed, cam->rotate_speed);

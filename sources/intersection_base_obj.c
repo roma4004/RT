@@ -6,52 +6,66 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/04 10:59:00 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 16:59:44 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
+
 void		get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
 									t_dvec3 *ray_dir, t_dvec3 *touch)
 {
-	const double		radius = sphere->radius;
-	const t_dvec3		oc = vec3_sub_vec3(ray_pos, &sphere->pos);
-	t_dvec3				tmp;
+	const double	radius = sphere->radius;
+	t_dvec3			oc;
+	t_dvec3			tmp;
 
-	tmp = (t_dvec3){
-		.x = vec3_dot_vec3(ray_dir, ray_dir),
-		.y = 2 * vec3_dot_vec3(ray_dir, &oc),
-		.z = vec3_dot_vec3(&oc, &oc) - radius * radius};
+	vec3_sub_vec3(&oc, ray_pos, &sphere->pos);
+	vec3_dot_vec3(&tmp.x, ray_dir, ray_dir);
+	vec3_dot_vec3(&tmp.y, ray_dir, &oc);
+	vec3_dot_vec3(&tmp.z, &oc, &oc);
+	tmp = (t_dvec3){.x = tmp.x, .y = 2 * tmp.y, .z = tmp.z - radius * radius};
 	discriminant_comput(&tmp, touch);
 }
 
 void		get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
 									t_dvec3 *ray_dir, t_dvec3 *touch)
 {
-	const t_dvec3		oc = vec3_sub_vec3(ray_pos, &plane->pos);
-	double				div = vec3_dot_vec3(ray_dir, &plane->dir);
 
+	t_dvec3		oc ;
+	double		div;
+	double		oc_dot_dir;
+
+	vec3_dot_vec3(&div, ray_dir, &plane->dir);
 	if (div != 0)
-		*touch = (t_dvec3){-vec3_dot_vec3(&oc, &plane->dir) / div, 0, 0, 0};
+	{
+		vec3_sub_vec3(&oc, ray_pos, &plane->pos);
+		vec3_dot_vec3(&oc_dot_dir, &oc, &plane->dir);
+		*touch = (t_dvec3) {-oc_dot_dir / div, 0, 0, 0};
+	}
 	else
+	{
 		*touch = (t_dvec3){(double)INFINITY, (double)INFINITY, 0.0, 0.0};
+	}
 }
 
 void 		get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
 									t_dvec3 *ray_dir, t_dvec3 *touch)
 {
-	const t_dvec3		x = vec3_sub_vec3(ray_pos, &cylinder->pos);
-	const t_dvec3		dir = cylinder->dir;
-	t_dvec3				tmp;
+	t_dvec3		oc;
+	t_dvec3		tmp;
+	double		oc_dot_dir;
+	double		oc_dot_oc;
 
-	tmp = (t_dvec3){.x = vec3_dot_vec3(ray_dir, ray_dir)
-					- pow(vec3_dot_vec3(ray_dir, &dir), 2),
-					.y = 2 * (vec3_dot_vec3(ray_dir, &x)
-						- vec3_dot_vec3(ray_dir, &dir)
-							* vec3_dot_vec3(&x, &dir)),
-					.z = vec3_dot_vec3(&x, &x)
-						- pow(vec3_dot_vec3(&x, &dir), 2)
+	vec3_sub_vec3(&oc, ray_pos, &cylinder->pos);
+	vec3_dot_vec3(&tmp.x, ray_dir, ray_dir);
+	vec3_dot_vec3(&tmp.y, ray_dir, &cylinder->dir);
+	vec3_dot_vec3(&tmp.z, ray_dir, &oc);
+	vec3_dot_vec3(&oc_dot_dir, &oc, &cylinder->dir);
+	vec3_dot_vec3(&oc_dot_oc, &oc, &oc);
+	tmp = (t_dvec3){.x = tmp.x - (tmp.y * tmp.y),
+					.y = 2 * (tmp.z - tmp.y * oc_dot_dir),
+					.z = oc_dot_oc - (oc_dot_dir * oc_dot_dir)
 						- cylinder->radius * cylinder->radius};
 	discriminant_comput(&tmp, touch);
 }
@@ -59,19 +73,20 @@ void 		get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
 void		get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
 									t_dvec3 *ray_dir, t_dvec3 *touch)
 {
-	const t_cone		*cone = ((const t_cone *)obj);
-	const double		k = cone->angle * M_PI / 360.0;
-	const t_dvec3		x = vec3_sub_vec3(ray_pos, &cone->pos);
-	const t_dvec3		obj_dir = cone->dir;
-	t_dvec3				tmp;
+	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
+	t_dvec3			oc;
+	t_dvec3			tmp;
+	double			oc_dot_dir;
+	double			oc_dot_oc;
 
-	tmp = (t_dvec3) {
-		.x = vec3_dot_vec3(ray_dir, ray_dir) - (1 + k * k)
-			* pow(vec3_dot_vec3(ray_dir, &obj_dir), 2),
-		.y = 2 * (vec3_dot_vec3(ray_dir, &x)
-			- (1 + k * k) * vec3_dot_vec3(ray_dir, &obj_dir)
-			* vec3_dot_vec3(&x, &obj_dir)),
-		.z = vec3_dot_vec3(&x, &x)
-			- (1 + k * k) * pow(vec3_dot_vec3(&x, &obj_dir), 2)};
+	vec3_sub_vec3(&oc, ray_pos, &((const t_cone *)obj)->pos);
+	vec3_dot_vec3(&tmp.x, ray_dir, ray_dir);
+	vec3_dot_vec3(&tmp.y, ray_dir, &((const t_cone *)obj)->dir);
+	vec3_dot_vec3(&tmp.z, ray_dir, &oc);
+	vec3_dot_vec3(&oc_dot_dir, &oc, &((const t_cone *)obj)->dir);
+	vec3_dot_vec3(&oc_dot_oc, &oc, &oc);
+	tmp = (t_dvec3){.x = tmp.x - (1 + k * k) * (tmp.y * tmp.y),
+					.y = 2 * (tmp.z - (1 + k * k) * tmp.y * oc_dot_dir),
+					.z = oc_dot_oc - (1 + k * k) * (oc_dot_dir * oc_dot_dir)};
 	discriminant_comput(&tmp, touch);
 }
