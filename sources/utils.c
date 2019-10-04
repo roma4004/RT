@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/02 20:09:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 12:33:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void				set_value(t_env *env, const double *v, size_t type)
 			(t_dvec3){v[4], v[5], v[6], 0.0},
 			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0}), v[10],
 			intersect_catalog(type), normal_catalog(type)};
-		env->uni_arr[id_uni].dir = vec3_normalize(env->uni_arr[id_uni].dir);
+		vec3_normalize(&env->uni_arr[id_uni].dir, &env->uni_arr[id_uni].dir);
 		id_uni++;
 	}
 }

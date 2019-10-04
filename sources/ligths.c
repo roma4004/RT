@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 20:48:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 12:33:11 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static void			set_diffuse_reflection(t_lght_comp *light, t_dvec3 *normal,
 											double *defuse_val)
 {
-	const double	normal_length = vec3_length(*normal);
-	const double	light_dir_length = vec3_length(light->dir);
-	const double	normal_dot_light_dir = vec3_dot_vec3(*normal, light->dir);
+	const double	normal_length = vec3_length(normal);
+	const double	light_dir_length = vec3_length(&light->dir);
+	const double	normal_dot_light_dir = vec3_dot_vec3(normal, &light->dir);
 	const double	light_intensity = light->cur->intensity;
 	double			intensity;
 
@@ -35,7 +35,7 @@ static void			point_or_directional(t_lght *light, t_dvec3 *light_vector,
 {
 	if (light->type == POINT)
 	{
-		*light_vector = vec3_sub_vec3(light->pos, *point);
+		*light_vector = vec3_sub_vec3(&light->pos, point);
 		*t_max = 1.0;
 	}
 	else
@@ -47,22 +47,19 @@ static void			point_or_directional(t_lght *light, t_dvec3 *light_vector,
 
 static double		get_specular_reflection(t_lght_comp *l, double specular)
 {
-	t_dvec3		vec_reflect;
-	double		light_dot_normal;
-	double		reflect_dot_view;
-	double		intensity_spec;
+	const double	light_normal = 2.0 * vec3_dot_vec3(&l->normal, &l->dir);
+	const t_dvec3	normal = double_mul_vec3(light_normal, &l->normal);
+	t_dvec3			vec_reflect;
+	double			reflect_dot_view;
+	double			intensity_spec;
 
 	if (l->cur->intensity > 0.0)
 	{
-		light_dot_normal = vec3_dot_vec3(l->obj_normal, l->dir);
-		vec_reflect =
-			vec3_sub_vec3(
-				double_mul_vec3(2.0 * light_dot_normal, l->obj_normal),
-					l->dir);
-		if ((reflect_dot_view = vec3_dot_vec3(vec_reflect, l->view)) > 0.0)
+		vec_reflect = vec3_sub_vec3(&normal, &l->dir);
+		if ((reflect_dot_view = vec3_dot_vec3(&vec_reflect, &l->view)) > 0.0)
 		{
 			intensity_spec = l->cur->intensity * pow(reflect_dot_view
-				/ (vec3_length(vec_reflect) * vec3_length(l->view)), specular);
+				/ (vec3_length(&vec_reflect) * vec3_length(&l->view)), specular);
 			if (intensity_spec > 1.0)
 				intensity_spec = 1.0;
 			return (intensity_spec);
@@ -88,7 +85,7 @@ void				get_light(t_env *env, t_lght_comp *l,
 			if (is_shadow_ray(env, &l->touch_point, &l->dir,
 								(t_dvec){env->epsilon, l->t_max}))
 				continue;
-			set_diffuse_reflection(l, &l->obj_normal, &l->defuse_val);
+			set_diffuse_reflection(l, &l->normal, &l->defuse_val);
 			if (obj->specular > 0.0)
 				l->specul_val += get_specular_reflection(l, obj->specular);
 		}

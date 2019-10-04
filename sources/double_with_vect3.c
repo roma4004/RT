@@ -12,38 +12,38 @@
 
 #include "main.h"
 
-t_dvec3				double_add_vec3(double first, t_dvec3 second)
+t_dvec3		double_add_vec3(double first, const t_dvec3 *restrict second)
 {
-	return ((t_dvec3){first + second.x,
-						first + second.y,
-						first + second.z,
+	return ((t_dvec3){first + second->x,
+						first + second->y,
+						first + second->z,
 						0.0});
 }
 
-t_dvec3				double_sub_vec3(double first, t_dvec3 second)
+t_dvec3		double_sub_vec3(double first, const t_dvec3 *restrict second)
 {
-	return ((t_dvec3){first - second.x,
-						first - second.y,
-						first - second.z,
+	return ((t_dvec3){first - second->x,
+						first - second->y,
+						first - second->z,
 						0.0});
 }
 
-t_dvec3				double_mul_vec3(double first, t_dvec3 second)
+t_dvec3		double_mul_vec3(double first, const t_dvec3 *restrict second)
 {
-	return ((t_dvec3){first * second.x,
-						first * second.y,
-						first * second.z,
+	return ((t_dvec3){first * second->x,
+						first * second->y,
+						first * second->z,
 						0.0});
 }
 
-t_dvec3				double_div_vec3(double first, t_dvec3 second)
+t_dvec3		double_div_vec3(double first, const t_dvec3 *restrict second)
 {
-	if (second.x == 0.0
-	|| second.y == 0.0
-	|| second.z == 0.0)
-		return (second);
-	return ((t_dvec3){first / second.x,
-						first / second.y,
-						first / second.z,
+	if (second->x == 0.0
+	|| second->y == 0.0
+	|| second->z == 0.0)
+		return (*second);
+	return ((t_dvec3){first / second->x,
+						first / second->y,
+						first / second->z,
 						0.0});
 }

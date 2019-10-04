@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/02 16:19:56 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/04 12:43:18 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,15 @@ typedef struct		s_light {
 	size_t			type;
 }					t_lght;
 
+typedef struct		s_vector3_comput_tmp
+{
+	t_dvec3		oc;
+	t_dvec3		tc;
+	double		dir;
+	t_dvec3		dir_vec;
+	double		m;
+}					t_dvec3_comp;
+
 typedef struct		s_light_calculating
 {
 	t_lght			*cur;
@@ -135,7 +144,7 @@ typedef struct		s_light_calculating
 	double			t_max;
 	double			specul_val;
 //	t_dvec3			touch_point;
-	t_dvec3			obj_normal;
+	t_dvec3			normal;
 	t_dvec3			view;
 //	t_ray			ray;
 
@@ -246,7 +255,7 @@ const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 									t_dvec3 *direction, t_dvec limits);
 
 void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch);
-double				vec3_length(t_dvec3 vec);
+double				vec3_length(const t_dvec3 *restrict first);
 uint8_t				double_clamp(double x);
 t_dvec3				double_mul_vec3_col(double first, t_dvec3 second);
 t_dvec3				vec3_add_vec3_col(t_dvec3 first, t_dvec3 second);
@@ -262,25 +271,29 @@ void				get_intersect_cone(const t_uni *cone, t_dvec3 *ray_pos,
 
 void				rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle);
 
-double				vec3_dot_vec3(t_dvec3 first, t_dvec3 second);
+double				vec3_dot_vec3(const t_dvec3 *first, const t_dvec3 *second);
 double				vec3_to_double(t_dvec3 first);
-t_dvec3				vec3_normalize(t_dvec3 first);
+void				vec3_normalize(t_dvec3 *destination, const t_dvec3 *restrict first);
 
-t_dvec3				vec3_add_vec3(t_dvec3 first, t_dvec3 second);
-t_dvec3				vec3_sub_vec3(t_dvec3 first, t_dvec3 second);
-t_dvec3				vec3_mul_vec3(t_dvec3 first, t_dvec3 second);
-t_dvec3				vec3_div_vec3(t_dvec3 first, t_dvec3 second);
+t_dvec3				vec3_add_vec3(const t_dvec3 *restrict first,
+									const t_dvec3 *restrict second);
+t_dvec3				vec3_sub_vec3(const t_dvec3 *restrict first,
+									const t_dvec3 *restrict second);
+t_dvec3				vec3_mul_vec3(const t_dvec3 *restrict first,
+									const t_dvec3 *restrict second);
+t_dvec3				vec3_div_vec3(const t_dvec3 *restrict first,
+									const t_dvec3 *restrict second);
 t_dvec3				vec3_cross_vec3(t_dvec3 first, t_dvec3 second);
 
-t_dvec3				double_add_vec3(double first, t_dvec3 second);
-t_dvec3				double_sub_vec3(double first, t_dvec3 second);
-t_dvec3				double_mul_vec3(double first, t_dvec3 second);
-t_dvec3				double_div_vec3(double first, t_dvec3 second);
+t_dvec3				double_add_vec3(double first, const t_dvec3 *restrict second);
+t_dvec3				double_sub_vec3(double first, const t_dvec3 *restrict second);
+t_dvec3				double_mul_vec3(double first, const t_dvec3 *restrict second);
+t_dvec3				double_div_vec3(double first, const t_dvec3 *restrict second);
 
-t_dvec3				vec3_add_double(t_dvec3 first, double second);
-t_dvec3				vec3_sub_double(t_dvec3 first, double second);
-t_dvec3				vec3_mul_double(t_dvec3 first, double second);
-t_dvec3				vec3_div_double(t_dvec3 first, double second);
+t_dvec3				vec3_add_double(const t_dvec3 *restrict first, double second);
+t_dvec3				vec3_sub_double(const t_dvec3 *restrict first, double second);
+t_dvec3				vec3_mul_double(const t_dvec3 *restrict first, double second);
+t_dvec3				vec3_div_double(const t_dvec3 *restrict first, double second);
 void				quit_program(t_env *env);
 
 #endif
