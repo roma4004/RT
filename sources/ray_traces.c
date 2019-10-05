@@ -80,5 +80,7 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *color)
 		vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
 		l.touch_point = ray->touch_point;
 		get_light(env, &l, obj, color);
+		if (obj->is_selected)
+			*color = (t_dvec3){0,0,0};
 	}
 }

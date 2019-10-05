@@ -6,13 +6,13 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 20:50:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/05 17:06:39 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static t_dvec3		convert_to_viewport(double x, double y, double rate)
+t_dvec3		convert_to_viewport(double x, double y, double rate)
 {
 	return ((t_dvec3){x * (VIEWPORT_SIZE * rate) / WIN_WIDTH,
 						y * VIEWPORT_SIZE / WIN_HEIGHT,
@@ -42,8 +42,29 @@ static void			*render_frame(void *thread_data)
 	t_dvec						pt;
 	t_dvec3						color;
 
-	ray = (t_ray){env->cam.t_min, env->cam.t_max,
-				(t_dvec3){0, 0, 0, 0}, env->cam.pos, (t_dvec3){0, 0, 0, 0}};
+	ray = (t_ray){env->cam.t_min,
+				env->cam.t_max,
+				(t_dvec3){0, 0, 0, 0},
+				env->cam.pos,
+				(t_dvec3){0, 0, 0, 0}};
+
+	ray.dir = convert_to_viewport(0, 0, rate);
+	rotate_vec(&ray.dir, &env->cam.rotate_angle);
+	env->origin_dir_z = ray.dir;
+	vec3_normalize(&env->origin_dir_z, &env->origin_dir_z);
+
+	ray.dir = convert_to_viewport(-half.x, 0, rate);
+	rotate_vec(&ray.dir, &env->cam.rotate_angle);
+	env->origin_dir_x = ray.dir;
+	vec3_sub_vec3(&env->origin_dir_x, &env->origin_dir_x, &env->origin_dir_z);
+	vec3_normalize(&env->origin_dir_x, &env->origin_dir_x);
+
+	ray.dir = convert_to_viewport(0, -half.y, rate);
+	rotate_vec(&ray.dir, &env->cam.rotate_angle);
+	env->origin_dir_y = ray.dir;
+	vec3_sub_vec3(&env->origin_dir_y, &env->origin_dir_y, &env->origin_dir_z);
+	vec3_normalize(&env->origin_dir_y, &env->origin_dir_y);
+
 	pt.y = -half.y - 1.0;
 	while (++pt.y < half.y)
 	{
@@ -51,7 +72,7 @@ static void			*render_frame(void *thread_data)
 		while ((pt.x += env->threads) < half.x)
 		{
 			ray.dir = convert_to_viewport(pt.x + thread_id, pt.y, rate);
-			rotate_cam(&ray.dir, &env->cam.rotate_angle);
+			rotate_vec(&ray.dir, &env->cam.rotate_angle);
 			send_ray(env, &ray, &color);
 			put_px(env, &half, pt.x + thread_id, pt.y, &color);
 		}

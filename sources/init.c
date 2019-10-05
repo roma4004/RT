@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/04 17:39:28 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/05 13:41:20 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,21 +84,24 @@ t_env				*init_env(void)
 {
 	t_env	*env;
 
-	if (!(env = (t_env *)malloc(sizeof(t_env)))
-	|| SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+	env = NULL;
+if ((env = (t_env *)malloc(sizeof(t_env))))
+{
+	ft_bzero(env, sizeof(t_env));
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
 	|| !(env->window = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED,
-		SDL_WINDOWPOS_UNDEFINED, WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_RESIZABLE))
+										SDL_WINDOWPOS_UNDEFINED,
+										WIN_WIDTH, WIN_HEIGHT,SDL_WINDOW_SHOWN))
 	|| !(env->renderer = SDL_CreateRenderer(env->window, -1,
 		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
 	|| !(env->screen = SDL_CreateTexture(env->renderer,
 		SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
 		WIN_WIDTH, WIN_HEIGHT))
-	|| (env->uni_arr = NULL)
-	|| (env->light_arr = NULL)
-	|| !(env_def_val(env)))
+	|| (env->uni_arr = NULL) || (env->light_arr = NULL) || !(env_def_val(env)))
 	{
 		quit_program(env);
 		return (NULL);
 	}
+}
 	return (env);
 }

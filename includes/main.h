@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/04 20:08:57 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/05 16:52:21 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ typedef struct		s_universal_object
 										t_dvec3 *, t_dvec3 *, t_dvec3 *);
 	void			(*get_normal)(t_ray *, const struct s_universal_object *,
 									double, t_dvec3 *normal);
+	_Bool			is_selected;
 }					t_uni;
 
 typedef struct		s_cone
@@ -157,12 +158,12 @@ typedef struct		s_flags
 {
 	t_ivec3			rotate;
 	t_ivec3			move;
-	_Bool			is_rtv1_over;
 	char			padding[3];
 }					t_flags;
 
 typedef struct		s_environment
 {
+	_Bool			is_rtv1_over;
 	Uint32			err_id;
 	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
 	t_flags			flags;
@@ -180,6 +181,9 @@ typedef struct		s_environment
 	t_list			*lst;
 
 	size_t			threads;
+	t_dvec3			origin_dir_x;
+	t_dvec3			origin_dir_y;
+	t_dvec3			origin_dir_z;
 }					t_env;
 
 typedef struct		s_pthread_data
@@ -237,7 +241,7 @@ _Bool				is_valid_line(t_env *env, char *line, size_t len);
 void				set_value(t_env *env, const double *v, size_t type);
 t_env				*parse_scene(t_env *env, char *file_name);
 
-
+t_dvec3				convert_to_viewport(double x, double y, double rate);
 typedef void		(*intersect)(const t_uni *, t_dvec3 *,
 									t_dvec3 *, t_dvec3 *);
 intersect			intersect_catalog(size_t type);
@@ -246,7 +250,7 @@ typedef void		(*normal)(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *);
 void				(*normal_catalog(size_t type))
 						(t_ray *, const t_uni *, double, t_dvec3 *);
 
-_Bool				event_handler(t_cam *cam, t_flags *flags);
+_Bool				event_handler(t_env *env, t_cam *cam, t_flags *flags);
 void				draw_scene(t_env *env, size_t threads);
 
 void				get_light(t_env *env, t_lght_comp *l,
@@ -277,7 +281,16 @@ void				get_intersect_cylinder(const t_uni *cylinder,
 void				get_intersect_cone(const t_uni *cone, t_dvec3 *ray_pos,
 											t_dvec3 *ray_dir, t_dvec3 *touch);
 
-void				rotate_cam(t_dvec3 *dir, t_dvec3 *rotate_angle);
+void				rotate_vec(t_dvec3 *dir, t_dvec3 *rotate_angle);
+void				rotate_x(t_dvec3 *destination,
+								const t_dvec3 *restrict pt,
+								double angle);
+void				rotate_y(t_dvec3 *destination,
+								const t_dvec3 *restrict pt,
+								double angle);
+void				rotate_z(t_dvec3 *destination,
+								const t_dvec3 *restrict pt,
+								double angle);
 
 void				vec3_dot_vec3(double *destination,
 									const t_dvec3 *first,

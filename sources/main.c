@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/02 09:51:23 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/05 13:34:11 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,22 +70,22 @@ void			quit_program(t_env *env)
 int				main(int argc, char **argv)
 {
 	t_env	*env;
-	_Bool	*is_over;
 
 	if (argc == 2 && (env = init_env()))
 	{
 		if (parse_scene(env, argv[1]))
 		{
-			is_over = &env->flags.is_rtv1_over;
 			draw_scene(env, env->threads);
-			while (!(*is_over))
-				if (event_handler(&env->cam, &env->flags))
+			while (!(env->is_rtv1_over))
+				if (event_handler(env, &env->cam, &env->flags))
 					draw_scene(env, env->threads);
+
 		}
 		else
 			quit_program(env);
 	}
 	else
 		ft_putendl("Usage : ./RTv1 scenne_file");
+
 	return (0);
 }
