@@ -6,18 +6,18 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/05 16:52:21 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/06 20:00:52 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
 # define WIN_NAME "RTv1 by dromanic (@Dentair)"
-# define WIN_WIDTH 1000u
-# define WIN_HEIGHT 1000u
+# define WIN_WIDTH 800u
+# define WIN_HEIGHT 600u
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
-# define VALUES_PER_OBJ 11
+# define VALUES_PER_OBJ 12
 # define OBJ_TYPE_MAX 7
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
@@ -80,9 +80,11 @@ typedef struct		s_ray
 {
 	double			t_min;
 	double			t_max;
-	t_dvec3			dir;
 	t_dvec3			pos;
+	t_dvec3			dir;
 	t_dvec3			touch_point;
+	double			reflect_coef;
+	unsigned		dept_limit;
 }					t_ray;
 
 typedef struct		s_camera
@@ -96,6 +98,7 @@ typedef struct		s_camera
 	t_dvec3			rotate_angle;
 	t_dvec3			parse_rotate_angle;
 	t_canvas_par	canvas;
+	unsigned		reflective_dept;
 }					t_cam;
 
 typedef struct		s_universal_object
@@ -109,6 +112,7 @@ typedef struct		s_universal_object
 										t_dvec3 *, t_dvec3 *, t_dvec3 *);
 	void			(*get_normal)(t_ray *, const struct s_universal_object *,
 									double, t_dvec3 *normal);
+	double			reflective_coef;
 	_Bool			is_selected;
 }					t_uni;
 
@@ -256,7 +260,7 @@ void				draw_scene(t_env *env, size_t threads);
 void				get_light(t_env *env, t_lght_comp *l,
 								t_uni *obj, t_dvec3 *col);
 
-void				send_ray(t_env *env, t_ray *ray, t_dvec3 *color);
+void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
 const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 									t_dvec3 *direction, t_dvec limits);
 

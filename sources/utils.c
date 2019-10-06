@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/05 14:44:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/06 14:44:51 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,15 @@ void				set_value(t_env *env, const double *v, size_t type)
 	else if (type < 3)
 		env->light_arr[id_lgh++] =
 			(t_lght){(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
-			(fabs(v[3]) > 1) ? 1 : fabs(v[3]), type, (t_dvec3){255, 255, 255}};
+			(fabs(v[3]) > 1) ? 1 : fabs(v[3]), type,
+			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0})};
 	else
 	{
 		env->uni_arr[++id_uni] =
 			(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
 				fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0},//todo: test dir is not 0,0,0
 				vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0}), v[10],
-				intersect_catalog(type), normal_catalog(type), false};
+				intersect_catalog(type), normal_catalog(type), v[11], false};
 		vec3_normalize(&env->uni_arr[id_uni].dir, &env->uni_arr[id_uni].dir);
 	}
 }
@@ -82,16 +83,3 @@ void				vec3_add_vec3_col(t_dvec3 *destination,
 							.z = double_clamp(first->z + second->z)};
 }
 
-void				(*intersect_catalog(size_t type))
-						(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *)
-{
-	if (type == SPHERE)
-		return (get_intersect_sphere);
-	if (type == PLANE)
-		return (get_intersect_plane);
-	if (type == CYLINDER)
-		return (get_intersect_cylinder);
-	if (type == CONE)
-		return (get_intersect_cone);
-	return (NULL);
-}

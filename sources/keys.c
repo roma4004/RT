@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/05 21:13:42 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/06 20:18:46 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,37 +82,25 @@ static _Bool		mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 	{
 		if (event->button.button == SDL_BUTTON_X1)
 		{
-			if (event->motion.xrel < -2)
-				env->flags.rotate.x = POS;
-			else if (event->motion.xrel > 2)
+			if (event->motion.xrel < -1)
 				env->flags.rotate.x = NEG;
-			else
-			{
-				event->motion.xrel = NON;
-				env->flags.rotate.x = NON;
-			}//			printf("event->motion.yrel = %d\n", event->motion.yrel);
-
-			if (event->motion.yrel < -2)
-				env->flags.rotate.y = NEG;
-			else if (event->motion.yrel > 2)
+			else if (event->motion.xrel > 1)
+				env->flags.rotate.x = POS;			//			printf("event->motion.yrel = %d\n", event->motion.yrel);
+			if (event->motion.yrel < -1)
 				env->flags.rotate.y = POS;
+			else if (event->motion.yrel > 1)
+				env->flags.rotate.y = NEG;
 			return (true);
 		}
 		if (event->button.button == SDL_BUTTON_LEFT)
 		{
-			if (event->motion.xrel < -2)
-				env->flags.move.x = NEG;
-			else if (event->motion.xrel > 2)
+			if (event->motion.xrel < -1)
 				env->flags.move.x = POS;
-			else
-			{
-				event->motion.xrel = NON;
-				env->flags.move.x = NON;
-			}
-			//	printf("event->motion.yrel = %d\n", event->motion.yrel);
-			if (event->motion.yrel < -2)
+			else if (event->motion.xrel > 1)
+				env->flags.move.x = NEG;			//	printf("event->motion.yrel = %d\n", event->motion.yrel);
+			if (event->motion.yrel < -1)
 				env->flags.move.y = POS;
-			else if (event->motion.yrel > 2)
+			else if (event->motion.yrel > 1)
 				env->flags.move.y = NEG;
 			return (true);
 		}
@@ -124,8 +112,6 @@ static _Bool		mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 				env->flags.rotate.z = POS;
 			return (true);
 		}
-		event->motion.xrel = NON;
-		event->motion.yrel = NON;
 	}
 	if (event->type == SDL_MOUSEWHEEL)
 	{
@@ -139,7 +125,6 @@ static _Bool		mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 	&& event->button.button == SDL_BUTTON_MIDDLE)
 	{
 //		is_cam_reset(SDLK_r, cam);
-
 		return (true);
 	}
 	return (false);
@@ -151,14 +136,13 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 	SDL_Keycode			key_code;
 	unsigned char		result;
 
-//	ft_bzero(flags, sizeof(t_flags));
 	result = 0;
-			env->flags.move.x = NON;
-			env->flags.move.y = NON;
-			env->flags.move.z = NON;
-			env->flags.rotate.x = NON;
-			env->flags.rotate.y = NON;
-			env->flags.rotate.z = NON;
+	env->flags.move.x = NON;
+	env->flags.move.y = NON;
+	env->flags.move.z = NON;
+	env->flags.rotate.x = NON;
+	env->flags.rotate.y = NON;
+	env->flags.rotate.z = NON;
 	while (SDL_PollEvent(&event))
 	{
 		key_code = event.key.keysym.sym;

@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/05 13:41:20 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/06 13:50:32 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ static void			init_cam(t_cam *cam)
 	cam->t_max = (double)MAXFLOAT;
 	cam->pos = (t_dvec3){0.0, 0.0, -42.0, 0.0};
 	cam->rotate_angle = (t_dvec3){0.0, 0.0, 0.0, 0.0};
+	cam->reflective_dept = 5;
 }
 
 static t_env		*env_def_val(t_env *env)
@@ -84,11 +85,8 @@ t_env				*init_env(void)
 {
 	t_env	*env;
 
-	env = NULL;
-if ((env = (t_env *)malloc(sizeof(t_env))))
-{
-	ft_bzero(env, sizeof(t_env));
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+	if (!(env = (t_env *)malloc(sizeof(t_env)))
+	|| SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
 	|| !(env->window = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED,
 										SDL_WINDOWPOS_UNDEFINED,
 										WIN_WIDTH, WIN_HEIGHT,SDL_WINDOW_SHOWN))
@@ -102,6 +100,5 @@ if ((env = (t_env *)malloc(sizeof(t_env))))
 		quit_program(env);
 		return (NULL);
 	}
-}
 	return (env);
 }

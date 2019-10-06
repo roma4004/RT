@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/05 17:06:39 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/06 20:00:52 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ static void			*render_frame(void *thread_data)
 	t_dvec						pt;
 	t_dvec3						color;
 
-	ray = (t_ray){env->cam.t_min,
-				env->cam.t_max,
-				(t_dvec3){0, 0, 0, 0},
-				env->cam.pos,
-				(t_dvec3){0, 0, 0, 0}};
+	ray = (t_ray){.t_min = env->cam.t_min,
+		.t_max = env->cam.t_max,
+		.pos = env->cam.pos,
+		.dept_limit = env->cam.reflective_dept
+	};
 
 	ray.dir = convert_to_viewport(0, 0, rate);
 	rotate_vec(&ray.dir, &env->cam.rotate_angle);
@@ -107,3 +107,5 @@ void				draw_scene(t_env *env, size_t threads)
 	SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
 	SDL_RenderPresent(env->renderer);
 }
+
+//сумму коеф зеркальности и прозрачностие должна быть меньше чем 0.98

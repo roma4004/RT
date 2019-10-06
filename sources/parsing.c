@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/09/29 21:18:04 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/06 14:51:48 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,22 +38,26 @@ static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
 	const size_t	len = lst->content_size;
 	const char		*str = lst->content;
 	size_t			i;
-	size_t			j;
+	size_t			num_id;
 	double			arr[VALUES_PER_OBJ];
 
+	ft_bzero(&arr, sizeof(double) * VALUES_PER_OBJ);
 	if (type == UINT64_MAX)
 		return ;
 	i = UINT64_MAX;
-	j = 0;
+	num_id = 0;
 	while (++i < len && str[i] != '#')
 	{
 		while (i < len && str[i] != '#'
 		&& !ft_isdigit(str[i]) && str[i] != '-' && str[i] != '+')
 			i++;
-		if (i > 0 && str[i - 1] == '.' && j > 0)
-			arr[j - 1] += after_dot(&str[i], arr[j - 1]);
+		if (i > 0 && str[i - 1] == '.' && num_id > 0)
+			arr[num_id - 1] += after_dot(&str[i], arr[num_id - 1]);
 		else
-			arr[j++] = ft_atoi(&str[i]);
+		{
+			arr[num_id] = ft_atoi(&str[i]);
+			num_id++;
+		}
 		if (str[i] == '+' || str[i] == '-')
 			i++;
 		while (ft_isdigit(str[i]))
@@ -110,7 +114,7 @@ t_env				*parse_scene(t_env *env, char *file_name)
 		ft_memdel((void *)&buf);
 	if (status == -1 || !env->lst || close(fd))
 		env->err_id = READ_ERR;
-	if (!parse_lst(env, env->lst) || ft_destroy_lst(env->lst))
+	if (!parse_lst(env, env->lst) )//|| ft_destroy_lst(env->lst))
 		return (NULL);
 	return (env);
 }

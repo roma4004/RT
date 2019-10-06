@@ -12,6 +12,19 @@
 
 #include "main.h"
 
+void	(*intersect_catalog(size_t type))
+		(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *)
+{
+	if (type == SPHERE)
+		return (get_intersect_sphere);
+	if (type == PLANE)
+		return (get_intersect_plane);
+	if (type == CYLINDER)
+		return (get_intersect_cylinder);
+	if (type == CONE)
+		return (get_intersect_cone);
+	return (NULL);
+}
 
 void		get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
 									t_dvec3 *ray_dir, t_dvec3 *touch)
@@ -28,8 +41,8 @@ void		get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
 	discriminant_comput(&tmp, touch);
 }
 
-void		get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
-									t_dvec3 *ray_dir, t_dvec3 *touch)
+void	get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
+							t_dvec3 *ray_dir, t_dvec3 *touch)
 {
 
 	t_dvec3		oc ;
@@ -49,8 +62,8 @@ void		get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
 	}
 }
 
-void 		get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
-									t_dvec3 *ray_dir, t_dvec3 *touch)
+void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
+								t_dvec3 *ray_dir, t_dvec3 *touch)
 {
 	t_dvec3		oc;
 	t_dvec3		tmp;
@@ -70,8 +83,8 @@ void 		get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
 	discriminant_comput(&tmp, touch);
 }
 
-void		get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
-									t_dvec3 *ray_dir, t_dvec3 *touch)
+void	get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
+							t_dvec3 *ray_dir, t_dvec3 *touch)
 {
 	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
 	t_dvec3			oc;

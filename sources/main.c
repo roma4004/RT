@@ -71,21 +71,19 @@ int				main(int argc, char **argv)
 {
 	t_env	*env;
 
-	if (argc == 2 && (env = init_env()))
+	if (argc == 2)
 	{
-		if (parse_scene(env, argv[1]))
+		if ((env = init_env()) && parse_scene(env, argv[1]))
 		{
 			draw_scene(env, env->threads);
 			while (!(env->is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))
 					draw_scene(env, env->threads);
-
 		}
 		else
 			quit_program(env);
 	}
 	else
 		ft_putendl("Usage : ./RTv1 scenne_file");
-
 	return (0);
 }
