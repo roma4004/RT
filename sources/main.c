@@ -6,35 +6,35 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/05 13:34:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/11 16:36:15 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-uint8_t			double_clamp(double x)
+double			double_clamp(double x)
 {
 	if (x < 0.0)
 		return (0);
 	else if (x > 255.0)
-		return (255);
+		return (255.0);
 	else
-		return ((uint8_t)(x));
+		return (x);
 }
 
 static void		show_errors(t_env *env)
 {
-	if (env->err_id == 404)
+	if (env->flags.err_id == 404)
 		ft_putstr_fd("SCENE_ERR", 2);
-	if (env->err_id == 405)
+	if (env->flags.err_id == 405)
 		ft_putstr_fd("READ_ERR", 2);
-	if (env->err_id == 406)
+	if (env->flags.err_id == 406)
 		ft_putstr_fd("SCENE_SIZE_ERR", 2);
-	if (env->err_id && errno)
+	if (env->flags.err_id && errno)
 		ft_putstr_fd(" - ", 2);
 	if (errno)
 		ft_putstr_fd(strerror(errno), 2);
-	if (env->err_id || errno)
+	if (env->flags.err_id || errno)
 		ft_putstr_fd("\n", 2);
 	if (DEBUG)
 	{
@@ -67,6 +67,30 @@ void			quit_program(t_env *env)
 	SDL_Quit();
 }
 
+///checklist:
+//+ no recalculation without need
+//+ 4 basic object (sphere, plane, cylinder, cone)
+//+ camera movement and rotating and placing on the scene on start from scene_file
+//+ Multi thread computing
+
+//- colored light
+//- It's possible inside the RT to save, screenshot the rendered image.
+//- JSON
+//- sepia filter
+//- limited obj
+//- sliced obj
+//- interface
+//- selecting object by mouse
+//- composed elements (grouped obj)
+//- parse screen param from file (screen obj)
+//- texture (checkmate_board)
+
+//optional:
+//- blinded by light spot facing us.
+//- negative objects
+//- add figure paraboloid et hyperboloid.
+//- torus
+
 int				main(int argc, char **argv)
 {
 	t_env	*env;
@@ -76,7 +100,7 @@ int				main(int argc, char **argv)
 		if ((env = init_env()) && parse_scene(env, argv[1]))
 		{
 			draw_scene(env, env->threads);
-			while (!(env->is_rtv1_over))
+			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))
 					draw_scene(env, env->threads);
 		}

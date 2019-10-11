@@ -63,20 +63,20 @@ static void			init_cam(t_cam *cam)
 	cam->pos = (t_dvec3){0.0, 0.0, -42.0, 0.0};
 	cam->rotate_angle = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 	cam->reflective_dept = 5;
+	cam->epsilon = 0.00001;
 }
 
 static t_env		*env_def_val(t_env *env)
 {
 	if (!env)
 		return (NULL);
-	env->err_id = 0;
+	env->flags.err_id = 0;
 	ft_bzero(&env->flags, sizeof(t_flags));
 	init_cam(&env->cam);
-	if (env->err_id)
+	if (env->flags.err_id)
 		return (NULL);
 	env->bg_color = (t_dvec3){255.0, 255.0, 255.0, 0.0};
-	env->epsilon = 0.00001;
-	env->threads = 4;
+	env->threads = 1;
 	errno = 0;
 	return (env);
 }

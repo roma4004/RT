@@ -38,7 +38,7 @@ _Bool			is_valid_line(t_env *env, char *line, size_t len)
 			|| ft_isdigit(line[i])
 			|| ft_strchr(" \t|", line[i])))
 		{
-			env->err_id = SCENE_ERR;
+			env->flags.err_id = SCENE_ERR;
 			return (false);
 		}
 	}
@@ -105,7 +105,7 @@ size_t			count_number(t_env *env, char *str, size_t len)
 				i++;
 			}
 			if (dots > 1)
-				env->err_id = SCENE_ERR;
+				env->flags.err_id = SCENE_ERR;
 		}
 	}
 	return (digits);

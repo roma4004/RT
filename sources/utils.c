@@ -58,9 +58,9 @@ void				set_value(t_env *env, const double *v, size_t type)
 	{
 		env->uni_arr[++id_uni] =
 			(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
-				fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0},//todo: test dir is not 0,0,0
-				vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0}), v[10],
-				intersect_catalog(type), normal_catalog(type), v[11], false};
+			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0},//todo: test dir is not 0,0,0
+			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0}), v[10],
+			intersect_catalog(type), normal_catalog(type), v[11], v[12], v[13], false};
 		vec3_normalize(&env->uni_arr[id_uni].dir, &env->uni_arr[id_uni].dir);
 	}
 }

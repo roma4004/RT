@@ -6,18 +6,18 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/06 20:00:52 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/11 19:29:26 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAIN_H
 # define MAIN_H
 # define WIN_NAME "RTv1 by dromanic (@Dentair)"
-# define WIN_WIDTH 800u
-# define WIN_HEIGHT 600u
+# define WIN_WIDTH 1000u
+# define WIN_HEIGHT 1000u
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
-# define VALUES_PER_OBJ 12
+# define VALUES_PER_OBJ 14
 # define OBJ_TYPE_MAX 7
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
@@ -84,13 +84,16 @@ typedef struct		s_ray
 	t_dvec3			dir;
 	t_dvec3			touch_point;
 	double			reflect_coef;
+	double			refract_coef;
 	unsigned		dept_limit;
+	char			padding[4];
 }					t_ray;
 
 typedef struct		s_camera
 {
 	double			t_min;
 	double			t_max;
+	double			epsilon;
 	t_dvec3			pos;
 	t_dvec3			parse_pos;
 	double			move_speed;
@@ -99,6 +102,7 @@ typedef struct		s_camera
 	t_dvec3			parse_rotate_angle;
 	t_canvas_par	canvas;
 	unsigned		reflective_dept;
+	char			padding[4];
 }					t_cam;
 
 typedef struct		s_universal_object
@@ -113,7 +117,10 @@ typedef struct		s_universal_object
 	void			(*get_normal)(t_ray *, const struct s_universal_object *,
 									double, t_dvec3 *normal);
 	double			reflective_coef;
+	double			refractive_coef;
+	double			transparency_coef;
 	_Bool			is_selected;
+	char			padding[7];
 }					t_uni;
 
 typedef struct		s_cone
@@ -162,13 +169,14 @@ typedef struct		s_flags
 {
 	t_ivec3			rotate;
 	t_ivec3			move;
+	Uint32			err_id;
+	_Bool			is_rtv1_over;
+	_Bool			is_in_select_mod;
 	char			padding[3];
 }					t_flags;
 
 typedef struct		s_environment
 {
-	_Bool			is_rtv1_over;
-	Uint32			err_id;
 	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
 	t_flags			flags;
 	t_cam			cam;
@@ -177,11 +185,11 @@ typedef struct		s_environment
 	SDL_Texture		*screen;
 	SDL_Surface		*surface;
 	t_uni			*uni_arr;
+	t_uni			*selected_obj;
 	size_t			uni_arr_len;
 	t_lght			*light_arr;
 	size_t			light_arr_len;
 	t_dvec3			bg_color;
-	double			epsilon;
 	t_list			*lst;
 
 	size_t			threads;
@@ -223,6 +231,11 @@ enum				e_orient
 	NON = 0
 };
 
+void				send_selected_ray(t_env *env, t_ray *ray,
+										t_uni **obj, double dist);
+
+void				ft_clamp_in_range(double *dest, const double *value,
+										double min, double max);
 _Bool				is_x_move_up(SDL_Keycode k, t_ivec3 *restrict move);
 _Bool				is_y_move_up(SDL_Keycode k, t_ivec3 *restrict move);
 _Bool				is_z_move_up(SDL_Keycode k, t_ivec3 *restrict move);
@@ -261,13 +274,16 @@ void				get_light(t_env *env, t_lght_comp *l,
 								t_uni *obj, t_dvec3 *col);
 
 void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
+//const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
+//									t_dvec3 *direction, t_dvec limits);
+
 const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-									t_dvec3 *direction, t_dvec limits);
+									t_dvec3 *direction, double t_max);
 
 void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch);
 void				vec3_length(double *destination,
 								const t_dvec3 *restrict first);
-uint8_t				double_clamp(double x);
+double				double_clamp(double x);
 
 void				double_mul_vec3_col(t_dvec3 *destination,
 										double first,

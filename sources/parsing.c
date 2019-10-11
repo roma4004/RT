@@ -71,17 +71,17 @@ static bool			parse_lst(t_env *env, t_list *lst)
 	t_list		*cur;
 	size_t		nums;
 
-	if (env->err_id || !init_obj_arr(env, lst))
+	if (env->flags.err_id || !init_obj_arr(env, lst))
 		return (false);
 	cur = lst;
 	while (cur)
 	{
 		if ((ft_strlen(cur->content) > MAX_MAP_SIDE
-		&& (env->err_id = SCENE_SIZE_ERR)))
+		&& (env->flags.err_id = SCENE_SIZE_ERR)))
 			return (false);
 		nums = count_number(env, cur->content, cur->content_size);
 		if (nums != 0 && nums != VALUES_PER_OBJ
-		&& (env->err_id = SCENE_ERR))
+		&& (env->flags.err_id = SCENE_ERR))
 			return (false);
 		if (nums != 0)
 			get_value_from_line(env, cur, get_type(cur->content));
@@ -99,7 +99,7 @@ t_env				*parse_scene(t_env *env, char *file_name)
 
 	if (!env || !file_name || (env->lst = NULL)
 	|| (rows = 0) || ((fd == -1 || errno == ITS_A_DIRECTORY)
-	&& (env->err_id = READ_ERR))
+	&& (env->flags.err_id = READ_ERR))
 	|| (buf = NULL))
 		return (NULL);
 	while ((status = get_next_line(fd, &buf)) == 1
@@ -107,13 +107,13 @@ t_env				*parse_scene(t_env *env, char *file_name)
 	&& (ft_lstappend(&env->lst, buf, ft_strlen(buf) + 1)) && ++rows)
 	{
 		ft_memdel((void *)&buf);
-		if (((rows > MAX_MAP_SIDE) && (env->err_id = SCENE_SIZE_ERR)))
+		if (((rows > MAX_MAP_SIDE) && (env->flags.err_id = SCENE_SIZE_ERR)))
 			break ;
 	}
 	if (buf)
 		ft_memdel((void *)&buf);
 	if (status == -1 || !env->lst || close(fd))
-		env->err_id = READ_ERR;
+		env->flags.err_id = READ_ERR;
 	if (!parse_lst(env, env->lst) )//|| ft_destroy_lst(env->lst))
 		return (NULL);
 	return (env);

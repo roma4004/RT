@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/06 20:18:46 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/11 20:32:37 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,31 +28,103 @@ static void		keyboard_handle(t_env *env, t_cam *restrict cam,
 								double move_speed, double rotate_speed)
 {
 	t_dvec3		offset;
+//	t_dvec3		*move_obj;
+
+	int obj_cnt = 0;
+	int i = -1;
+	while (++i < env->uni_arr_len)
+		if (env->uni_arr[i].is_selected)
+			obj_cnt++;
 
 	if (f->move.x)
 	{
-		vec3_mul_double(&offset, &env->origin_dir_x,
+		if (obj_cnt)
+		{
+			i = -1;
+			while (++i < env->uni_arr_len)
+				if (env->uni_arr[i].is_selected)
+				{
+					vec3_mul_double(&offset, &env->origin_dir_x,
 						(double)f->move.x * move_speed);
-		vec3_add_vec3(&cam->pos, &cam->pos, &offset);
+					vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
+				}
+		}
+		else
+		{
+			vec3_mul_double(&offset, &env->origin_dir_x,
+				(double)f->move.x * move_speed);
+			vec3_add_vec3(&cam->pos, &cam->pos, &offset);
+		}
+
 	}
 	if (f->move.y)
 	{
-		vec3_mul_double(&offset, &env->origin_dir_y,
-						(double)f->move.y * move_speed);
-		vec3_add_vec3(&cam->pos, &cam->pos, &offset);
+		if (obj_cnt)
+		{
+			i = -1;
+			while (++i < env->uni_arr_len)
+				if (env->uni_arr[i].is_selected)
+				{
+					vec3_mul_double(&offset, &env->origin_dir_y, (double) f->move.y * move_speed);
+					vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
+				}
+
+		}
+		else
+		{
+			vec3_mul_double(&offset, &env->origin_dir_y,
+				(double)f->move.y * move_speed);
+			vec3_add_vec3(&cam->pos, &cam->pos, &offset);
+		}
 	}
 	if (f->move.z)
 	{
-		vec3_mul_double(&offset, &env->origin_dir_z,
+		if (obj_cnt)
+		{
+			i = -1;
+			while (++i < env->uni_arr_len)
+				if (env->uni_arr[i].is_selected)
+				{
+					vec3_mul_double(&offset, &env->origin_dir_z,
 						(double)f->move.z * move_speed);
-		vec3_add_vec3(&cam->pos, &cam->pos, &offset);
+					vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
+				}
+		}
+		else
+		{
+			vec3_mul_double(&offset, &env->origin_dir_z,
+				(double)f->move.z * move_speed);
+			vec3_add_vec3(&cam->pos, &cam->pos, &offset);
+		}
 	}
 //	cam->pos.x += f->move.x * move_speed;
 //	cam->pos.y += f->move.y * move_speed;
 //	cam->pos.z += f->move.z * move_speed;
-	cam->rotate_angle.x += f->rotate.x * rotate_speed;
+
+	if (obj_cnt)
+	{
+		i = -1;
+		while (++i < env->uni_arr_len)
+			if (env->uni_arr[i].is_selected)
+			{
+				//todo: rotate matrix
+			}
+	}
+	else
+	{
+		cam->rotate_angle.x += f->rotate.x * rotate_speed;
+	}
 	cam->rotate_angle.y += f->rotate.y * rotate_speed;
 	cam->rotate_angle.z += f->rotate.z * rotate_speed;
+}
+
+static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
+{
+	if (k == SDLK_CAPSLOCK)
+	{
+		ft_switch(&f->is_in_select_mod);
+		return (true);
+	}
 }
 
 static _Bool	keyboard_evens(t_cam *cam,Uint32 event_type, SDL_Keycode k,
@@ -71,7 +143,9 @@ static _Bool	keyboard_evens(t_cam *cam,Uint32 event_type, SDL_Keycode k,
 								|| is_z_move_up(k, &f->move)
 								|| is_x_rotate_up(k, &f->rotate)
 								|| is_y_rotate_up(k, &f->rotate)
-								|| is_z_rotate_up(k, &f->rotate)))
+								|| is_z_rotate_up(k, &f->rotate)
+								|| is_key_recognized(f, k)
+								))
 		return (false);
 	return (false);
 }
@@ -113,6 +187,36 @@ static _Bool		mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 			return (true);
 		}
 	}
+
+	if (event->type == SDL_MOUSEBUTTONUP)
+	{
+		double		dist;
+		t_ray		ray;
+
+		if (env->flags.is_in_select_mod && event->button.button == SDL_BUTTON_LEFT)
+		{
+
+			printf("event->motion.x = %d, event->motion.y = %d \n", event->motion.x, event->motion.y);
+			ray = (t_ray){.t_min = cam->t_min,
+				.t_max = cam->t_max,
+				.pos = cam->pos,
+				.dept_limit = cam->reflective_dept
+			};
+			ray.dir = convert_to_viewport(event->motion.x - env->cam.canvas.half.x,
+										-event->motion.y + env->cam.canvas.half.y - 1.0,
+										  env->cam.canvas.rate);
+			printf("ray.dir = %f, %f, %f \n", ray.dir.x, ray.dir.y, ray.dir.z);
+			rotate_vec(&ray.dir, &env->cam.rotate_angle);
+
+			send_selected_ray(env, &ray, &env->selected_obj, (double)MAXFLOAT);
+			if (env->selected_obj)
+				env->selected_obj->is_selected =
+					(env->selected_obj->is_selected) ? false : true;
+//				obj->diffuse_color = (t_dvec3){255,255,255,0};
+			draw_scene(env, env->threads);
+		}
+	}
+
 	if (event->type == SDL_MOUSEWHEEL)
 	{
 		if (event->wheel.y > 0)
@@ -148,7 +252,7 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 		key_code = event.key.keysym.sym;
 		if (event.type == SDL_QUIT
 		|| (event.type == SDL_KEYDOWN && key_code == SDLK_ESCAPE))
-			env->is_rtv1_over = true;
+			env->flags.is_rtv1_over = true;
 		result += keyboard_evens(cam, event.type, key_code, flags);
 		result += mouse_events(env, &event, cam);
 	}

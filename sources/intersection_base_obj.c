@@ -44,7 +44,7 @@ void		get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
 void	get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
 							t_dvec3 *ray_dir, t_dvec3 *touch)
 {
-
+//todo: add limits
 	t_dvec3		oc ;
 	double		div;
 	double		oc_dot_dir;
@@ -65,6 +65,7 @@ void	get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
 void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
 								t_dvec3 *ray_dir, t_dvec3 *touch)
 {
+	//todo: add limits (need full refactoring)
 	t_dvec3		oc;
 	t_dvec3		tmp;
 	double		oc_dot_dir;
@@ -86,6 +87,7 @@ void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
 void	get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
 							t_dvec3 *ray_dir, t_dvec3 *touch)
 {
+	//todo: add limits (need full refactoring)
 	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
 	t_dvec3			oc;
 	t_dvec3			tmp;
