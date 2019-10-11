@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 20:32:37 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/11 22:04:41 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,99 +23,87 @@ static _Bool	is_cam_reset(SDL_Keycode k, t_cam *restrict cam)
 	return (false);
 }
 
+void		rotate_obj(t_env *env, t_dvec3 rot)
+{
+	int i;
+
+	i = -1;
+	while (++i < env->uni_arr_len)
+		if (env->uni_arr[i].is_selected)
+			rotate_vec(&env->uni_arr[i].dir, &rot);
+}
+
+void		move_obj(t_env *env, t_dvec3 *move_dir,  double move_speed)
+{
+	t_dvec3		offset;
+	int i;
+
+	i = -1;
+	while (++i < env->uni_arr_len)
+		if (env->uni_arr[i].is_selected)
+		{
+			vec3_mul_double(&offset, move_dir, move_speed);
+			vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
+		}
+}
+
+void		move_cam(t_env *env, t_dvec3 *move_dir,  double move_speed)
+{
+	t_dvec3		offset;
+
+	vec3_mul_double(&offset, move_dir, move_speed);
+	vec3_add_vec3(&env->cam.pos, &env->cam.pos, &offset);
+}
+
 static void		keyboard_handle(t_env *env, t_cam *restrict cam,
 								t_flags *restrict f,
 								double move_speed, double rotate_speed)
 {
-	t_dvec3		offset;
-//	t_dvec3		*move_obj;
+	int		obj_cnt;
+	int		i;
 
-	int obj_cnt = 0;
-	int i = -1;
+	i = -1;
+	obj_cnt = 0;
 	while (++i < env->uni_arr_len)
 		if (env->uni_arr[i].is_selected)
 			obj_cnt++;
-
 	if (f->move.x)
 	{
 		if (obj_cnt)
-		{
-			i = -1;
-			while (++i < env->uni_arr_len)
-				if (env->uni_arr[i].is_selected)
-				{
-					vec3_mul_double(&offset, &env->origin_dir_x,
-						(double)f->move.x * move_speed);
-					vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
-				}
-		}
+			move_obj(env, &env->origin_dir_x, (double)f->move.x * move_speed);
 		else
-		{
-			vec3_mul_double(&offset, &env->origin_dir_x,
-				(double)f->move.x * move_speed);
-			vec3_add_vec3(&cam->pos, &cam->pos, &offset);
-		}
-
+			move_cam(env, &env->origin_dir_x, (double)f->move.x * move_speed);
 	}
 	if (f->move.y)
 	{
 		if (obj_cnt)
-		{
-			i = -1;
-			while (++i < env->uni_arr_len)
-				if (env->uni_arr[i].is_selected)
-				{
-					vec3_mul_double(&offset, &env->origin_dir_y, (double) f->move.y * move_speed);
-					vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
-				}
-
-		}
+			move_obj(env, &env->origin_dir_y, (double)f->move.y * move_speed);
 		else
-		{
-			vec3_mul_double(&offset, &env->origin_dir_y,
-				(double)f->move.y * move_speed);
-			vec3_add_vec3(&cam->pos, &cam->pos, &offset);
-		}
+			move_cam(env, &env->origin_dir_y, (double)f->move.y * move_speed);
 	}
 	if (f->move.z)
 	{
 		if (obj_cnt)
-		{
-			i = -1;
-			while (++i < env->uni_arr_len)
-				if (env->uni_arr[i].is_selected)
-				{
-					vec3_mul_double(&offset, &env->origin_dir_z,
-						(double)f->move.z * move_speed);
-					vec3_add_vec3(&env->uni_arr[i].pos, &env->uni_arr[i].pos, &offset);
-				}
-		}
+			move_obj(env, &env->origin_dir_z, (double)f->move.z * move_speed);
 		else
-		{
-			vec3_mul_double(&offset, &env->origin_dir_z,
-				(double)f->move.z * move_speed);
-			vec3_add_vec3(&cam->pos, &cam->pos, &offset);
-		}
+			move_cam(env, &env->origin_dir_z, (double)f->move.z * move_speed);
 	}
 //	cam->pos.x += f->move.x * move_speed;
 //	cam->pos.y += f->move.y * move_speed;
 //	cam->pos.z += f->move.z * move_speed;
 
 	if (obj_cnt)
-	{
-		i = -1;
-		while (++i < env->uni_arr_len)
-			if (env->uni_arr[i].is_selected)
-			{
-				//todo: rotate matrix
-			}
-	}
+		rotate_obj(env, (t_dvec3){f->rotate.x * rotate_speed, 0, 0});
 	else
-	{
 		cam->rotate_angle.x += f->rotate.x * rotate_speed;
-	}
-	cam->rotate_angle.y += f->rotate.y * rotate_speed;
-	cam->rotate_angle.z += f->rotate.z * rotate_speed;
+	if (obj_cnt)
+		rotate_obj(env, (t_dvec3){0, f->rotate.y * rotate_speed, 0});
+	else
+		cam->rotate_angle.y += f->rotate.y * rotate_speed;
+	if (obj_cnt)
+		rotate_obj(env, (t_dvec3){0, 0, f->rotate.z * rotate_speed});
+	else
+		cam->rotate_angle.z += f->rotate.z * rotate_speed;
 }
 
 static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
