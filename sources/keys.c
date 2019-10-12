@@ -61,37 +61,20 @@ static void		keyboard_handle(t_env *env, t_cam *restrict cam,
 {
 	int		obj_cnt;
 	int		i;
+	void	(*uni_move)(t_env *, t_dvec3 *,  double);
 
 	i = -1;
 	obj_cnt = 0;
 	while (++i < env->uni_arr_len)
 		if (env->uni_arr[i].is_selected)
 			obj_cnt++;
+	uni_move = (obj_cnt) ? move_obj : move_cam;
 	if (f->move.x)
-	{
-		if (obj_cnt)
-			move_obj(env, &env->origin_dir_x, (double)f->move.x * move_speed);
-		else
-			move_cam(env, &env->origin_dir_x, (double)f->move.x * move_speed);
-	}
+		uni_move(env, &env->origin_dir_x, (double)f->move.x * move_speed);
 	if (f->move.y)
-	{
-		if (obj_cnt)
-			move_obj(env, &env->origin_dir_y, (double)f->move.y * move_speed);
-		else
-			move_cam(env, &env->origin_dir_y, (double)f->move.y * move_speed);
-	}
+		uni_move(env, &env->origin_dir_y, (double)f->move.y * move_speed);
 	if (f->move.z)
-	{
-		if (obj_cnt)
-			move_obj(env, &env->origin_dir_z, (double)f->move.z * move_speed);
-		else
-			move_cam(env, &env->origin_dir_z, (double)f->move.z * move_speed);
-	}
-//	cam->pos.x += f->move.x * move_speed;
-//	cam->pos.y += f->move.y * move_speed;
-//	cam->pos.z += f->move.z * move_speed;
-
+		uni_move(env, &env->origin_dir_z, (double)f->move.z * move_speed);
 	if (obj_cnt)
 		rotate_obj(env, (t_dvec3){f->rotate.x * rotate_speed, 0, 0});
 	else
