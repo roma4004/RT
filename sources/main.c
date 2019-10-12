@@ -72,6 +72,7 @@ void			quit_program(t_env *env)
 //+ 4 basic object (sphere, plane, cylinder, cone)
 //+ camera movement and rotating and placing on the scene on start from scene_file
 //+ Multi thread computing
+//+ Interacting with objects
 
 //- colored light
 //- It's possible inside the RT to save, screenshot the rendered image.

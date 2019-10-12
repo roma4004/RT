@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   rotate.c                                           :+:      :+:    :+:   */
+/*   vec3_rotate.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/23 14:59:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/01 13:48:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/12 13:05:24 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,22 @@ void	rotate_z(t_dvec3 *destination,
 							.z = pt->z};
 }
 
-void	rotate_vec(t_dvec3 *dir, t_dvec3 *rotate_angle)
+void	rotate_vec(t_dvec3 *vec, t_dvec3 *rotate_angle)
 {
 	if (rotate_angle->x != 0.0)
-		rotate_x(dir, dir, rotate_angle->x * M_PI / 180);
+		rotate_x(vec, vec, rotate_angle->x * M_PI / 180);
 	if (rotate_angle->y != 0.0)
-		rotate_y(dir, dir, rotate_angle->y * M_PI / 180);
+		rotate_y(vec, vec, rotate_angle->y * M_PI / 180);
 	if (rotate_angle->z != 0.0)
-		rotate_z(dir, dir, rotate_angle->z * M_PI / 180);
+		rotate_z(vec, vec, rotate_angle->z * M_PI / 180);
+}
+
+void		rotate_objects(t_env *env, t_dvec3 rot)
+{
+	int i;
+
+	i = -1;
+	while (++i < env->uni_arr_len)
+		if (env->uni_arr[i].is_selected)
+			rotate_vec(&env->uni_arr[i].dir, &rot);
 }

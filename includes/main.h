@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 19:29:26 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/12 16:15:37 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,11 @@ typedef struct		s_camera
 	double			t_max;
 	double			epsilon;
 	t_dvec3			pos;
-	t_dvec3			parse_pos;
+	t_dvec3			pos_backup;
 	double			move_speed;
 	double			rotate_speed;
 	t_dvec3			rotate_angle;
-	t_dvec3			parse_rotate_angle;
+	t_dvec3			rotate_angle_backup;
 	t_canvas_par	canvas;
 	unsigned		reflective_dept;
 	char			padding[4];
@@ -119,6 +119,8 @@ typedef struct		s_universal_object
 	double			reflective_coef;
 	double			refractive_coef;
 	double			transparency_coef;
+	t_dvec3			pos_backup;
+	t_dvec3			dir_backup;
 	_Bool			is_selected;
 	char			padding[7];
 }					t_uni;
@@ -172,7 +174,8 @@ typedef struct		s_flags
 	Uint32			err_id;
 	_Bool			is_rtv1_over;
 	_Bool			is_in_select_mod;
-	char			padding[3];
+	_Bool			is_reset;
+	char			padding[2];
 }					t_flags;
 
 typedef struct		s_environment
@@ -249,6 +252,7 @@ _Bool				is_x_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
 _Bool				is_y_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
 _Bool				is_z_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
 
+
 t_env				*init_env(void);
 _Bool				init_obj_arr(t_env *env, t_list *lst);
 
@@ -301,7 +305,15 @@ void				get_intersect_cylinder(const t_uni *cylinder,
 void				get_intersect_cone(const t_uni *cone, t_dvec3 *ray_pos,
 											t_dvec3 *ray_dir, t_dvec3 *touch);
 
-void				rotate_vec(t_dvec3 *dir, t_dvec3 *rotate_angle);
+void				move_objects(t_env *env, t_dvec3 *move_dir,
+									double move_speed);
+void				move_camera(t_env *env, t_dvec3 *move_dir,
+									double move_speed);
+
+
+void				reset(t_env *env, t_cam *restrict cam, size_t obj_cnt);
+
+void				rotate_vec(t_dvec3 *vec, t_dvec3 *rotate_angle);
 void				rotate_x(t_dvec3 *destination,
 								const t_dvec3 *restrict pt,
 								double angle);
@@ -311,6 +323,8 @@ void				rotate_y(t_dvec3 *destination,
 void				rotate_z(t_dvec3 *destination,
 								const t_dvec3 *restrict pt,
 								double angle);
+void				rotate_objects(t_env *env, t_dvec3 rot);
+void				rotate_camera(t_env *env, t_dvec3 rot);
 
 void				vec3_dot_vec3(double *destination,
 									const t_dvec3 *first,

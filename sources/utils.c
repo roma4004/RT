@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/06 14:44:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/12 16:15:36 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ void				set_value(t_env *env, const double *v, size_t type)
 		return ;
 	if (type == 7)
 	{
-		env->cam.parse_pos = (t_dvec3){v[0], v[1], v[2], 0.0};
-		env->cam.parse_rotate_angle = (t_dvec3){.x = v[4], .y = v[5], .z = v[6]};
+		env->cam.pos = (t_dvec3){v[0], v[1], v[2], 0.0};
+		env->cam.rotate_angle = (t_dvec3){.x = v[4], .y = v[5], .z = v[6]};
 //		vec3_normalize(&env->cam.parse_rotate_angle,
 //						&env->cam.parse_rotate_angle);
-		env->cam.pos = env->cam.parse_pos;
-		env->cam.rotate_angle = env->cam.parse_rotate_angle;
+		env->cam.pos_backup = env->cam.pos;
+		env->cam.rotate_angle_backup = env->cam.rotate_angle;
 	}
 	else if (type < 3)
 		env->light_arr[id_lgh++] =
@@ -60,7 +60,9 @@ void				set_value(t_env *env, const double *v, size_t type)
 			(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
 			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0},//todo: test dir is not 0,0,0
 			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0}), v[10],
-			intersect_catalog(type), normal_catalog(type), v[11], v[12], v[13], false};
+			intersect_catalog(type), normal_catalog(type), v[11], v[12], v[13],
+			(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
+			(t_dvec3){v[4], v[5], v[6], 0.0}, false};
 		vec3_normalize(&env->uni_arr[id_uni].dir, &env->uni_arr[id_uni].dir);
 	}
 }
