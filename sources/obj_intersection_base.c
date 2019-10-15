@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   obj_intersection_base.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 13:08:12 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/15 21:11:36 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
 void	(*intersect_catalog(size_t type))
-		(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *)
+		(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *, t_ray *)
 {
 	if (type == SPHERE)
 		return (get_intersect_sphere);
@@ -26,8 +26,7 @@ void	(*intersect_catalog(size_t type))
 	return (NULL);
 }
 
-void		get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
-									t_dvec3 *ray_dir, t_dvec3 *touch)
+void get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray)
 {
 	const double	radius = sphere->radius;
 	t_dvec3			oc;
@@ -41,8 +40,7 @@ void		get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos,
 	discriminant_comput(&tmp, touch);
 }
 
-void	get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
-							t_dvec3 *ray_dir, t_dvec3 *touch)
+void get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray)
 {
 //todo: add limits
 	t_dvec3		oc ;
@@ -62,15 +60,15 @@ void	get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos,
 	}
 }
 
-void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
-								t_dvec3 *ray_dir, t_dvec3 *touch)
+void get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray)
 {
-	//todo: add limits (need full refactoring)
 	t_dvec3		oc;
 	t_dvec3		tmp;
 	double		oc_dot_dir;
 	double		oc_dot_oc;
+	t_dvec3_comp	computs;
 
+	double			height = 1.0;  //parse this value and abs(value)
 	vec3_sub_vec3(&oc, ray_pos, &cylinder->pos);
 	vec3_dot_vec3(&tmp.x, ray_dir, ray_dir);
 	vec3_dot_vec3(&tmp.y, ray_dir, &cylinder->dir);
@@ -82,10 +80,19 @@ void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos,
 					.z = oc_dot_oc - (oc_dot_dir * oc_dot_dir)
 						- cylinder->radius * cylinder->radius};
 	discriminant_comput(&tmp, touch);
+	vec3_sub_vec3(&computs.oc, &ray->pos, &cylinder->pos);
+	vec3_sub_vec3(&computs.tc, &ray->touch_point, &cylinder->pos);
+	vec3_dot_vec3(&computs.dir, &ray->dir, &cylinder->dir);
+	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &cylinder->dir);
+	computs.m = computs.dir * touch->x + oc_dot_dir;
+	if (computs.m < 0.0 || computs.m > height)
+		touch->x = (double)INFINITY;
+	computs.m = computs.dir * touch->y + oc_dot_dir;
+	if (computs.m < 0.0 || computs.m > height)
+		touch->y = (double)INFINITY;
 }
 
-void	get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
-							t_dvec3 *ray_dir, t_dvec3 *touch)
+void get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray)
 {
 	//todo: add limits (need full refactoring)
 	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ligths.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 20:06:10 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/15 21:06:21 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void			set_specular_reflection(double *destination, t_lght_comp *l,
 }
 
 void				get_light(t_env *env, t_lght_comp *l,
-								t_uni *obj, t_dvec3 *col)
+								t_uni *obj, t_dvec3 *col, t_ray *ray)
 {
 	size_t			i;
 	t_dvec3			defuse_col;
@@ -92,7 +92,7 @@ void				get_light(t_env *env, t_lght_comp *l,
 		else
 		{
 			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
-			if (is_shadow_ray(env, &l->touch_point, &l->dir, l->t_max))
+			if (is_shadow_ray(env, &l->touch_point, &l->dir, l->t_max, ray))
 				continue;
 			set_diffuse_reflection(&l->defuse_val, l, &l->normal);
 			set_specular_reflection(&l->specul_val, l, obj->specular);

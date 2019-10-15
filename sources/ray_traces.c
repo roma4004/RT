@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray_traces.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 19:31:10 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/15 21:06:21 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
 	while (++i < len)
 	{
 		env->uni_arr[i].get_intersect(&env->uni_arr[i], &ray->pos,
-										&ray->dir, &touch);
+										&ray->dir, &touch, ray);
 		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max
 			&& (cur_obj = &env->uni_arr[i]))
 			*dist = touch.x;
@@ -36,7 +36,7 @@ static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
 }
 
 const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-									t_dvec3 *direction, double t_max)
+									t_dvec3 *direction, double t_max, t_ray *ray)
 {//todo: add refractive ray
 	const t_uni		*objects = env->uni_arr;
 	const size_t	len = env->uni_arr_len;
@@ -46,7 +46,7 @@ const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 	i = UINT64_MAX;
 	while (++i < len)
 	{
-		objects[i].get_intersect(&objects[i], ray_pos, direction, &touch);
+		objects[i].get_intersect(&objects[i], ray_pos, direction, &touch, ray);
 		if ((touch.x < (double)MAXFLOAT
 			&& env->cam.epsilon < touch.x
 			&& touch.x < t_max)
@@ -272,7 +272,7 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 		vec3_mul_double(&epsi_normal, &l.normal, env->cam.epsilon);
 		vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
 		l.touch_point = ray->touch_point;
-		get_light(env, &l, obj, cur_color);
+		get_light(env, &l, obj, cur_color, ray);
 		if (obj->is_selected)
 			*cur_color = (t_dvec3){0,0,0};
 		ray->reflect_coef = obj->reflective_coef;
