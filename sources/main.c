@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 16:36:15 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/15 17:23:56 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,15 @@ void			quit_program(t_env *env)
 //+ camera movement and rotating and placing on the scene on start from scene_file
 //+ Multi thread computing
 //+ Interacting with objects
+//+ selecting object by mouse
 
 //- colored light
 //- It's possible inside the RT to save, screenshot the rendered image.
 //- JSON
 //- sepia filter
-//- limited obj
+//- limited obj (by vtlostiu)
 //- sliced obj
 //- interface
-//- selecting object by mouse
 //- composed elements (grouped obj)
 //- parse screen param from file (screen obj)
 //- texture (checkmate_board)
@@ -98,7 +98,9 @@ int				main(int argc, char **argv)
 
 	if (argc == 2)
 	{
-		if ((env = init_env()) && parse_scene(env, argv[1]))
+		if ((env = init_env())
+		&& parse_scene(env, argv[1])
+		&& init_sdl2(env))
 		{
 			draw_scene(env, env->threads);
 			while (!(env->flags.is_rtv1_over))
@@ -109,6 +111,6 @@ int				main(int argc, char **argv)
 			quit_program(env);
 	}
 	else
-		ft_putendl("Usage : ./RTv1 scenne_file");
+		ft_putendl("Usage : ./RTv1 scene_file");
 	return (0);
 }

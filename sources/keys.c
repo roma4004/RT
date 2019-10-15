@@ -179,6 +179,6 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 		result += mouse_events(env, &event, cam);
 	}
 	if (result)
-		keyboard_handle(env, cam, flags, cam->move_speed, cam->rotate_speed);
+		keyboard_handle(env, flags, cam->move_speed, cam->rotate_speed);
 	return (result);
 }

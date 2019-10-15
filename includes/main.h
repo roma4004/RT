@@ -234,6 +234,7 @@ enum				e_orient
 	NON = 0
 };
 
+t_env				*init_sdl2(t_env *env);
 void				send_selected_ray(t_env *env, t_ray *ray,
 										t_uni **obj, double dist);
 
