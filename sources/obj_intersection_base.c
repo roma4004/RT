@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   obj_intersection_base.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 18:38:30 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:53:54 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	(*intersect_catalog(size_t type))
 	return (NULL);
 }
 
-void get_intersect_sphere(const t_uni *sphere, t_dvec3 *touch, t_ray *ray)
+void	get_intersect_sphere(const t_uni *sphere, t_dvec3 *touch, t_ray *ray)
 {
 	const double	radius = sphere->radius;
 	t_dvec3			oc;
@@ -56,11 +56,14 @@ void get_intersect_sphere(const t_uni *sphere, t_dvec3 *touch, t_ray *ray)
 	vec3_dot_vec3(&tmp.x, &ray->dir, &ray->dir);
 	vec3_dot_vec3(&tmp.y, &ray->dir, &oc);
 	vec3_dot_vec3(&tmp.z, &oc, &oc);
-	tmp = (t_dvec3){.x = tmp.x, .y = 2 * tmp.y, .z = tmp.z - radius * radius};
+	tmp = (t_dvec3){
+		.x = tmp.x,
+		.y = 2 * tmp.y,
+		.z = tmp.z - radius * radius};
 	discriminant_comput(&tmp, touch);
 }
 
-void get_intersect_plane(const t_uni *plane, t_dvec3 *touch, t_ray *ray)
+void	get_intersect_plane(const t_uni *plane, t_dvec3 *touch, t_ray *ray)
 {
 //todo: add limits
 	t_dvec3		oc ;
@@ -80,7 +83,8 @@ void get_intersect_plane(const t_uni *plane, t_dvec3 *touch, t_ray *ray)
 	}
 }
 
-void get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *touch, t_ray *ray)
+void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *touch,
+								t_ray *ray)
 {
 	t_dvec3		oc;
 	t_dvec3		tmp;
@@ -103,11 +107,12 @@ void get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *touch, t_ray *ray)
 	crop_cylinder(&computs, touch, oc_dot_dir);
 }
 
-void get_intersect_cone(const t_uni *obj, t_dvec3 *touch, t_ray *ray)
+void	get_intersect_cone(const t_uni *obj, t_dvec3 *touch,
+							t_ray *ray)
 {
 	//todo: add limits (need full refactoring)
-	const double	k = tan((((const t_cone *)obj)->angle * M_PI / 180.0) / 2.0);
-//	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
+	const t_cone	*cone = (const t_cone *)obj;
+	const double	k = tan(cone->angle * M_PI / 360.0);
 	t_dvec3			oc;
 	t_dvec3			tmp;
 	double			oc_dot_dir;

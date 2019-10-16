@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:21:20 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:53:54 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,22 +75,12 @@ static void			*render_frame(void *thread_data)
 			rotate_vec(&ray.dir, &env->cam.rotate_angle);
 			color = (t_dvec3){0, 0, 0};
 			send_ray(env, &ray, &color);
-
 			if (env->flags.is_sepia)
 				apply_sepia_filter(&color);
 			put_px(env, &half, pt.x + thread_id, pt.y, &color);
 		}
 	}
 	return (NULL);
-}
-
-void				apply_sepia_filter(t_dvec3 *color)
-{
-	*color = (t_dvec3){
-		.x = (color->x * 0.393) + (color->y * 0.769) + (color->z * 0.189),
-		.y = (color->x * 0.349) + (color->y * 0.686) + (color->z * 0.168),
-		.z = (color->x * 0.272) + (color->y * 0.534) + (color->z * 0.131)};
-	ft_clamp_in_range_vec(color, 0, 255);
 }
 
 void				draw_scene(t_env *env, size_t threads)
@@ -121,4 +111,4 @@ void				draw_scene(t_env *env, size_t threads)
 	SDL_RenderPresent(env->renderer);
 }
 
-//сумму коеф зеркальности и прозрачностие должна быть меньше чем 0.98
+//сумму коеф зеркальности и прозрачности не должна быть меньше чем 0.98

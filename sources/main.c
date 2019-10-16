@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 16:36:15 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:40:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,11 @@ void			quit_program(t_env *env)
 //+ Multi thread computing
 //+ Interacting with objects
 //+ selecting object by mouse
+//+ sepia filter
 
 //- colored light
-//- It's possible inside the RT to save, screenshot the rendered image.
+//- It's possible inside the RT to save, screenshot the rendered image. ()
 //- JSON
-//- sepia filter
 //- limited obj (by vtlostiu)
 //- sliced obj
 //- interface

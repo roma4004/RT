@@ -26,7 +26,7 @@ void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch)
 						.z = 0.0};
 }
 
-static t_dvec3		vec3_clamp_col_cpy(t_dvec3 first)
+static t_dvec3		vec3_clamp_col_cpy(t_dvec3 first) //todo: delete this func when implement JSON parsing
 {
 	return ((t_dvec3){double_clamp(first.x),
 						double_clamp(first.y),

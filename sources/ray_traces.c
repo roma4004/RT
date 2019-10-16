@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:13:16 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:44:38 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -380,6 +380,6 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 
 
 //
-//		send_reflect_ray(env, ray, cur_color, &l);
+		send_reflect_ray(env, ray, cur_color, &l);
 	}
 }
