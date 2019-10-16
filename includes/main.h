@@ -6,7 +6,7 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/15 21:06:21 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/16 18:48:15 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ typedef struct		s_universal_object
 	t_dvec3			diffuse_color;
 	double			specular;
 	void 			(*get_intersect)(const struct s_universal_object *,
-										t_dvec3 *, t_dvec3 *, t_dvec3 *, t_ray *);
+										t_dvec3 *, t_ray *);
 	void			(*get_normal)(t_ray *, const struct s_universal_object *,
 									double, t_dvec3 *normal);
 	double			reflective_coef;
@@ -264,11 +264,10 @@ void				set_value(t_env *env, const double *v, size_t type);
 t_env				*parse_scene(t_env *env, char *file_name);
 
 t_dvec3				convert_to_viewport(double x, double y, double rate);
-typedef void		(*intersect)(const t_uni *, t_dvec3 *,
-									t_dvec3 *, t_dvec3 *, t_ray *);
+typedef void		(*intersect)(const t_uni *, t_dvec3 *, t_ray *);
 intersect			intersect_catalog(size_t type);
 
-typedef void		(*normal)(const t_uni *, t_dvec3 *, t_dvec3 *, t_dvec3 *, t_ray *);
+typedef void		(*normal)(const t_uni *, t_dvec3 *, t_ray *);
 void				(*normal_catalog(size_t type))
 						(t_ray *, const t_uni *, double, t_dvec3 *);
 
@@ -282,8 +281,8 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
 //const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
 //									t_dvec3 *direction, t_dvec limits);
 
-const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-									t_dvec3 *direction, double t_max, t_ray *ray);
+const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *touch_point,
+									t_dvec3 *shadow_dir, double t_max, t_ray *ray);
 
 void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch);
 void				vec3_length(double *destination,
@@ -297,10 +296,10 @@ void				vec3_add_vec3_col(t_dvec3 *destination,
 										const t_dvec3 *restrict first,
 										const t_dvec3 *restrict second);
 
-void get_intersect_sphere(const t_uni *sphere, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray);
-void get_intersect_plane(const t_uni *plane, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray);
-void get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray);
-void get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos, t_dvec3 *ray_dir, t_dvec3 *touch, t_ray *ray);
+void get_intersect_sphere(const t_uni *sphere, t_dvec3 *touch, t_ray *ray);
+void get_intersect_plane(const t_uni *plane, t_dvec3 *touch, t_ray *ray);
+void get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *touch, t_ray *ray);
+void get_intersect_cone(const t_uni *obj, t_dvec3 *touch, t_ray *ray);
 
 void				move_objects(t_env *env, t_dvec3 *move_dir,
 									double move_speed);
@@ -372,5 +371,8 @@ void				vec3_div_double(t_dvec3 *destination,
 									const t_dvec3 *restrict first,
 									double second);
 void				quit_program(t_env *env);
+void				calculate_oc_tc_dir(const t_ray *ray,
+										const t_uni *obj,
+										t_dvec3_comp *computs);
 
 #endif

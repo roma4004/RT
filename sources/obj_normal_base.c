@@ -6,7 +6,7 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/15 18:10:28 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/16 18:08:33 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,7 @@ static void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 
-	vec3_sub_vec3(&computs.oc, &ray->pos, &obj->pos);
-	vec3_sub_vec3(&computs.tc, &ray->touch_point, &obj->pos);
-	vec3_dot_vec3(&computs.dir, &ray->dir, &obj->dir);
+	calculate_oc_tc_dir(ray, obj, &computs);
 	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &obj->dir);
 	computs.m = computs.dir * dist + oc_dot_dir;
 	vec3_mul_double(&computs.dir_vec, &obj->dir, computs.m);
@@ -66,9 +64,7 @@ static void		get_normal_cone(t_ray *ray, const t_uni *obj,
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 
-	vec3_sub_vec3(&computs.tc, &ray->touch_point, &obj->pos);
-	vec3_sub_vec3(&computs.oc, &ray->pos, &obj->pos);
-	vec3_dot_vec3(&computs.dir, &ray->dir, &obj->dir);
+	calculate_oc_tc_dir(ray, obj, &computs);
 	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &obj->dir);
 	computs.m = computs.dir * dist + oc_dot_dir;
 	double_mul_vec3(&computs.dir_vec, (1 + k * k), &obj->dir);
