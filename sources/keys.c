@@ -51,7 +51,7 @@ static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
 	return (false);
 }
 
-static _Bool	keyboard_evens(Uint32 event_type, SDL_Keycode k,
+static _Bool	keyboard_events(Uint32 event_type, SDL_Keycode k,
 								t_flags *restrict f)
 {
 	if (event_type == SDL_KEYDOWN && (is_x_move_down(k, &f->move)
@@ -176,7 +176,7 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 		if (event.type == SDL_QUIT
 		|| (event.type == SDL_KEYDOWN && key_code == SDLK_ESCAPE))
 			env->flags.is_rtv1_over = true;
-		result += keyboard_evens(event.type, key_code, flags);
+		result += keyboard_events(event.type, key_code, flags);
 		result += mouse_events(env, &event, cam);
 	}
 	if (result)

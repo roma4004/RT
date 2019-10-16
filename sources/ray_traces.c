@@ -23,8 +23,7 @@ static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
 	i = UINT64_MAX;
 	while (++i < len)
 	{
-		env->uni_arr[i].get_intersect(&env->uni_arr[i], &ray->pos,
-										&ray->dir, &touch);
+		env->uni_arr[i].get_intersect(&env->uni_arr[i], &touch, ray);
 		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max
 			&& (cur_obj = &env->uni_arr[i]))
 			*dist = touch.x;
@@ -35,18 +34,23 @@ static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
 	return (cur_obj);
 }
 
-const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-									t_dvec3 *direction, double t_max)
+const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *touch_point,
+									t_dvec3 *shadow_dir, double t_max, t_ray *ray)
 {//todo: add refractive ray
 	const t_uni		*objects = env->uni_arr;
 	const size_t	len = env->uni_arr_len;
 	size_t			i;
 	t_dvec3			touch;
+	t_ray			shadow_ray;
 
+	shadow_ray = (t_ray){ .t_min = ray->t_min,
+						.t_max = ray->t_max,
+						.pos = *touch_point,
+						.dir = *shadow_dir};
 	i = UINT64_MAX;
 	while (++i < len)
 	{
-		objects[i].get_intersect(&objects[i], ray_pos, direction, &touch);
+		objects[i].get_intersect(&objects[i], &touch, &shadow_ray);
 		if ((touch.x < (double)MAXFLOAT
 			&& env->cam.epsilon < touch.x
 			&& touch.x < t_max)
@@ -281,7 +285,7 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 		vec3_mul_double(&epsi_normal, &l.normal, env->cam.epsilon);
 		vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
 		l.touch_point = ray->touch_point;
-		get_light(env, &l, obj, cur_color);
+		get_light(env, &l, obj, cur_color, ray);
 		if (obj->is_selected)
 			*cur_color = (t_dvec3){0,0,0};
 		ray->reflect_coef = obj->reflective_coef;

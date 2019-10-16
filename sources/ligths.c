@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/15 18:34:20 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/11 20:06:10 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,15 +74,13 @@ static void			set_specular_reflection(double *destination, t_lght_comp *l,
 }
 
 void				get_light(t_env *env, t_lght_comp *l,
-								t_uni *obj, t_dvec3 *col)
+								t_uni *obj, t_dvec3 *col, t_ray *ray)
 {
 	size_t			i;
 	t_dvec3			defuse_col;
 	t_dvec3			specul_col;
 
 	i = UINT64_MAX;
-//	if (env->light_arr_len < 1)
-//		return ;
 	while (++i < env->light_arr_len && (l->cur = &env->light_arr[i]))
 	{
 		if (l->cur->intensity <= 0.0)
@@ -94,7 +92,7 @@ void				get_light(t_env *env, t_lght_comp *l,
 		else
 		{
 			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
-			if (is_shadow_ray(env, &l->touch_point, &l->dir, l->t_max))
+			if (is_shadow_ray(env, &l->touch_point, &l->dir, l->t_max, ray))
 				continue;
 			set_diffuse_reflection(&l->defuse_val, l, &l->normal);
 			set_specular_reflection(&l->specul_val, l, obj->specular);

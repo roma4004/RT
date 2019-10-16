@@ -1,2 +1,2 @@
-# rtv1
-theory concept of Raytracing
+# RT
+Concept of Raytracing
