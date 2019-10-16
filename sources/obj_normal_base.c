@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 13:08:24 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/15 21:40:15 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,9 @@ static void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
 static void		get_normal_cone(t_ray *ray, const t_uni *obj,
 								double dist, t_dvec3 *normal)
 {
-	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
+	const t_cone	*cone = (const t_cone *)obj;
+	const double	k = tan((cone->angle * M_PI / 180.0) / 2.0);
+//	const double	k = cone->angle * M_PI / 360.0;
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 

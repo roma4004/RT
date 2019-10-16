@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 16:15:36 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/14 21:31:48 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,11 @@ void				set_value(t_env *env, const double *v, size_t type)
 			(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
 			(t_dvec3){v[4], v[5], v[6], 0.0}, false};
 		vec3_normalize(&env->uni_arr[id_uni].dir, &env->uni_arr[id_uni].dir);
+
+		if ((env->uni_arr[id_uni - 1].dir.x == 0)
+		&& (env->uni_arr[id_uni - 1].dir.y == 0)
+		&& (env->uni_arr[id_uni - 1].dir.z == 0))
+			env->uni_arr[id_uni - 1].dir = (t_dvec3){0, 1, 0};
 	}
 }
 

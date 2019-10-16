@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 16:15:37 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:21:20 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ typedef struct		s_universal_object
 	t_dvec3			pos;
 	double			radius;
 	t_dvec3			dir;
-	t_dvec3			diffuse_color;
+	t_dvec3			color;
 	double			specular;
 	void 			(*get_intersect)(const struct s_universal_object *,
 										t_dvec3 *, t_dvec3 *, t_dvec3 *);
@@ -175,7 +175,7 @@ typedef struct		s_flags
 	_Bool			is_rtv1_over;
 	_Bool			is_in_select_mod;
 	_Bool			is_reset;
-	char			padding[2];
+	_Bool			is_sepia;
 }					t_flags;
 
 typedef struct		s_environment
@@ -233,12 +233,13 @@ enum				e_orient
 	NEG = -1,
 	NON = 0
 };
-
+void				apply_sepia_filter(t_dvec3 *color);
 void				send_selected_ray(t_env *env, t_ray *ray,
 										t_uni **obj, double dist);
 
-void				ft_clamp_in_range(double *dest, const double *value,
-										double min, double max);
+void				ft_clamp_in_range(double *dest, double value, double min, double max);
+void				ft_clamp_in_range_vec(t_dvec3 *dest, double min,
+											double max);
 _Bool				is_x_move_up(SDL_Keycode k, t_ivec3 *restrict move);
 _Bool				is_y_move_up(SDL_Keycode k, t_ivec3 *restrict move);
 _Bool				is_z_move_up(SDL_Keycode k, t_ivec3 *restrict move);

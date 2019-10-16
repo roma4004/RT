@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 16:36:15 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/15 21:52:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ void			quit_program(t_env *env)
 //- composed elements (grouped obj)
 //- parse screen param from file (screen obj)
 //- texture (checkmate_board)
+//- more figures
 
 //optional:
 //- blinded by light spot facing us.
@@ -100,6 +101,10 @@ int				main(int argc, char **argv)
 	{
 		if ((env = init_env()) && parse_scene(env, argv[1]))
 		{
+			//todo: simplify main thread below to 3 func
+			///events()
+			///updade()
+			///render()
 			draw_scene(env, env->threads);
 			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))

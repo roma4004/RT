@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 21:02:18 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:24:27 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ static void		keyboard_handle(t_env *env, t_flags *restrict f,
 static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
 {
 	if ((k == SDLK_CAPSLOCK && ft_switch(&f->is_in_select_mod))
-	|| (k == SDLK_r && ft_switch(&f->is_reset)))
+	|| (k == SDLK_r && ft_switch(&f->is_reset))
+	|| (k == SDLK_1 && ft_switch(&f->is_sepia)))
 		return (true);
 	return (false);
 }
@@ -134,7 +135,7 @@ static _Bool		mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 			if (env->selected_obj)
 				env->selected_obj->is_selected =
 					(env->selected_obj->is_selected) ? false : true;
-//				obj->diffuse_color = (t_dvec3){255,255,255,0};
+//				obj->color = (t_dvec3){255,255,255,0};
 			draw_scene(env, env->threads);
 		}
 	}
@@ -179,6 +180,6 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 		result += mouse_events(env, &event, cam);
 	}
 	if (result)
-		keyboard_handle(env, cam, flags, cam->move_speed, cam->rotate_speed);
+		keyboard_handle(env, flags, cam->move_speed, cam->rotate_speed);
 	return (result);
 }

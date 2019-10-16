@@ -6,7 +6,7 @@
 /*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 19:31:10 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/16 20:13:16 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,8 @@ void				send_reflect_ray(t_env *env, t_ray *ray,
 		return ;
 	else
 	{
+		if (ray->reflect_coef > 1.0)
+			ray->reflect_coef = 1.0; //do this after parsing
 		ref_ray = (t_ray) {.t_min = 0.001,
 							.t_max = (double) INFINITY,
 							.pos = ray->touch_point,
@@ -106,15 +108,22 @@ void		ft_swap(double *first, double *second)
 	*second = tmp;
 }
 
-void		ft_clamp_in_range(double *dest, const double *value,
+void		ft_clamp_in_range(double *dest, double value,
 								double min, double max)
 {
-	if (*value > max)
+	if (value > max)
 		*dest = max;
-	else if (*value < min)
+	else if (value < min)
 		*dest = min;
 	else
-		*dest = *value;
+		*dest = value;
+}
+
+void		ft_clamp_in_range_vec(t_dvec3 *dest, double min, double max)
+{
+	ft_clamp_in_range(&dest->x, dest->x, min, max);
+	ft_clamp_in_range(&dest->y, dest->y, min, max);
+	ft_clamp_in_range(&dest->z, dest->z, min, max);
 }
 
 t_dvec3				compute_refract_dir(double eta, double cosi,
@@ -148,7 +157,7 @@ t_dvec3				refract(const t_dvec3 *dir, const t_dvec3 *normal,
 	etat = *obj_refract_coef;
 	ref_normal = (t_dvec3 *)normal;
 	vec3_dot_vec3(&cosi, dir, normal);
-	ft_clamp_in_range(&cosi, &cosi, -1.0, 1.0);
+	ft_clamp_in_range(&cosi, cosi, -1.0, 1.0);
 	if (cosi < 0.0)
 	{
 		cosi = -cosi;
@@ -221,7 +230,7 @@ void				fresnel(const t_dvec3 *dir, const t_dvec3 *normal,
 	eta_i = 1;
 	eta_t = *obj_refract_coef;
 	vec3_dot_vec3(&cos_i, dir, normal);
-	ft_clamp_in_range(&cos_i, &cos_i, -1, 1);
+	ft_clamp_in_range(&cos_i, cos_i, -1, 1);
 	if (cos_i > 0)
 		ft_swap(&eta_i, &eta_t);
 	sin_t = eta_i / eta_t * sqrt(ft_max(0.f, 1 - cos_i * cos_i));				// Compute sini using Snell's law
@@ -317,7 +326,7 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 //				.dir = refractionDirection,
 //				.dept_limit = ray->dept_limit - 1
 //			};
-			send_refract_ray(env, ray, cur_color, &l);
+//			send_refract_ray(env, ray, cur_color, &l);
 ////			send_ray(env, &refr_ray, &refractionColor);
 //		}
 
@@ -367,6 +376,6 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 
 
 //
-		send_reflect_ray(env, ray, cur_color, &l);
+//		send_reflect_ray(env, ray, cur_color, &l);
 	}
 }

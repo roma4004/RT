@@ -88,7 +88,8 @@ void	get_intersect_cone(const t_uni *obj, t_dvec3 *ray_pos,
 							t_dvec3 *ray_dir, t_dvec3 *touch)
 {
 	//todo: add limits (need full refactoring)
-	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
+	const double	k = tan((((const t_cone *)obj)->angle * M_PI / 180.0) / 2.0);
+//	const double	k = ((const t_cone *)obj)->angle * M_PI / 360.0;
 	t_dvec3			oc;
 	t_dvec3			tmp;
 	double			oc_dot_dir;
