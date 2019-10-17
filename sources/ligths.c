@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ligths.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/11 20:06:10 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/17 19:34:17 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ static void			point_or_directional(t_lght *light, t_dvec3 *light_vector,
 }
 
 static void			set_specular_reflection(double *destination, t_lght_comp *l,
-											double specular)
+											double specular, t_ray *ray)
 {
 	double		light_dot;
 	double		light_normal;
@@ -58,9 +58,9 @@ static void			set_specular_reflection(double *destination, t_lght_comp *l,
 	t_dvec3		vec_reflect;
 	double		reflect_dot_view;
 
-	vec3_dot_vec3(&light_dot, &l->normal, &l->dir);
+	vec3_dot_vec3(&light_dot, &ray->normal, &l->dir);
 	light_normal = 2.0 * light_dot;
-	double_mul_vec3(&normal, light_normal, &l->normal);
+	double_mul_vec3(&normal, light_normal, &ray->normal);
 	vec3_sub_vec3(&vec_reflect, &normal, &l->dir);
 	vec3_dot_vec3(&reflect_dot_view, &vec_reflect, &l->view);
 	if (reflect_dot_view > 0.0)
@@ -91,11 +91,11 @@ void				get_light(t_env *env, t_lght_comp *l,
 		}
 		else
 		{
-			point_or_directional(l->cur, &l->dir, &l->t_max, &l->touch_point);
-			if (is_shadow_ray(env, &l->touch_point, &l->dir, l->t_max, ray))
+			point_or_directional(l->cur, &l->dir, &l->t_max, &ray->touch_point);
+			if (is_shadow_ray(env, &ray->touch_point, &l->dir, l->t_max, ray))
 				continue;
-			set_diffuse_reflection(&l->defuse_val, l, &l->normal);
-			set_specular_reflection(&l->specul_val, l, obj->specular);
+			set_diffuse_reflection(&l->defuse_val, l, &ray->normal);
+			set_specular_reflection(&l->specul_val, l, obj->specular, ray);
 		}
 	}
 	t_dvec3		orig_col;

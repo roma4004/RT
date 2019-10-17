@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/06 13:50:32 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/17 21:28:27 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 static void			cnt_obj_type(t_env *env, t_list *lst)
 {
 	size_t		*lights;
-	size_t		*other;
+	size_t		*objs;
 	t_list		*cur;
 	size_t		type;
 
 	lights = &env->light_arr_len;
-	other = &env->uni_arr_len;
+	objs = &env->uni_arr_len;
 	cur = lst;
 	while (cur)
 	{
@@ -29,7 +29,16 @@ static void			cnt_obj_type(t_env *env, t_list *lst)
 			if (type < 3u)
 				(*lights)++;
 			else if (type < OBJ_TYPE_MAX)
-				(*other)++;
+			{
+				(*objs)++;
+				if (type == CYLINDER)
+				{
+					(*objs)++;
+					(*objs)++;
+				}
+				if (type == CONE)
+					(*objs)++;
+			}
 		}
 		cur = cur->next;
 	}

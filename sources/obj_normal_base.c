@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   obj_normal_base.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:53:54 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/17 19:30:31 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-static void		get_normal_sphere(t_ray *ray, const t_uni *obj,
+void		get_normal_sphere(t_ray *ray, const t_uni *obj,
 									double dist, t_dvec3 *normal)
 {
 	t_dvec3		tc;
@@ -22,7 +22,7 @@ static void		get_normal_sphere(t_ray *ray, const t_uni *obj,
 	vec3_normalize(normal, &tc);
 }
 
-static void		get_normal_plane(t_ray *ray, const t_uni *obj,
+void		get_normal_plane(t_ray *ray, const t_uni *obj,
 									double dist, t_dvec3 *normal)
 {
 	double		dir_dot;
@@ -43,7 +43,7 @@ static void		get_normal_plane(t_ray *ray, const t_uni *obj,
 	vec3_normalize(normal, &dir_vec);
 }
 
-static void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
+void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
 									double dist, t_dvec3 *normal)
 {
 	t_dvec3_comp	computs;
@@ -57,7 +57,7 @@ static void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
 	vec3_normalize(normal, &computs.dir_vec);
 }
 
-static void		get_normal_cone(t_ray *ray, const t_uni *obj,
+void		get_normal_cone(t_ray *ray, const t_uni *obj,
 								double dist, t_dvec3 *normal)
 {
 	const t_cone	*cone = (const t_cone *)obj;
@@ -79,7 +79,7 @@ void				(*normal_catalog(size_t type))
 {
 	if (type == SPHERE)
 		return (get_normal_sphere);
-	if (type == PLANE)
+	if (type == PLANE || type == DISK)
 		return (get_normal_plane);
 	if (type == CYLINDER)
 		return (get_normal_cylinder);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ray_traces.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:44:38 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/17 20:05:16 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void				send_reflect_ray(t_env *env, t_ray *ray,
 		ref_ray = (t_ray) {.t_min = 0.001,
 							.t_max = (double) INFINITY,
 							.pos = ray->touch_point,
-							.dir = ReflectRay(&l->view, &l->normal),
+							.dir = ReflectRay(&l->view, &ray->normal),
 							.dept_limit = ray->dept_limit - 1};
 		send_ray(env, &ref_ray, &reflected_color);
 		vec3_mul_double(cur_color, cur_color, 1.0 - ray->reflect_coef);
@@ -191,7 +191,7 @@ void				send_refract_ray(t_env *env, t_ray *ray,
 	{
 		ref_ray = (t_ray){.t_min = 0.001, .t_max = (double)INFINITY,
 			.pos = ray->touch_point, .dept_limit = ray->dept_limit - 1,
-			.dir = refract(&l->view, &l->normal, &ray->refract_coef)};
+			.dir = refract(&l->view, &ray->normal, &ray->refract_coef)};
 		send_ray(env, &ref_ray, &reflected_color);
 		vec3_mul_double(cur_color, cur_color, 1.0 - ray->refract_coef);
 		vec3_mul_double(&reflected_color, &reflected_color, ray->refract_coef);
@@ -281,10 +281,9 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 		double_mul_vec3(&ray_len, dist, &ray->dir);
 		vec3_add_vec3(&ray->touch_point, &ray->pos, &ray_len);
 		double_mul_vec3(&l.view,-1, &ray->dir);
-		obj->get_normal(ray, obj, dist, &l.normal);
-		vec3_mul_double(&epsi_normal, &l.normal, env->cam.epsilon);
+		obj->get_normal(ray, obj, dist, &ray->normal);
+		vec3_mul_double(&epsi_normal, &ray->normal, env->cam.epsilon);
 		vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
-		l.touch_point = ray->touch_point;
 		get_light(env, &l, obj, cur_color, ray);
 		if (obj->is_selected)
 			*cur_color = (t_dvec3){0,0,0};

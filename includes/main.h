@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 16:15:37 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/17 21:08:54 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 14
-# define OBJ_TYPE_MAX 7
+# define OBJ_TYPE_MAX 8
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
 
@@ -87,6 +87,7 @@ typedef struct		s_ray
 	double			refract_coef;
 	unsigned		dept_limit;
 	char			padding[4];
+	t_dvec3			normal;
 }					t_ray;
 
 typedef struct		s_camera
@@ -105,6 +106,15 @@ typedef struct		s_camera
 	char			padding[4];
 }					t_cam;
 
+typedef struct		s_disk
+{
+	t_dvec3			pos;
+	double			radius;
+	t_dvec3			dir;
+	t_dvec3			color;
+	double			specular;
+}					t_disk;
+
 typedef struct		s_universal_object
 {
 	t_dvec3			pos;
@@ -122,6 +132,9 @@ typedef struct		s_universal_object
 	t_dvec3			pos_backup;
 	t_dvec3			dir_backup;
 	_Bool			is_selected;
+//	t_disk			*top_cap;
+//	t_disk			*bottom_cap;
+//	t_obj			sliced_plane;
 	char			padding[7];
 }					t_uni;
 
@@ -129,10 +142,6 @@ typedef struct		s_cone
 {
 	t_dvec3			pos;
 	double			angle;
-	t_dvec3			dir;
-	t_dvec3			diffuse_color;
-	double			specular;
-	size_t			type;
 }					t_cone;
 
 typedef struct		s_light {
@@ -159,12 +168,11 @@ typedef struct		s_light_calculating
 	double			t_max;
 	double			specul_val;
 //	t_dvec3			touch_point;
-	t_dvec3			normal;
 	t_dvec3			view;
 //	t_ray			ray;
 	double			vec_reflect_len;
 	double			view_len;
-	t_dvec3			touch_point;
+//	t_dvec3			touch_point;
 }					t_lght_comp;
 
 typedef struct		s_flags
@@ -224,7 +232,10 @@ enum				e_light_type
 	PLANE = 4,
 	CYLINDER = 5,
 	CONE = 6,
-	CAM = 7,
+	DISK = 7,
+
+
+	CAM = 8, // the last one
 };
 
 enum				e_orient
@@ -306,6 +317,17 @@ void				get_intersect_cylinder(const t_uni *cylinder,
 											t_dvec3 *touch, t_ray *ray);
 void				get_intersect_cone(const t_uni *obj, t_dvec3 *touch,
 										t_ray *ray);
+void				get_intersect_disk(const t_uni *disk, t_dvec3 *touch,
+										t_ray *ray);
+
+void				get_normal_sphere(t_ray *ray, const t_uni *obj,
+										double dist, t_dvec3 *normal);
+void				get_normal_plane(t_ray *ray, const t_uni *obj,
+									 double dist, t_dvec3 *normal);
+void				get_normal_cylinder(t_ray *ray, const t_uni *obj,
+										double dist, t_dvec3 *normal);
+void				get_normal_cone(t_ray *ray, const t_uni *obj,
+									double dist, t_dvec3 *normal);
 
 void				move_objects(t_env *env, t_dvec3 *move_dir,
 									double move_speed);
