@@ -6,11 +6,11 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 18:14:09 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 void	crop_cyl_n_cone(t_dvec3_comp *computs, t_dvec3 *touch,
 						double oc_dot_dir, double height)

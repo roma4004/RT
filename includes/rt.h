@@ -6,12 +6,12 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 18:14:36 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:04:44 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAIN_H
-# define MAIN_H
+#ifndef RT_H
+# define RT_H
 # define WIN_NAME "RTv1 by dromanic (@Dentair)"
 # define WIN_WIDTH 1000u
 # define WIN_HEIGHT 1000u
@@ -28,6 +28,7 @@
 # include <stdlib.h>
 # include <errno.h>
 # include <math.h>
+# include <time.h>
 
 # pragma GCC diagnostic ignored "-Wstrict-prototypes"
 # pragma GCC diagnostic ignored "-Wpadded"
@@ -36,7 +37,7 @@
 # pragma GCC diagnostic ignored "-Wreserved-id-macro"
 # include "SDL.h"
 //# include "SDL_ttf.h"
-//# include "SDL_image.h"
+# include "SDL_image.h"
 //# include "SDL_mixer.h"
 //# include "SDL_audio.h"
 # pragma GCC diagnostic warning "-Wreserved-id-macro"
@@ -170,6 +171,7 @@ typedef struct		s_flags
 	_Bool			is_in_select_mod;
 	_Bool			is_reset;
 	_Bool			is_sepia;
+	_Bool			is_screenshot;
 }					t_flags;
 
 typedef struct		s_environment
@@ -387,5 +389,6 @@ void				quit_program(t_env *env);
 void				calculate_oc_tc_dir(const t_ray *ray,
 										const t_uni *obj,
 										t_dvec3_comp *computs);
+void				save_screenshot(t_env *env);
 
 #endif

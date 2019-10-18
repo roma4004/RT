@@ -6,12 +6,11 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 18:20:08 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <zconf.h>
-#include "main.h"
+#include "rt.h"
 
 void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch)
 {

@@ -6,11 +6,11 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 18:13:10 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 void		get_normal_sphere(t_ray *ray, const t_uni *obj,
 									double dist, t_dvec3 *normal)

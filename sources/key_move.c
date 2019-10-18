@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   key_move.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 13:33:23 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 21:04:21 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 static void		vec3_move(t_dvec3 *move_pos, t_env *env,
 	t_dvec3 *move_dir, double move_speed)

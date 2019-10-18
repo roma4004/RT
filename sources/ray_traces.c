@@ -6,11 +6,11 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/17 20:05:16 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
 {

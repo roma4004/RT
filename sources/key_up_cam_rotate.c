@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   key_up_cam_rotate.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/02 11:42:31 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 13:04:34 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 _Bool		is_x_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate)
 {

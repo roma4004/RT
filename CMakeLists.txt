@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 set(CMAKE_C_STANDARD 99)
-project(rtv1)
+project(RT)
 set(CMAKE_MODULE_PATH	${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/find_sdl2/")
 set(CMAKE_C_FLAGS		"${CMAKE_C_FLAGS} -Ofast -ffast-math -march=native")
 #set(CMAKE_C_FLAGS		"${CMAKE_C_FLAGS} -fsanitize=\"undefined,address\" -g3")
@@ -34,7 +34,7 @@ find_package(SDL2		REQUIRED)
 find_package(SDL2_ttf	REQUIRED)
 find_package(SDL2_image	REQUIRED)
 find_package(SDL2_mixer	REQUIRED)
-add_executable(			${CMAKE_PROJECT_NAME} ${SOURCE_FILES} sources/obj_normal_base.c)
+add_executable(			${CMAKE_PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(	${CMAKE_PROJECT_NAME}
 						${LFT_NAME}
 						${SDL2_LIBRARY}

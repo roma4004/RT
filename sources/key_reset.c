@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   key_reset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 13:31:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 16:17:53 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 void	reset(t_env *env, t_cam *restrict cam, size_t obj_cnt)
 {

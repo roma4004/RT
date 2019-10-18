@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:53:54 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 21:34:46 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 t_dvec3		convert_to_viewport(double x, double y, double rate)
 {
@@ -109,6 +109,8 @@ void				draw_scene(t_env *env, size_t threads)
 	SDL_UpdateTexture(env->screen, NULL, env->buff, WIN_WIDTH << 2u);
 	SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
 	SDL_RenderPresent(env->renderer);
+	free(data);
+	free(threads_arr);
 }
 
 //сумму коеф зеркальности и прозрачности не должна быть меньше чем 0.98

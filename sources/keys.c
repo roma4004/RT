@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:24:27 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 static void		keyboard_handle(t_env *env, t_flags *restrict f,
 								double move_speed, double rotate_speed)
@@ -40,13 +40,16 @@ static void		keyboard_handle(t_env *env, t_flags *restrict f,
 	uni_rotate(env, rot);
 	if (f->is_reset)
 		reset(env, &env->cam, obj_cnt);
+	if (f->is_screenshot)
+		save_screenshot(env);
 }
 
 static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
 {
 	if ((k == SDLK_CAPSLOCK && ft_switch(&f->is_in_select_mod))
 	|| (k == SDLK_r && ft_switch(&f->is_reset))
-	|| (k == SDLK_1 && ft_switch(&f->is_sepia)))
+	|| (k == SDLK_1 && ft_switch(&f->is_sepia))
+	|| (k == SDLK_4 && ft_switch(&f->is_screenshot)))
 		return (true);
 	return (false);
 }

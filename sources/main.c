@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/16 20:40:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 21:27:29 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 double			double_clamp(double x)
 {
@@ -72,11 +72,11 @@ void			quit_program(t_env *env)
 //+ Interacting with objects
 //+ selecting object by mouse
 //+ sepia filter
+//+ It's possible inside the RT to save, screenshot the rendered image. ()
 
 //- colored light
-//- It's possible inside the RT to save, screenshot the rendered image. ()
 //- JSON
-//- limited obj (by vtlostiu)
+//+- limited obj (by vtlostiu) almost done
 //- sliced obj
 //- interface
 //- composed elements (grouped obj)
@@ -108,6 +108,7 @@ int				main(int argc, char **argv)
 			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))
 					draw_scene(env, env->threads);
+			system("leaks RT");
 		}
 		else
 			quit_program(env);

@@ -6,11 +6,11 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/17 21:28:27 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 21:41:41 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 static void			cnt_obj_type(t_env *env, t_list *lst)
 {
@@ -88,6 +88,7 @@ static t_env		*env_def_val(t_env *env)
 t_env				*init_sdl2(t_env *env)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+//	|| !IMG_Init(IMG_INIT_PNG)
 	|| !(env->window = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED,
 										SDL_WINDOWPOS_UNDEFINED,
 										WIN_WIDTH, WIN_HEIGHT,SDL_WINDOW_SHOWN))

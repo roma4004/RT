@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   vec3_with_vec3.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/08/13 13:33:33 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/12 13:05:47 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "main.h"
+#include "rt.h"
 
 void	vec3_add_vec3(t_dvec3 *destination,
 						const t_dvec3 *restrict first,
