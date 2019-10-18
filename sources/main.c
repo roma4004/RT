@@ -60,9 +60,6 @@ void			quit_program(t_env *env)
 	if (env->window)
 		SDL_DestroyWindow(env->window);
 	env->window = NULL;
-	if (env->surface)
-		SDL_FreeSurface(env->surface);
-	env->surface = NULL;
 	show_errors(env);
 	SDL_Quit();
 }

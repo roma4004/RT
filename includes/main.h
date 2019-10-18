@@ -194,7 +194,6 @@ typedef struct		s_environment
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;
-	SDL_Surface		*surface;
 	t_uni			*uni_arr;
 	t_uni			*selected_obj;
 	size_t			uni_arr_len;
