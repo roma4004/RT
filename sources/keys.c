@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   keys.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 22:01:31 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,14 +131,17 @@ static _Bool		mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 			ray.dir = convert_to_viewport(event->motion.x - env->cam.canvas.half.x,
 										-event->motion.y + env->cam.canvas.half.y - 1.0,
 										env->cam.canvas.rate);
-			printf("ray.dir = %f, %f, %f \n", ray.dir.x, ray.dir.y, ray.dir.z);
+//			printf("ray.dir = %f, %f, %f \n", ray.dir.x, ray.dir.y, ray.dir.z);
 			rotate_vec(&ray.dir, &env->cam.rotate_angle);
 
 			send_selected_ray(env, &ray, &env->selected_obj, (double)MAXFLOAT);
 			if (env->selected_obj)
 				env->selected_obj->is_selected =
 					(env->selected_obj->is_selected) ? false : true;
+			select_caps_cylinder_cone(env);
+
 //				obj->color = (t_dvec3){255,255,255,0};
+
 			draw_scene(env, env->threads);
 		}
 	}

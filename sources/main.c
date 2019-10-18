@@ -73,10 +73,10 @@ void			quit_program(t_env *env)
 //+ selecting object by mouse
 //+ sepia filter
 //+ It's possible inside the RT to save, screenshot the rendered image. ()
+//+ limited obj (by vtlostiu)
 
 //- colored light
 //- JSON
-//+- limited obj (by vtlostiu) almost done
 //- sliced obj
 //- interface
 //- composed elements (grouped obj)

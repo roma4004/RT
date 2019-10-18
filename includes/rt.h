@@ -231,7 +231,7 @@ enum				e_orient
 	NEG = -1,
 	NON = 0
 };
-
+void		select_caps_cylinder_cone(t_env *env);
 t_env				*init_sdl2(t_env *env);
 void				apply_sepia_filter(t_dvec3 *color);
 void				send_selected_ray(t_env *env, t_ray *ray,
