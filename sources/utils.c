@@ -6,7 +6,7 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/17 21:37:10 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 18:20:08 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,12 @@ void				set_value(t_env *env, const double *v, size_t type)
 	{
 		env->uni_arr[id_uni] =
 			(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
-			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0},//todo: test dir is not 0,0,0
-			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0}), v[10],
-			intersect_catalog(type), normal_catalog(type), v[11], v[12], v[13],
+			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0}, //todo: test dir is not 0,0,0
+			fabs(v[7]),
+			vec3_clamp_col_cpy((t_dvec3){v[8], v[9], v[10], 0}), v[11],
+			intersect_catalog(type), normal_catalog(type), v[12], v[13], v[14],
 			(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
+			fabs(v[3]),
 			(t_dvec3){v[4], v[5], v[6], 0.0}, false};
 		vec3_normalize(&env->uni_arr[id_uni].dir, &env->uni_arr[id_uni].dir);
 
@@ -75,7 +77,6 @@ void				set_value(t_env *env, const double *v, size_t type)
 			t_dvec3		cap_top_pos;
 			t_dvec3		cap_view;
 			t_uni		*cylinder;
-			double		height = 5.0;
 
 			cylinder = &env->uni_arr[id_uni];
 			id_uni++;
@@ -96,7 +97,7 @@ void				set_value(t_env *env, const double *v, size_t type)
 					.is_selected = cylinder->is_selected,
 			};
 			id_uni++;
-			vec3_mul_double(&cap_top_pos, &cylinder->dir, height);
+			vec3_mul_double(&cap_top_pos, &cylinder->dir, cylinder->height);
 			vec3_add_vec3(&cap_top_pos, &cylinder->pos, &cap_top_pos);
 			env->uni_arr[id_uni] = (t_uni) {
 					.pos = cap_top_pos,
@@ -117,11 +118,10 @@ void				set_value(t_env *env, const double *v, size_t type)
 		{
 			t_dvec3		cap_top_pos;
 			t_uni		*cone;
-			double		height = 5.0;
 
 			cone = &env->uni_arr[id_uni];
 			id_uni++;
-			vec3_mul_double(&cap_top_pos, &cone->dir, height);
+			vec3_mul_double(&cap_top_pos, &cone->dir, cone->height);
 			vec3_add_vec3(&cap_top_pos, &cone->pos, &cap_top_pos);
 			env->uni_arr[id_uni] = (t_uni) {
 					.pos = cap_top_pos,

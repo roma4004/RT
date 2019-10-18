@@ -6,7 +6,7 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/17 21:08:54 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 18:14:36 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define WIN_HEIGHT 1000u
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
-# define VALUES_PER_OBJ 14
+# define VALUES_PER_OBJ 15
 # define OBJ_TYPE_MAX 8
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
@@ -106,20 +106,12 @@ typedef struct		s_camera
 	char			padding[4];
 }					t_cam;
 
-typedef struct		s_disk
-{
-	t_dvec3			pos;
-	double			radius;
-	t_dvec3			dir;
-	t_dvec3			color;
-	double			specular;
-}					t_disk;
-
 typedef struct		s_universal_object
 {
 	t_dvec3			pos;
 	double			radius;
 	t_dvec3			dir;
+	double			height;
 	t_dvec3			color;
 	double			specular;
 	void 			(*get_intersect)(const struct s_universal_object *,
@@ -130,19 +122,13 @@ typedef struct		s_universal_object
 	double			refractive_coef;
 	double			transparency_coef;
 	t_dvec3			pos_backup;
+	double			radius_backup;
 	t_dvec3			dir_backup;
 	_Bool			is_selected;
-//	t_disk			*top_cap;
-//	t_disk			*bottom_cap;
 //	t_obj			sliced_plane;
 	char			padding[7];
+	double			angle_cache; //todo: save here angle computs
 }					t_uni;
-
-typedef struct		s_cone
-{
-	t_dvec3			pos;
-	double			angle;
-}					t_cone;
 
 typedef struct		s_light {
 	t_dvec3			pos;

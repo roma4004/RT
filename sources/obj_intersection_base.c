@@ -6,15 +6,15 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/17 20:32:08 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/18 18:14:09 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "main.h"
 
-void	crop_cyl_n_cone(t_dvec3_comp *computs, t_dvec3 *touch, double oc_dot_dir)
+void	crop_cyl_n_cone(t_dvec3_comp *computs, t_dvec3 *touch,
+						double oc_dot_dir, double height)
 {
-	double			height = 5.0;  //parse this value and abs(value)
 
 	computs->m = computs->dir * touch->x + oc_dot_dir;
 	if (computs->m < 0.0  || computs->m > height)
@@ -93,7 +93,6 @@ void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *touch,
 	double		oc_dot_dir;
 	double		oc_dot_oc;
 	t_dvec3_comp	computs;
-	double			height = 5.0;  //parse this value and abs(value)
 
 	vec3_sub_vec3(&oc, &ray->pos, &cylinder->pos);
 	vec3_dot_vec3(&tmp.x, &ray->dir, &ray->dir);
@@ -107,22 +106,21 @@ void	get_intersect_cylinder(const t_uni *cylinder, t_dvec3 *touch,
 						- cylinder->radius * cylinder->radius};
 	discriminant_comput(&tmp, touch);
 	calculate_oc_tc_dir(ray, cylinder, &computs);
-	crop_cyl_n_cone(&computs, touch, oc_dot_dir);
+	crop_cyl_n_cone(&computs, touch, oc_dot_dir, cylinder->height);
 }
 
 void	get_intersect_cone(const t_uni *obj, t_dvec3 *touch,
 							t_ray *ray)
 {
 	//todo: add limits (need full refactoring)
-	const t_cone	*cone = (const t_cone *)obj;
-	const double	k = tan(cone->angle * M_PI / 360.0);
+	const double	k = obj->radius / obj->height; //cache this
 	t_dvec3			oc;
 	t_dvec3			tmp;
 	double			oc_dot_dir;
 	double			oc_dot_oc;
 	t_dvec3_comp	computs;
 
-	vec3_sub_vec3(&oc, &ray->pos, &((const t_cone *)obj)->pos);
+	vec3_sub_vec3(&oc, &ray->pos, &obj->pos);
 	vec3_dot_vec3(&tmp.x, &ray->dir, &ray->dir);
 	vec3_dot_vec3(&tmp.y, &ray->dir, &obj->dir);
 	vec3_dot_vec3(&tmp.z, &ray->dir, &oc);
@@ -133,7 +131,7 @@ void	get_intersect_cone(const t_uni *obj, t_dvec3 *touch,
 					.z = oc_dot_oc - (1 + k * k) * (oc_dot_dir * oc_dot_dir)};
 	discriminant_comput(&tmp, touch);
 	calculate_oc_tc_dir(ray, obj, &computs);
-	crop_cyl_n_cone(&computs, touch, oc_dot_dir);
+	crop_cyl_n_cone(&computs, touch, oc_dot_dir, obj->height);
 }
 
 void	get_intersect_disk(const t_uni *disk, t_dvec3 *touch, t_ray *ray)
