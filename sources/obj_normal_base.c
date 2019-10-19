@@ -3,86 +3,68 @@
 /*                                                        :::      ::::::::   */
 /*   obj_normal_base.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 17:38:33 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-void		get_normal_sphere(t_ray *ray, const t_uni *obj,
-									double dist, t_dvec3 *normal)
+void	set_normal_sphere(t_ray *ray, const t_uni *plane, double dist)
 {
 	t_dvec3		tc;
 
 	(void)dist;
-	vec3_sub_vec3(&tc, &ray->touch_point, &obj->pos);
-	vec3_normalize(normal, &tc);
+	vec3_sub_vec3(&tc, &ray->touch_point, &plane->pos);
+	vec3_normalize(&ray->normal, &tc);
 }
 
-void		get_normal_plane(t_ray *ray, const t_uni *obj,
-									double dist, t_dvec3 *normal)
+void	set_normal_plane(t_ray *ray, const t_uni *plane, double dist)
 {
 	double		dir_dot;
 	t_dvec3		dir_vec;
 	t_dvec3		dir_vec_inv;
 
 	(void)dist;
-	vec3_dot_vec3(&dir_dot, &ray->dir, &obj->dir);
+	vec3_dot_vec3(&dir_dot, &ray->dir, &plane->dir);
 	if (dir_dot > 0)
 	{
-		double_mul_vec3(&dir_vec_inv, -1, &obj->dir);
+		double_mul_vec3(&dir_vec_inv, -1, &plane->dir);
 		dir_vec = dir_vec_inv;
 	}
 	else
 	{
-		dir_vec = obj->dir;
+		dir_vec = plane->dir;
 	}
-	vec3_normalize(normal, &dir_vec);
+	vec3_normalize(&ray->normal, &dir_vec);
 }
 
-void		get_normal_cylinder(t_ray *ray, const t_uni *obj,
-									double dist, t_dvec3 *normal)
+void	set_normal_cylinder(t_ray *ray, const t_uni *cylinder, double dist)
 {
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 
-	calculate_oc_tc_dir(ray, obj, &computs);
-	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &obj->dir);
+	calculate_oc_tc_dir(&computs, cylinder, ray);
+	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &cylinder->dir);
 	computs.m = computs.dir * dist + oc_dot_dir;
-	vec3_mul_double(&computs.dir_vec, &obj->dir, computs.m);
+	vec3_mul_double(&computs.dir_vec, &cylinder->dir, computs.m);
 	vec3_sub_vec3(&computs.dir_vec, &computs.tc, &computs.dir_vec);
-	vec3_normalize(normal, &computs.dir_vec);
+	vec3_normalize(&ray->normal, &computs.dir_vec);
 }
 
-void		get_normal_cone(t_ray *ray, const t_uni *obj,
-								double dist, t_dvec3 *normal)
+void	set_normal_cone(t_ray *ray, const t_uni *cone, double dist)
 {
-	const double	k = obj->radius / obj->height;
+	const double	k = cone->radius / cone->height; //todo: cache this
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 
-	calculate_oc_tc_dir(ray, obj, &computs);
-	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &obj->dir);
+	calculate_oc_tc_dir(&computs, cone, ray);
+	vec3_dot_vec3(&oc_dot_dir, &computs.oc, &cone->dir);
 	computs.m = computs.dir * dist + oc_dot_dir;
-	double_mul_vec3(&computs.dir_vec, (1 + k * k), &obj->dir);
+	double_mul_vec3(&computs.dir_vec, (1 + k * k), &cone->dir);
 	vec3_mul_double(&computs.dir_vec, &computs.dir_vec, computs.m);
 	vec3_sub_vec3(&computs.dir_vec, &computs.tc, &computs.dir_vec);
-	vec3_normalize(normal, &computs.dir_vec);
-}
-
-void				(*normal_catalog(size_t type))
-						(t_ray *, const t_uni *, double, t_dvec3 *)
-{
-	if (type == SPHERE)
-		return (get_normal_sphere);
-	if (type == PLANE || type == DISK)
-		return (get_normal_plane);
-	if (type == CYLINDER)
-		return (get_normal_cylinder);
-	if (type == CONE)
-		return (get_normal_cone);
-	return (NULL);
+	vec3_normalize(&ray->normal, &computs.dir_vec);
 }

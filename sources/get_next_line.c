@@ -12,7 +12,7 @@
 
 #include "get_next_line.h"
 
-static size_t	ln_len(const char *str)
+static size_t		ln_len(const char *str)
 {
 	size_t	i;
 	size_t	len;
@@ -26,7 +26,7 @@ static size_t	ln_len(const char *str)
 	return (len);
 }
 
-static int	data_mod(char **data, int fd, char *buf, size_t line_len)
+static int			data_mod(char **data, int fd, char *buf, size_t line_len)
 {
 	char	*temp;
 
@@ -47,13 +47,13 @@ static int	data_mod(char **data, int fd, char *buf, size_t line_len)
 	return (1);
 }
 
-static int	del_line(char **data, int fd)
+static int			del_line(char **data, int fd)
 {
-	char	*nline;
-	size_t	i;
-	size_t	j;
-	size_t	line_len;
-	size_t	rem_size;
+	char		*nline;
+	size_t		i;
+	size_t		j;
+	size_t		line_len;
+	size_t		rem_size;
 
 	if (data[fd] == NULL)
 		return (0);
@@ -76,7 +76,7 @@ static int	del_line(char **data, int fd)
 	return (1);
 }
 
-static char	**init_data(void)
+static char			**init_data(void)
 {
 	int		i;
 	char	**new_data;
@@ -90,7 +90,7 @@ static char	**init_data(void)
 	return (new_data);
 }
 
-int			get_next_line(const int fd, char **line)
+int					get_next_line(const int fd, char **line)
 {
 	static char		**data = NULL;
 	size_t			len;

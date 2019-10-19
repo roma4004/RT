@@ -3,27 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   ray_traces.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 18:24:08 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
+static t_uni	*intersect_obj(t_env *env, t_ray *ray, double *dist)
 {
 	const size_t	len = env->uni_arr_len;
-	size_t			i;
 	t_uni			*cur_obj;
+	size_t			i;
 	t_dvec3			touch;
 
 	cur_obj = NULL;
 	i = UINT64_MAX;
 	while (++i < len)
 	{
-		env->uni_arr[i].get_intersect(&env->uni_arr[i], &touch, ray);
+		env->uni_arr[i].get_intersect(&touch, &env->uni_arr[i], ray);
 		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max
 			&& (cur_obj = &env->uni_arr[i]))
 			*dist = touch.x;
@@ -34,8 +34,8 @@ static t_uni		*intersect_obj(t_env *env, t_ray *ray, double *dist)
 	return (cur_obj);
 }
 
-const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *touch_point,
-									t_dvec3 *shadow_dir, double t_max, t_ray *ray)
+const t_uni		*is_shadow_ray(t_env *env, const t_ray *ray,
+					const t_dvec3 *shadow_dir, double t_max)
 {//todo: add refractive ray
 	const t_uni		*objects = env->uni_arr;
 	const size_t	len = env->uni_arr_len;
@@ -45,12 +45,12 @@ const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *touch_point,
 
 	shadow_ray = (t_ray){ .t_min = ray->t_min,
 						.t_max = ray->t_max,
-						.pos = *touch_point,
+						.pos = ray->touch_point,
 						.dir = *shadow_dir};
 	i = UINT64_MAX;
 	while (++i < len)
 	{
-		objects[i].get_intersect(&objects[i], &touch, &shadow_ray);
+		objects[i].get_intersect(&touch, &objects[i], &shadow_ray);
 		if ((touch.x < (double)MAXFLOAT
 			&& env->cam.epsilon < touch.x
 			&& touch.x < t_max)
@@ -62,7 +62,7 @@ const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *touch_point,
 	return (NULL);
 }
 
-t_dvec3		ReflectRay(t_dvec3 *R, t_dvec3 *N)
+t_dvec3			ReflectRay(t_dvec3 *R, t_dvec3 *N)
 {
 	double		cos_i;
 	t_dvec3		normal_x2;
@@ -75,8 +75,8 @@ t_dvec3		ReflectRay(t_dvec3 *R, t_dvec3 *N)
 	return (tmp);
 }
 
-void				send_reflect_ray(t_env *env, t_ray *ray,
-										t_dvec3 *cur_color, t_lght_comp *l)
+void			send_reflect_ray(t_env *env, t_ray *ray,
+					t_dvec3 *cur_color, t_lght_comp *l)
 {
 	t_ray		ref_ray;
 	t_dvec3		reflected_color;
@@ -91,11 +91,12 @@ void				send_reflect_ray(t_env *env, t_ray *ray,
 	{
 		if (ray->reflect_coef > 1.0)
 			ray->reflect_coef = 1.0; //do this after parsing
-		ref_ray = (t_ray) {.t_min = 0.001,
-							.t_max = (double) INFINITY,
-							.pos = ray->touch_point,
-							.dir = ReflectRay(&l->view, &ray->normal),
-							.dept_limit = ray->dept_limit - 1};
+		ref_ray = (t_ray) {
+			.t_min = 0.001,
+			.t_max = (double)INFINITY,
+			.pos = ray->touch_point,
+			.dir = ReflectRay(&l->view, &ray->normal),
+			.dept_limit = ray->dept_limit - 1};
 		send_ray(env, &ref_ray, &reflected_color);
 		vec3_mul_double(cur_color, cur_color, 1.0 - ray->reflect_coef);
 		vec3_mul_double(&reflected_color, &reflected_color, ray->reflect_coef);
@@ -103,7 +104,7 @@ void				send_reflect_ray(t_env *env, t_ray *ray,
 	}
 }
 
-void		ft_swap(double *first, double *second)
+void			ft_swap(double *first, double *second)
 {
 	double		tmp;
 
@@ -112,26 +113,9 @@ void		ft_swap(double *first, double *second)
 	*second = tmp;
 }
 
-void		ft_clamp_in_range(double *dest, double value,
-								double min, double max)
-{
-	if (value > max)
-		*dest = max;
-	else if (value < min)
-		*dest = min;
-	else
-		*dest = value;
-}
 
-void		ft_clamp_in_range_vec(t_dvec3 *dest, double min, double max)
-{
-	ft_clamp_in_range(&dest->x, dest->x, min, max);
-	ft_clamp_in_range(&dest->y, dest->y, min, max);
-	ft_clamp_in_range(&dest->z, dest->z, min, max);
-}
-
-t_dvec3				compute_refract_dir(double eta, double cosi,
-								const t_dvec3 *dir, const t_dvec3 *ref_normal)
+t_dvec3			compute_refract_dir(double eta, double cosi,
+					const t_dvec3 *dir, const t_dvec3 *ref_normal)
 {
 	double		k;
 	t_dvec3		tmp;
@@ -149,8 +133,8 @@ t_dvec3				compute_refract_dir(double eta, double cosi,
 	}
 }
 
-t_dvec3				refract(const t_dvec3 *dir, const t_dvec3 *normal,
-							const double *obj_refract_coef)
+t_dvec3			refract(const t_dvec3 *dir, const t_dvec3 *normal,
+					const double *obj_refract_coef)
 {
 	double		cosi;
 	double		etai;
@@ -174,8 +158,8 @@ t_dvec3				refract(const t_dvec3 *dir, const t_dvec3 *normal,
 	return (compute_refract_dir(etai / etat, cosi, dir, ref_normal));
 }
 
-void				send_refract_ray(t_env *env, t_ray *ray,
-										t_dvec3 *cur_color, t_lght_comp *l)
+void			send_refract_ray(t_env *env, t_ray *ray,
+					t_dvec3 *cur_color, t_lght_comp *l)
 {
 	t_ray		ref_ray;
 	t_dvec3		reflected_color;
@@ -189,8 +173,11 @@ void				send_refract_ray(t_env *env, t_ray *ray,
 		return ;
 	else
 	{
-		ref_ray = (t_ray){.t_min = 0.001, .t_max = (double)INFINITY,
-			.pos = ray->touch_point, .dept_limit = ray->dept_limit - 1,
+		ref_ray = (t_ray){
+			.t_min = 0.001,
+			.t_max = (double)INFINITY,
+			.pos = ray->touch_point,
+			.dept_limit = ray->dept_limit - 1,
 			.dir = refract(&l->view, &ray->normal, &ray->refract_coef)};
 		send_ray(env, &ref_ray, &reflected_color);
 		vec3_mul_double(cur_color, cur_color, 1.0 - ray->refract_coef);
@@ -199,21 +186,14 @@ void				send_refract_ray(t_env *env, t_ray *ray,
 	}
 }
 
-double		ft_max(double first, double second)
-{
-	return (first > second ? first : second);
-}
-
-
-void				compute_refract_coef(t_dvec3 *tmp, double cos_i,
-										double *kr)
+void			compute_refract_coef(t_dvec3 *tmp, double cos_i, double *kr)
 {
 	double		cos_t;
 	double		Rs;
 	double		Rp;
 //	tmp = (t_dvec3){.x = etai, .y = etat, .z = sint};
 
-	cos_t = sqrt(ft_max(0.f, 1 - tmp->z * tmp->z));
+	cos_t = sqrt(fmax(0.f, 1 - tmp->z * tmp->z));
 	cos_i = fabs(cos_i);
 	Rs = ((tmp->y * cos_i) - (tmp->x * cos_t))
 		/ ((tmp->y * cos_i) + (tmp->x * cos_t));
@@ -222,8 +202,8 @@ void				compute_refract_coef(t_dvec3 *tmp, double cos_i,
 	*kr = (Rs * Rs + Rp * Rp) / 2;
 }
 
-void				fresnel(const t_dvec3 *dir, const t_dvec3 *normal,
-							const double *obj_refract_coef, double *kr)
+void			fresnel(const t_dvec3 *dir, const t_dvec3 *normal,
+					const double *obj_refract_coef, double *kr)
 {
 	double		cos_i;
 	double		sin_t;
@@ -237,7 +217,7 @@ void				fresnel(const t_dvec3 *dir, const t_dvec3 *normal,
 	ft_clamp_in_range(&cos_i, cos_i, -1, 1);
 	if (cos_i > 0)
 		ft_swap(&eta_i, &eta_t);
-	sin_t = eta_i / eta_t * sqrt(ft_max(0.f, 1 - cos_i * cos_i));				// Compute sini using Snell's law
+	sin_t = eta_i / eta_t * sqrt(fmax(0.f, 1 - cos_i * cos_i));				// Compute sini using Snell's law
 	if (sin_t >= 1)																// Total internal reflection
 		*kr = 1;
 	else
@@ -247,7 +227,7 @@ void				fresnel(const t_dvec3 *dir, const t_dvec3 *normal,
 	}// As a consequence of the conservation of energy, transmittance is given by: kt = 1 - kr;
 }
 
-t_dvec3		reflect(const t_dvec3 *I, const t_dvec3 *N)
+t_dvec3			reflect(const t_dvec3 *I, const t_dvec3 *N)
 {
 	double			I_dot_N;
 	t_dvec3			tmp;
@@ -264,6 +244,7 @@ void				send_selected_ray(t_env *env, t_ray *ray,
 {
 	*obj = intersect_obj(env, ray, &dist);
 }
+
 void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 {
 	double			dist;
@@ -280,13 +261,13 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 	{
 		double_mul_vec3(&ray_len, dist, &ray->dir);
 		vec3_add_vec3(&ray->touch_point, &ray->pos, &ray_len);
-		double_mul_vec3(&l.view,-1, &ray->dir);
-		obj->get_normal(ray, obj, dist, &ray->normal);
+		double_mul_vec3(&l.view, -1, &ray->dir);
+		obj->get_normal(ray, obj, dist);
 		vec3_mul_double(&epsi_normal, &ray->normal, env->cam.epsilon);
 		vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
 		get_light(env, &l, obj, cur_color, ray);
 		if (obj->is_selected)
-			*cur_color = (t_dvec3){0,0,0};
+			*cur_color = (t_dvec3){0.0};
 		ray->reflect_coef = obj->reflective_coef;
 		ray->refract_coef = obj->refractive_coef;
 

@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   effects.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/16 20:50:03 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 21:41:34 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 14:46:33 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-void				apply_sepia_filter(t_dvec3 *color)
+static void		apply_sepia_filter(t_dvec3 *color)
 {
 	*color = (t_dvec3){
 		.x = (color->x * 0.393) + (color->y * 0.769) + (color->z * 0.189),
@@ -21,17 +21,33 @@ void				apply_sepia_filter(t_dvec3 *color)
 	ft_clamp_in_range_vec(color, 0, 255);
 }
 
-void		replace_space_newline(char *str)
+static void		apply_grayscale_filter(t_dvec3 *color)
+{
+	*color = (t_dvec3){
+		.x = (color->x + color->y + color->z) / 3,
+		.y = (color->x + color->y + color->z) / 3,
+		.z = (color->x + color->y + color->z) / 3};
+}
+
+void			apply_effects(t_flags *flags, t_dvec3 *color)
+{
+	if (flags->is_sepia)
+		apply_sepia_filter(color);
+	if (flags->is_grayscale)
+		apply_grayscale_filter(color);
+}
+
+static void		replace_space_newline(char *str)
 {
 	size_t		i;
 
 	i = UINT64_MAX;
 	while (str[++i] && (str[i] = ft_tolower(str[i])))
-		if (str[i] == ' ' || str[i] == '\n' )
+		if (str[i] == ' ' || str[i] == '\n')
 			str[i] = '_';
 }
 
-void		save_screenshot(t_env *env)
+void			save_screenshot(t_env *env)
 {
 	SDL_Surface		*screenshot;
 	time_t			rawtime;

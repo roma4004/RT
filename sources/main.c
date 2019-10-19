@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 21:27:29 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 15:27:14 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@ double			double_clamp(double x)
 static void		show_errors(t_env *env)
 {
 	if (env->flags.err_id == 404)
-		ft_putstr_fd("SCENE_ERR", 2);
+		ft_putstr_fd("ERR_SCENE", 2);
 	if (env->flags.err_id == 405)
-		ft_putstr_fd("READ_ERR", 2);
+		ft_putstr_fd("ERR_READ", 2);
 	if (env->flags.err_id == 406)
-		ft_putstr_fd("SCENE_SIZE_ERR", 2);
+		ft_putstr_fd("ERR_SIZE", 2);
 	if (env->flags.err_id && errno)
 		ft_putstr_fd(" - ", 2);
 	if (errno)
@@ -75,7 +75,6 @@ void			quit_program(t_env *env)
 //+ It's possible inside the RT to save, screenshot the rendered image. ()
 //+ limited obj (by vtlostiu)
 
-//- colored light
 //- JSON
 //- sliced obj
 //- interface
@@ -83,10 +82,11 @@ void			quit_program(t_env *env)
 //- parse screen param from file (screen obj)
 //- texture (checkmate_board)
 //- more figures
+//- negative objects
 
 //optional:
+//- colored light
 //- blinded by light spot facing us.
-//- negative objects
 //- add figure paraboloid et hyperboloid.
 //- torus
 
