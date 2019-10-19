@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 18:24:08 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/19 19:34:44 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ t_dvec3			refract(const t_dvec3 *dir, const t_dvec3 *normal,
 {
 	double		cosi;
 	double		etai;
-	double		etat; //etai is the index of refraction of the medium the ray is in before entering the second medium
+	double		etat;
 	t_dvec3		*ref_normal;
 
 	etai = 1.0;
@@ -310,7 +310,7 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 //				.dir = refractionDirection,
 //				.dept_limit = ray->dept_limit - 1
 //			};
-//			send_refract_ray(env, ray, cur_color, &l);
+			send_refract_ray(env, ray, cur_color, &l);
 ////			send_ray(env, &refr_ray, &refractionColor);
 //		}
 

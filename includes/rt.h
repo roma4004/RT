@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 19:14:59 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/19 19:36:33 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define WIN_HEIGHT 1000u
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
-# define VALUES_PER_OBJ 15
+# define VALUES_PER_OBJ 14
 # define OBJ_TYPE_MAX 8
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
@@ -122,14 +122,10 @@ typedef struct		s_universal_object
 						double dist);
 	double			reflective_coef;
 	double			refractive_coef;
-	double			transparency_coef;
 	t_dvec3			pos_backup;
 	double			radius_backup;
 	t_dvec3			dir_backup;
 	_Bool			is_selected;
-	_Bool			is_negative;
-//	_Bool			is_hidden; //delete key when selected obj
-//	t_obj			sliced_plane;
 	char			padding[7];
 	double			angle_cache; //todo: save here angle computs
 }					t_uni;
@@ -246,7 +242,7 @@ t_env				*init_sdl2(t_env *env);
 **					parse_utils.c
 */
 _Bool				init_obj_arr(t_env *env, t_list *lst);
-void				set_value(t_env *env, const double *v, size_t type);
+void				set_obj_value(t_env *env, const double *v, size_t type);
 
 /*
 **					key_down_cam_move.c

@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 15:27:39 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/19 15:29:12 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
 		while (ft_isdigit(str[i]))
 			i++;
 	}
-	set_value(env, arr, type);
+	set_obj_value(env, arr, type);
 }
 
 static bool			parse_lst(t_env *env, t_list *lst)

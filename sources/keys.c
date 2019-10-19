@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 19:05:58 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/19 19:26:40 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ static void		keyboard_handle(t_env *env, t_flags *restrict f,
 	uni_rotate = (obj_cnt) ? rotate_objects : rotate_camera;
 	uni_rotate(env, rot);
 	swith_handle(env, &env->flags, obj_cnt);
-
 }
 
 static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
@@ -131,13 +130,12 @@ static _Bool	mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 
 			send_selected_ray(env, &ray, &env->selected_obj, (double)MAXFLOAT);
 			if (env->selected_obj)
+			{
 				env->selected_obj->is_selected =
 					(env->selected_obj->is_selected) ? false : true;
-			select_caps_cylinder_cone(env);
-
-//				obj->color = (t_dvec3){255,255,255,0};
-
-			draw_scene(env, env->threads);
+				select_caps_cylinder_cone(env);
+			}
+//			draw_scene(env, env->threads);
 		}
 	}
 
