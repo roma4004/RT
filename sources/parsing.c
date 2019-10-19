@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 15:27:39 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,11 @@ static bool			parse_lst(t_env *env, t_list *lst)
 	while (cur)
 	{
 		if ((ft_strlen(cur->content) > MAX_MAP_SIDE
-		&& (env->flags.err_id = SCENE_SIZE_ERR)))
+		&& (env->flags.err_id = ERR_SIZE)))
 			return (false);
 		nums = count_number(env, cur->content, cur->content_size);
 		if (nums != 0 && nums != VALUES_PER_OBJ
-		&& (env->flags.err_id = SCENE_ERR))
+		&& (env->flags.err_id = ERR_SCENE))
 			return (false);
 		if (nums != 0)
 			get_value_from_line(env, cur, get_type(cur->content));
@@ -96,25 +96,26 @@ t_env				*parse_scene(t_env *env, char *file_name)
 	int				status;
 	int				rows;
 	static char		*buf;
+	t_list			*lst;
 
-	if (!env || !file_name || (env->lst = NULL)
-	|| (rows = 0) || ((fd == -1 || errno == ITS_A_DIRECTORY)
-	&& (env->flags.err_id = READ_ERR))
-	|| (buf = NULL))
+	lst = NULL;
+	buf = NULL;
+	if (!env || !file_name || (rows = 0)
+	|| ((fd == -1 || errno == ERR_DIRECTORY) && (env->flags.err_id = ERR_READ)))
 		return (NULL);
 	while ((status = get_next_line(fd, &buf)) == 1
-	&& is_valid_line(env, buf, ft_strlen(buf))
-	&& (ft_lstappend(&env->lst, buf, ft_strlen(buf) + 1)) && ++rows)
+	&& is_valid_line(env, &buf, ft_strlen(buf))
+	&& (ft_lstappend(&lst, buf, ft_strlen(buf) + 1)) && ++rows)
 	{
 		ft_memdel((void *)&buf);
-		if (((rows > MAX_MAP_SIDE) && (env->flags.err_id = SCENE_SIZE_ERR)))
+		if (((rows > MAX_MAP_SIDE) && (env->flags.err_id = ERR_SIZE)))
 			break ;
 	}
-	if (buf)
-		ft_memdel((void *)&buf);
-	if (status == -1 || !env->lst || close(fd))
-		env->flags.err_id = READ_ERR;
-	if (!parse_lst(env, env->lst) )//|| ft_destroy_lst(env->lst))
+	if (status == -1 || !lst || close(fd))
+		env->flags.err_id = ERR_READ;
+	if (!parse_lst(env, lst)
+	//|| ft_destroy_lst(lst)
+	)
 		return (NULL);
 	return (env);
 }

@@ -14,17 +14,18 @@
 
 void	reset(t_env *env, t_cam *restrict cam, size_t obj_cnt)
 {
+	t_uni		*obj;
 	size_t		i;
 
 	if (obj_cnt)
 	{
-		i = ~0UL;
-		while (++i < env->uni_arr_len)
+		i = UINT64_MAX;
+		while (++i < env->uni_arr_len && (obj = &env->uni_arr[i]))
 		{
-			if (env->uni_arr[i].is_selected)
+			if (obj->is_selected)
 			{
-				env->uni_arr[i].pos = env->uni_arr[i].pos_backup;
-				env->uni_arr[i].dir = env->uni_arr[i].dir_backup;
+				obj->pos = obj->pos_backup;
+				obj->dir = obj->dir_backup;
 			}
 		}
 	}

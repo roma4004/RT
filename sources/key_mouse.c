@@ -3,20 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   key_mouse.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/18 21:59:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 22:01:31 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/19 17:54:42 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-void		select_caps_cylinder_cone(t_env *env)
+void	select_caps_cylinder_cone(t_env *env)
 {
-	int i;
+	size_t		i;
 
-	i = -1;
+	i = UINT64_MAX;
 	while (++i < env->uni_arr_len)
 		if (env->selected_obj == &env->uni_arr[i])
 		{
@@ -27,6 +27,6 @@ void		select_caps_cylinder_cone(t_env *env)
 			if (env->selected_obj->get_intersect == get_intersect_cylinder)
 				env->uni_arr[i + 2].is_selected =
 					env->selected_obj->is_selected;
-			break;
+			break ;
 		}
 }

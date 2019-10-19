@@ -13,41 +13,45 @@
 #include "rt.h"
 
 void	double_add_vec3(t_dvec3 *destination,
-						double first,
-						const t_dvec3 *restrict second)
+			double first,
+			const t_dvec3 *restrict second)
 {
-	*destination = (t_dvec3){.x = first + second->x,
-							.y = first + second->y,
-							.z = first + second->z};
+	*destination = (t_dvec3){
+		.x = first + second->x,
+		.y = first + second->y,
+		.z = first + second->z};
 }
 
 void	double_sub_vec3(t_dvec3 *destination,
-						double first,
-						const t_dvec3 *restrict second)
+			double first,
+			const t_dvec3 *restrict second)
 {
-	*destination = (t_dvec3){.x = first - second->x,
-							.y = first - second->y,
-							.z = first - second->z};
+	*destination = (t_dvec3){
+		.x = first - second->x,
+		.y = first - second->y,
+		.z = first - second->z};
 }
 
 void	double_mul_vec3(t_dvec3 *destination,
-						double first,
-						const t_dvec3 *restrict second)
+			double first,
+			const t_dvec3 *restrict second)
 {
-	*destination = (t_dvec3){.x = first * second->x,
-							.y = first * second->y,
-							.z = first * second->z};
+	*destination = (t_dvec3){
+		.x = first * second->x,
+		.y = first * second->y,
+		.z = first * second->z};
 }
 
-void		double_div_vec3(t_dvec3 *destination,
-							double first,
-							const t_dvec3 *restrict second)
+void	double_div_vec3(t_dvec3 *destination,
+			double first,
+			const t_dvec3 *restrict second)
 {
 	if (second->x == 0.0
 	|| second->y == 0.0
 	|| second->z == 0.0)
 		return ;
-	*destination = (t_dvec3){.x = first / second->x,
-							.y = first / second->y,
-							.z = first / second->z};
+	*destination = (t_dvec3){
+		.x = first / second->x,
+		.y = first / second->y,
+		.z = first / second->z};
 }

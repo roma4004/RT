@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_validate_scene.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:31:32 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 15:30:43 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static int		is_dot_in_double(char *str, size_t i)
+static int		is_dot_in_double(const char *str, size_t i)
 {
 	if (str
 	&& i != 0
@@ -22,23 +22,25 @@ static int		is_dot_in_double(char *str, size_t i)
 	return (0);
 }
 
-_Bool			is_valid_line(t_env *env, char *line, size_t len)
+_Bool			is_valid_line(t_env *env, char **line, size_t len)
 {
+	char		*str;
 	size_t		i;
 
-	if (!line)
+	if (!line || !(str = *line))
 		return (false);
 	i = UINT64_MAX;
-	while (++i < len && line[i] != '#')
+	while (++i < len && str[i] != '#')
 	{
-		if (!((line[i] == '+' && ft_isdigit(line[i + 1]))
-			|| (line[i] == '-' && ft_isdigit(line[i + 1]))
-			|| (line[i] == '.' && is_dot_in_double(line, i))
-			|| ft_isalpha(line[i])
-			|| ft_isdigit(line[i])
-			|| ft_strchr(" \t|", line[i])))
+		if (!((str[i] == '+' && ft_isdigit(str[i + 1]))
+		|| (str[i] == '-' && ft_isdigit(str[i + 1]))
+		|| (str[i] == '.' && is_dot_in_double(str, i))
+		|| ft_isalpha(str[i])
+		|| ft_isdigit(str[i])
+		|| ft_strchr(" \t|", str[i])))
 		{
-			env->flags.err_id = SCENE_ERR;
+			env->flags.err_id = ERR_SCENE;
+			ft_strdel(line);
 			return (false);
 		}
 	}
@@ -108,7 +110,7 @@ size_t			count_number(t_env *env, char *str, size_t len)
 				i++;
 			}
 			if (dots > 1)
-				env->flags.err_id = SCENE_ERR;
+				env->flags.err_id = ERR_SCENE;
 		}
 	}
 	return (digits);

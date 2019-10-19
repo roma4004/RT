@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.h                                             :+:      :+:    :+:   */
+/*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:04:44 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 19:14:59 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
-# define WIN_NAME "RTv1 by dromanic (@Dentair)"
+# define WIN_NAME "RT by dromanic (@Dentair)"
 # define WIN_WIDTH 1000u
 # define WIN_HEIGHT 1000u
 # define VIEWPORT_SIZE 1.0
@@ -35,11 +35,10 @@
 # pragma GCC diagnostic ignored "-Wdocumentation"
 # pragma GCC diagnostic ignored "-Wundef"
 # pragma GCC diagnostic ignored "-Wreserved-id-macro"
+
 # include "SDL.h"
-//# include "SDL_ttf.h"
 # include "SDL_image.h"
-//# include "SDL_mixer.h"
-//# include "SDL_audio.h"
+
 # pragma GCC diagnostic warning "-Wreserved-id-macro"
 # pragma GCC diagnostic warning "-Wundef"
 # pragma GCC diagnostic warning "-Wdocumentation"
@@ -54,7 +53,7 @@ typedef struct		s_vector3_int
 	int				x;
 	int				y;
 	int				z;
-	char			padding[4];
+	int				padding;
 }					t_ivec3;
 
 typedef struct		s_vector3_double
@@ -70,12 +69,6 @@ typedef struct		s_vector_double
 	double			x;
 	double			y;
 }					t_dvec;
-
-typedef struct		s_canvas_parameter
-{
-	t_dvec			half;
-	double			rate;
-}					t_canvas_par;
 
 typedef struct		s_ray
 {
@@ -102,9 +95,13 @@ typedef struct		s_camera
 	double			rotate_speed;
 	t_dvec3			rotate_angle;
 	t_dvec3			rotate_angle_backup;
-	t_canvas_par	canvas;
+	t_dvec			half;
+	double			rate;
 	unsigned		reflective_dept;
 	char			padding[4];
+	t_dvec3			origin_dir_x;
+	t_dvec3			origin_dir_y;
+	t_dvec3			origin_dir_z;
 }					t_cam;
 
 typedef struct		s_universal_object
@@ -115,10 +112,14 @@ typedef struct		s_universal_object
 	double			height;
 	t_dvec3			color;
 	double			specular;
-	void 			(*get_intersect)(const struct s_universal_object *,
-										t_dvec3 *, t_ray *);
-	void			(*get_normal)(t_ray *, const struct s_universal_object *,
-									double, t_dvec3 *normal);
+	void			(*get_intersect)
+					(t_dvec3 *touch,
+						const struct s_universal_object *obj,
+						const t_ray *ray);
+	void			(*get_normal)
+					(t_ray *ray,
+						const struct s_universal_object *obj,
+						double dist);
 	double			reflective_coef;
 	double			refractive_coef;
 	double			transparency_coef;
@@ -126,6 +127,8 @@ typedef struct		s_universal_object
 	double			radius_backup;
 	t_dvec3			dir_backup;
 	_Bool			is_selected;
+	_Bool			is_negative;
+//	_Bool			is_hidden; //delete key when selected obj
 //	t_obj			sliced_plane;
 	char			padding[7];
 	double			angle_cache; //todo: save here angle computs
@@ -140,11 +143,11 @@ typedef struct		s_light {
 
 typedef struct		s_vector3_comput_tmp
 {
-	t_dvec3		oc;
-	t_dvec3		tc;
-	double		dir;
-	t_dvec3		dir_vec;
-	double		m;
+	t_dvec3			oc;
+	t_dvec3			tc;
+	double			dir;
+	t_dvec3			dir_vec;
+	double			m;
 }					t_dvec3_comp;
 
 typedef struct		s_light_calculating
@@ -152,14 +155,8 @@ typedef struct		s_light_calculating
 	t_lght			*cur;
 	t_dvec3			dir;
 	double			defuse_val;
-	double			t_max;
 	double			specul_val;
-//	t_dvec3			touch_point;
 	t_dvec3			view;
-//	t_ray			ray;
-	double			vec_reflect_len;
-	double			view_len;
-//	t_dvec3			touch_point;
 }					t_lght_comp;
 
 typedef struct		s_flags
@@ -171,29 +168,26 @@ typedef struct		s_flags
 	_Bool			is_in_select_mod;
 	_Bool			is_reset;
 	_Bool			is_sepia;
+	_Bool			is_grayscale;
 	_Bool			is_screenshot;
+	char			padding[2];
 }					t_flags;
 
 typedef struct		s_environment
 {
-	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
-	t_flags			flags;
-	t_cam			cam;
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;
 	t_uni			*uni_arr;
 	t_uni			*selected_obj;
-	size_t			uni_arr_len;
 	t_lght			*light_arr;
-	size_t			light_arr_len;
+	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
 	t_dvec3			bg_color;
-	t_list			*lst;
-
 	size_t			threads;
-	t_dvec3			origin_dir_x;
-	t_dvec3			origin_dir_y;
-	t_dvec3			origin_dir_z;
+	t_cam			cam;
+	size_t			uni_arr_len;
+	size_t			light_arr_len;
+	t_flags			flags;
 }					t_env;
 
 typedef struct		s_pthread_data
@@ -204,10 +198,10 @@ typedef struct		s_pthread_data
 
 enum				e_errors
 {
-	SCENE_ERR = 404,
-	READ_ERR = 405,
-	SCENE_SIZE_ERR = 406,
-	ITS_A_DIRECTORY = 21,
+	ERR_SCENE = 404,
+	ERR_READ = 405,
+	ERR_SIZE = 406,
+	ERR_DIRECTORY = 21,
 };
 
 enum				e_light_type
@@ -220,8 +214,6 @@ enum				e_light_type
 	CYLINDER = 5,
 	CONE = 6,
 	DISK = 7,
-
-
 	CAM = 8, // the last one
 };
 
@@ -231,164 +223,253 @@ enum				e_orient
 	NEG = -1,
 	NON = 0
 };
-void		select_caps_cylinder_cone(t_env *env);
-t_env				*init_sdl2(t_env *env);
-void				apply_sepia_filter(t_dvec3 *color);
-void				send_selected_ray(t_env *env, t_ray *ray,
-										t_uni **obj, double dist);
 
-void				ft_clamp_in_range(double *dest, double value, double min, double max);
-void				ft_clamp_in_range_vec(t_dvec3 *dest, double min,
-											double max);
-_Bool				is_x_move_up(SDL_Keycode k, t_ivec3 *restrict move);
-_Bool				is_y_move_up(SDL_Keycode k, t_ivec3 *restrict move);
-_Bool				is_z_move_up(SDL_Keycode k, t_ivec3 *restrict move);
-_Bool				is_x_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate);
-_Bool				is_y_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate);
-_Bool				is_z_rotate_up(SDL_Keycode k, t_ivec3 *restrict rotate);
-_Bool				is_x_move_down(SDL_Keycode k, t_ivec3 *restrict move);
-_Bool				is_y_move_down(SDL_Keycode k, t_ivec3 *restrict move);
-_Bool				is_z_move_down(SDL_Keycode k, t_ivec3 *restrict move);
-_Bool				is_x_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
-_Bool				is_y_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
-_Bool				is_z_rotate_down(SDL_Keycode k, t_ivec3 *restrict rotate);
-
-
-t_env				*init_env(void);
-_Bool				init_obj_arr(t_env *env, t_list *lst);
-
-size_t				count_number(t_env *env, char *str, size_t len);
-size_t				get_type(const char *str);
-_Bool				is_valid_line(t_env *env, char *line, size_t len);
-void				set_value(t_env *env, const double *v, size_t type);
-t_env				*parse_scene(t_env *env, char *file_name);
-
+/*
+**					draw.c
+*/
 t_dvec3				convert_to_viewport(double x, double y, double rate);
-typedef void		(*intersect)(const t_uni *, t_dvec3 *, t_ray *);
-intersect			intersect_catalog(size_t type);
-
-typedef void		(*normal)(const t_uni *, t_dvec3 *, t_ray *);
-void				(*normal_catalog(size_t type))
-						(t_ray *, const t_uni *, double, t_dvec3 *);
-
-_Bool				event_handler(t_env *env, t_cam *cam, t_flags *flags);
 void				draw_scene(t_env *env, size_t threads);
 
-void				get_light(t_env *env, t_lght_comp *l,
-								t_uni *obj, t_dvec3 *col, t_ray *ray);
+/*
+**					effects.c
+*/
+void				apply_effects(t_flags *flags, t_dvec3 *color);
+void				save_screenshot(t_env *env);
 
-void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
-//const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *ray_pos,
-//									t_dvec3 *direction, t_dvec limits);
+/*
+**					init.c
+*/
+t_env				*init_env(void);
+t_env				*init_sdl2(t_env *env);
 
-const t_uni			*is_shadow_ray(t_env *env, t_dvec3 *touch_point,
-									t_dvec3 *shadow_dir, double t_max, t_ray *ray);
+/*
+**					parse_utils.c
+*/
+_Bool				init_obj_arr(t_env *env, t_list *lst);
+void				set_value(t_env *env, const double *v, size_t type);
 
-void				discriminant_comput(t_dvec3 *tmp, t_dvec3 *touch);
-void				vec3_length(double *destination,
-								const t_dvec3 *restrict first);
-double				double_clamp(double x);
+/*
+**					key_down_cam_move.c
+*/
+_Bool				is_x_move_down(t_ivec3 *move, SDL_Keycode k);
+_Bool				is_y_move_down(t_ivec3 *move, SDL_Keycode k);
+_Bool				is_z_move_down(t_ivec3 *move, SDL_Keycode k);
 
-void				double_mul_vec3_col(t_dvec3 *destination,
-										double first,
-										const t_dvec3 *restrict second);
-void				vec3_add_vec3_col(t_dvec3 *destination,
-										const t_dvec3 *restrict first,
-										const t_dvec3 *restrict second);
-
-void				get_intersect_sphere(const t_uni *sphere, t_dvec3 *touch,
-											t_ray *ray);
-void				get_intersect_plane(const t_uni *plane, t_dvec3 *touch,
-										t_ray *ray);
-void				get_intersect_cylinder(const t_uni *cylinder,
-											t_dvec3 *touch, t_ray *ray);
-void				get_intersect_cone(const t_uni *obj, t_dvec3 *touch,
-										t_ray *ray);
-void				get_intersect_disk(const t_uni *disk, t_dvec3 *touch,
-										t_ray *ray);
-
-void				get_normal_sphere(t_ray *ray, const t_uni *obj,
-										double dist, t_dvec3 *normal);
-void				get_normal_plane(t_ray *ray, const t_uni *obj,
-									 double dist, t_dvec3 *normal);
-void				get_normal_cylinder(t_ray *ray, const t_uni *obj,
-										double dist, t_dvec3 *normal);
-void				get_normal_cone(t_ray *ray, const t_uni *obj,
-									double dist, t_dvec3 *normal);
-
-void				move_objects(t_env *env, t_dvec3 *move_dir,
-									double move_speed);
-void				move_camera(t_env *env, t_dvec3 *move_dir,
-									double move_speed);
-
-
-void				reset(t_env *env, t_cam *restrict cam, size_t obj_cnt);
-
-void				rotate_vec(t_dvec3 *vec, t_dvec3 *rotate_angle);
-void				rotate_x(t_dvec3 *destination,
-								const t_dvec3 *restrict pt,
-								double angle);
-void				rotate_y(t_dvec3 *destination,
-								const t_dvec3 *restrict pt,
-								double angle);
-void				rotate_z(t_dvec3 *destination,
-								const t_dvec3 *restrict pt,
-								double angle);
-void				rotate_objects(t_env *env, t_dvec3 rot);
+/*
+**					key_down_cam_move.c
+*/
+_Bool				is_x_rotate_down(t_ivec3 *rotate, SDL_Keycode k);
+_Bool				is_y_rotate_down(t_ivec3 *rotate, SDL_Keycode k);
+_Bool				is_z_rotate_down(t_ivec3 *rotate, SDL_Keycode k);
 void				rotate_camera(t_env *env, t_dvec3 rot);
 
-void				vec3_dot_vec3(double *destination,
-									const t_dvec3 *first,
-									const t_dvec3 *second);
-double				vec3_to_double(t_dvec3 first);
-void				vec3_normalize(t_dvec3 *destination,
-									const t_dvec3 *restrict first);
+/*
+**					key_mouse.c
+*/
+void				select_caps_cylinder_cone(t_env *env);
 
-void				vec3_add_vec3(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									const t_dvec3 *restrict second);
-void				vec3_sub_vec3(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									const t_dvec3 *restrict second);
-void				vec3_mul_vec3(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									const t_dvec3 *restrict second);
-void				vec3_div_vec3(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									const t_dvec3 *restrict second);
-void				vec3_crs_vec3(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									const t_dvec3 *restrict second);
+/*
+**					key_mouse.c
+*/
+void				move_objects(t_env *env, const t_dvec3 *move_dir,
+						double move_speed);
+void				move_camera(t_env *env, const t_dvec3 *move_dir,
+						double move_speed);
 
-void				double_add_vec3(t_dvec3 *destination,
-									double first,
-									const t_dvec3 *restrict second);
-void				double_sub_vec3(t_dvec3 *destination,
-									double first,
-									const t_dvec3 *restrict second);
-void				double_mul_vec3(t_dvec3 *destination,
-									double first,
-									const t_dvec3 *restrict second);
-void				double_div_vec3(t_dvec3 *destination,
-									double first,
-									const t_dvec3 *restrict second);
+/*
+**					key_reset.c
+*/
+void				reset(t_env *env, t_cam *restrict cam, size_t obj_cnt);
 
-void				vec3_add_double(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									double second);
-void				vec3_sub_double(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									double second);
-void				vec3_mul_double(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									double second);
-void				vec3_div_double(t_dvec3 *destination,
-									const t_dvec3 *restrict first,
-									double second);
+/*
+**					key_up_cam_move.c
+*/
+_Bool				is_x_move_up(t_ivec3 *move, SDL_Keycode k);
+_Bool				is_y_move_up(t_ivec3 *move, SDL_Keycode k);
+_Bool				is_z_move_up(t_ivec3 *move, SDL_Keycode k);
+
+/*
+**					key_up_cam_move.c
+*/
+_Bool				is_x_rotate_up(t_ivec3 *rotate, SDL_Keycode k);
+_Bool				is_y_rotate_up(t_ivec3 *rotate, SDL_Keycode k);
+_Bool				is_z_rotate_up(t_ivec3 *rotate, SDL_Keycode k);
+
+/*
+**					keys.c
+*/
+_Bool				event_handler(t_env *env, t_cam *cam, t_flags *flags);
+
+/*
+**					ligths.c
+*/
+void				get_light(t_env *env, t_lght_comp *l,
+						const t_uni *obj, t_dvec3 *col, t_ray *ray);
+
+/*
+**					main.c
+*/
+double				double_clamp(double x);
 void				quit_program(t_env *env);
-void				calculate_oc_tc_dir(const t_ray *ray,
-										const t_uni *obj,
-										t_dvec3_comp *computs);
-void				save_screenshot(t_env *env);
+
+/*
+**					obj_intersection_base.c
+*/
+void				get_intersect_sphere(t_dvec3 *touch, const t_uni *sphere,
+						const t_ray *ray);
+void				get_intersect_plane(t_dvec3 *touch, const t_uni *plane,
+						const t_ray *ray);
+void				get_intersect_cylinder(t_dvec3 *touch,
+						const t_uni *cylinder, const t_ray *ray);
+void				get_intersect_cone(t_dvec3 *touch, const t_uni *obj,
+						const t_ray *ray);
+void				get_intersect_disk(t_dvec3 *touch, const t_uni *disk,
+						const t_ray *ray);
+
+/*
+**					obj_normal_base.c
+*/
+void				set_normal_sphere(t_ray *ray, const t_uni *plane,
+						double dist);
+void				set_normal_plane(t_ray *ray, const t_uni *plane,
+						double dist);
+void				set_normal_cylinder(t_ray *ray, const t_uni *cylinder,
+						double dist);
+void				set_normal_cone(t_ray *ray, const t_uni *cone,
+						double dist);
+
+/*
+**					obj_utils.c
+*/
+void				discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp);
+void				(*g_intersect_catalog(size_t type))
+						(t_dvec3 *touch, const t_uni *obj, const t_ray *ray);
+void				(*g_normal_catalog(size_t type))
+						(t_ray *ray, const t_uni *obj, double dist);
+void				crop_cyl_n_cone(t_dvec3 *touch, double dir,
+						double oc_dot_dir, double height);
+void				calculate_oc_tc_dir(t_dvec3_comp *computs, const t_uni *obj,
+						const t_ray *ray);
+
+/*
+**					parsing.c
+*/
+t_env				*parse_scene(t_env *env, char *file_name);
+
+/*
+**					parsing_validate_scene.c
+*/
+_Bool				is_valid_line(t_env *env, char **line, size_t len);
+size_t				get_type(const char *str);
+size_t				count_number(t_env *env, char *str, size_t len);
+
+/*
+**					ray_traces.c
+*/
+const t_uni			*is_shadow_ray(t_env *env, const t_ray *ray,
+						const t_dvec3 *shadow_dir, double t_max);
+void				send_selected_ray(t_env *env, t_ray *ray,
+						t_uni **obj, double dist);
+void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
+
+/*
+**					utils.c
+*/
+
+
+/*
+**					key_utils.c
+*/
+void				swith_handle(t_env *env, t_flags *flags, size_t obj_cnt);
+void				count_selected_obj(size_t *dest, t_uni *uni_arr,
+						size_t uni_arr_len);
+
+/*
+**					color.c
+*/
+t_dvec3				vec3_clamp_col_cpy(t_dvec3 first);
+void				double_mul_vec3_col(t_dvec3 *destination, double first,
+						const t_dvec3 *restrict second);
+void				vec3_add_vec3_col(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						const t_dvec3 *restrict second);
+void				ft_clamp_in_range(double *dest, double value,
+						double min, double max);
+void				ft_clamp_in_range_vec(t_dvec3 *dest,
+						double min, double max);
+
+/*
+**					vec3_utils.c
+*/
+void				vec3_length(double *destination,
+						const t_dvec3 *restrict first);
+void				vec3_dot_vec3(double *destination,
+						const t_dvec3 *first,
+						const t_dvec3 *second);
+void				vec3_normalize(t_dvec3 *destination,
+						const t_dvec3 *restrict first);
+
+/*
+**					vec3_rotate.c
+*/
+void				rotate_x(t_dvec3 *destination, const t_dvec3 *restrict pt,
+						double angle);
+void				rotate_y(t_dvec3 *destination, const t_dvec3 *restrict pt,
+						double angle);
+void				rotate_z(t_dvec3 *destination, const t_dvec3 *restrict pt,
+						double angle);
+void				rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle);
+void				rotate_objects(t_env *env, t_dvec3 rot);
+
+/*
+**					vec3_with_double.c
+*/
+void				vec3_add_double(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						double second);
+void				vec3_sub_double(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						double second);
+void				vec3_mul_double(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						double second);
+void				vec3_div_double(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						double second);
+
+/*
+**					vec3_with_vec3.c
+*/
+void				vec3_add_vec3(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						const t_dvec3 *restrict second);
+void				vec3_sub_vec3(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						const t_dvec3 *restrict second);
+void				vec3_mul_vec3(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						const t_dvec3 *restrict second);
+void				vec3_div_vec3(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						const t_dvec3 *restrict second);
+void				vec3_crs_vec3(t_dvec3 *destination,
+						const t_dvec3 *restrict first,
+						const t_dvec3 *restrict second);
+
+/*
+**					double_with_vect3.c
+*/
+void				double_add_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second);
+void				double_sub_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second);
+void				double_mul_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second);
+void				double_div_vec3(t_dvec3 *destination,
+						double first,
+						const t_dvec3 *restrict second);
 
 #endif

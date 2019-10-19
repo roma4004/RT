@@ -3,67 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 21:41:41 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/19 15:17:46 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static void			cnt_obj_type(t_env *env, t_list *lst)
+static void		init_cam(t_cam *cam)
 {
-	size_t		*lights;
-	size_t		*objs;
-	t_list		*cur;
-	size_t		type;
-
-	lights = &env->light_arr_len;
-	objs = &env->uni_arr_len;
-	cur = lst;
-	while (cur)
-	{
-		if ((type = get_type(cur->content)) != UINT64_MAX)
-		{
-			if (type < 3u)
-				(*lights)++;
-			else if (type < OBJ_TYPE_MAX)
-			{
-				(*objs)++;
-				if (type == CYLINDER)
-				{
-					(*objs)++;
-					(*objs)++;
-				}
-				if (type == CONE)
-					(*objs)++;
-			}
-		}
-		cur = cur->next;
-	}
-}
-
-_Bool				init_obj_arr(t_env *env, t_list *lst)
-{
-	cnt_obj_type(env, lst);
-	if ((env->uni_arr = (t_uni *)malloc(sizeof(t_uni) * env->uni_arr_len))
-	&& (env->light_arr = (t_lght *)malloc(sizeof(t_lght) * env->light_arr_len)))
-		return (true);
-	else
-	{
-		if (env->uni_arr)
-			ft_memdel((void **)&env->uni_arr);
-		if (env->light_arr)
-			ft_memdel((void **)&env->light_arr);
-	}
-	return (false);
-}
-
-static void			init_cam(t_cam *cam)
-{
-	cam->canvas.half = (t_dvec){ WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0};
-	cam->canvas.rate = (double)WIN_WIDTH / WIN_HEIGHT;
+	cam->half = (t_dvec){ WIN_WIDTH / 2.0, WIN_HEIGHT / 2.0};
+	cam->rate = (double)WIN_WIDTH / WIN_HEIGHT;
 	cam->move_speed = 1.2;
 	cam->rotate_speed = 2.9;
 	cam->t_min = 0;
@@ -74,7 +26,7 @@ static void			init_cam(t_cam *cam)
 	cam->epsilon = 0.00001;
 }
 
-static t_env		*env_def_val(t_env *env)
+static t_env	*env_def_val(t_env *env)
 {
 	if (!env)
 		return (NULL);
@@ -85,13 +37,12 @@ static t_env		*env_def_val(t_env *env)
 	return (env);
 }
 
-t_env				*init_sdl2(t_env *env)
+t_env			*init_sdl2(t_env *env)
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
-//	|| !IMG_Init(IMG_INIT_PNG)
-	|| !(env->window = SDL_CreateWindow(WIN_NAME, SDL_WINDOWPOS_UNDEFINED,
-										SDL_WINDOWPOS_UNDEFINED,
-										WIN_WIDTH, WIN_HEIGHT,SDL_WINDOW_SHOWN))
+	|| !(env->window = SDL_CreateWindow(WIN_NAME,
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+			WIN_WIDTH, WIN_HEIGHT, SDL_WINDOW_SHOWN))
 	|| !(env->renderer = SDL_CreateRenderer(env->window, -1,
 			SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
 	|| !(env->screen = SDL_CreateTexture(env->renderer,
@@ -104,7 +55,7 @@ t_env				*init_sdl2(t_env *env)
 	return (env);
 }
 
-t_env				*init_env(void)
+t_env			*init_env(void)
 {
 	t_env	*env;
 

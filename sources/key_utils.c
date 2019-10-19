@@ -1,31 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   key_down_cam_move.c                                :+:      :+:    :+:   */
+/*   key_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/10/02 11:37:36 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 18:03:09 by dromanic         ###   ########.fr       */
+/*   Created: 2019/10/19 19:00:15 by dromanic          #+#    #+#             */
+/*   Updated: 2019/10/19 19:05:59 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-_Bool		is_x_move_down(t_ivec3 *move, SDL_Keycode k)
+void		swith_handle(t_env *env, t_flags *flags, size_t obj_cnt)
 {
-	return ((k == SDLK_a && (move->x = NEG))
-		|| (k == SDLK_d && (move->x = POS)));
+	if (flags->is_reset)
+		reset(env, &env->cam, obj_cnt);
+	if (flags->is_screenshot)
+		save_screenshot(env);
 }
-
-_Bool		is_y_move_down(t_ivec3 *move, SDL_Keycode k)
+void		count_selected_obj(size_t *dest, t_uni *uni_arr, size_t uni_arr_len)
 {
-	return ((k == SDLK_s && (move->y = NEG))
-		|| (k == SDLK_w && (move->y = POS)));
-}
+	size_t		obj_cnt;
+	size_t		i;
 
-_Bool		is_z_move_down(t_ivec3 *move, SDL_Keycode k)
-{
-	return ((k == SDLK_q && (move->z = NEG))
-		|| (k == SDLK_e && (move->z = POS)));
+	i = UINT64_MAX;
+	obj_cnt = 0;
+	while (++i < uni_arr_len)
+		if (uni_arr[i].is_selected)
+			obj_cnt++;
+	*dest = obj_cnt;
 }
