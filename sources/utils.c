@@ -12,4 +12,11 @@
 
 #include "rt.h"
 
-
+void		set_backup_val(t_uni *obj)
+{
+	if (!obj)
+		return ;
+	obj->pos_backup = obj->pos;
+	obj->radius_backup = obj->radius;
+	obj->dir_backup = obj->dir;
+}

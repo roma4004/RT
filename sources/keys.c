@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 19:26:40 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/19 22:05:48 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ static _Bool	keyboard_events(Uint32 event_type, SDL_Keycode k,
 
 static _Bool	mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 {
+	t_ray		ray;
+
 	if (event->type == SDL_MOUSEMOTION)
 	{
 		if (event->button.button == SDL_BUTTON_X1)
@@ -109,14 +111,8 @@ static _Bool	mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 
 	if (event->type == SDL_MOUSEBUTTONUP)
 	{
-		double		dist;
-		t_ray		ray;
-
 		if (env->flags.is_in_select_mod && event->button.button == SDL_BUTTON_LEFT)
 		{
-
-//			printf("event->motion.x = %d, event->motion.y = %d \n",
-//				event->motion.x, event->motion.y);
 			ray = (t_ray){.t_min = cam->t_min,
 				.t_max = cam->t_max,
 				.pos = cam->pos,
@@ -125,9 +121,7 @@ static _Bool	mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 			ray.dir = convert_to_viewport(event->motion.x - env->cam.half.x,
 										-event->motion.y + env->cam.half.y - 1.0,
 										env->cam.rate);
-//			printf("ray.dir = %f, %f, %f \n", ray.dir.x, ray.dir.y, ray.dir.z);
 			rotate_vec(&ray.dir, &env->cam.rotate_angle);
-
 			send_selected_ray(env, &ray, &env->selected_obj, (double)MAXFLOAT);
 			if (env->selected_obj)
 			{
@@ -135,7 +129,7 @@ static _Bool	mouse_events(t_env *env, SDL_Event *event, t_cam *cam)
 					(env->selected_obj->is_selected) ? false : true;
 				select_caps_cylinder_cone(env);
 			}
-//			draw_scene(env, env->threads);
+			draw_scene(env, env->threads);
 		}
 	}
 

@@ -371,7 +371,7 @@ void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
 /*
 **					utils.c
 */
-
+void				set_backup_val(t_uni *obj);
 
 /*
 **					key_utils.c
