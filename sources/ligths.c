@@ -6,14 +6,14 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 17:18:09 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 13:58:59 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static void		point_or_directional(t_lght *light, t_dvec3 *light_vector,
-					double *t_max, t_dvec3 *touch_point)
+static void		point_or_directional(t_dvec3 *light_vector, double *t_max,
+					const t_lght *light, const t_dvec3 *touch_point)
 {
 	if (light->type == POINT)
 	{
@@ -27,7 +27,8 @@ static void		point_or_directional(t_lght *light, t_dvec3 *light_vector,
 	}
 }
 
-static void		set_diffuse_val(t_lght_comp *l, const t_dvec3 *normal)
+static void		set_diffuse_val(double *defuse_intens, const t_lght_comp *l,
+					const t_dvec3 *normal)
 {
 	double			normal_dot_light_dir;
 	double			light_dir_length;
@@ -42,12 +43,12 @@ static void		set_diffuse_val(t_lght_comp *l, const t_dvec3 *normal)
 		new_defuse_val = l->cur->intensity * normal_dot_light_dir
 					/ (normal_length * light_dir_length);
 		if (new_defuse_val > 0.0)
-			l->defuse_val += new_defuse_val;
+			*defuse_intens += new_defuse_val;
 	}
 }
 
-static void		set_specular_val(t_lght_comp *l, const t_dvec3 *normal,
-					double specular)
+static void		set_specular_val(double *specul_intens, t_lght_comp *l,
+					const t_dvec3 *normal, double specular)
 {
 	t_dvec3		vec_reflect;
 	t_dvec3		tmp_vec;
@@ -64,13 +65,13 @@ static void		set_specular_val(t_lght_comp *l, const t_dvec3 *normal,
 		vec3_length(&tmp, &vec_reflect);
 		vec3_length(&view_len, &l->view);
 		if (specular > 0.0)
-			l->specul_val += l->cur->intensity * pow(reflect_dot_view
+			*specul_intens += l->cur->intensity * pow(reflect_dot_view
 				/ (tmp * view_len), specular);
 	}
 }
 
 void			get_light(t_env *env, t_lght_comp *l,
-					const t_uni *obj, t_dvec3 *col, t_ray *ray)
+					t_dvec3 *col, const t_ray *ray)
 {
 	size_t			i;
 	t_dvec3			defuse_col;
@@ -82,33 +83,19 @@ void			get_light(t_env *env, t_lght_comp *l,
 	{
 		if (l->cur->intensity <= 0.0)
 			continue;
-		if (l->cur->type == AMBIENT)
-		{
-			l->defuse_val += l->cur->intensity;
-		}
+		else if (l->cur->type == AMBIENT)
+			l->defuse_intens += l->cur->intensity;
 		else
 		{
-			point_or_directional(l->cur, &l->dir, &t_max, &ray->touch_point);
+			point_or_directional(&l->dir, &t_max, l->cur, &ray->touch_point);
 			if (is_shadow_ray(env, ray, &l->dir, t_max))
 				continue;
-			set_diffuse_val(l, &ray->normal);
-			set_specular_val(l, &ray->normal, obj->specular);
+			set_diffuse_val(&l->defuse_intens, l, &ray->normal);
+			set_specular_val(&l->specul_intens, l, &ray->normal,
+				l->obj_specular);
 		}
 	}
-	t_dvec3		orig_col;
-//	double_mul_vec3(&orig_col, 1.0 - l->defuse_val , &l->cur->color);
-	double_mul_vec3(&defuse_col, l->defuse_val, &obj->color);
-//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
-//	//todo: color light
-//	double		orig_col_percent;
-//	double		val = 1.0 - l->defuse_val;
-////
-//	ft_clamp_in_range(&orig_col_percent, &val, 0.0, 1.0);
-//	orig_col_percent = val;
-//	double_mul_vec3(&orig_col, orig_col_percent, &obj->color);
-
-
-	double_mul_vec3(&specul_col, l->specul_val, &l->cur->color);
-//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
+	double_mul_vec3(&defuse_col, l->defuse_intens, &l->obj_color);
+	double_mul_vec3(&specul_col, l->specul_intens, &l->cur->color);
 	vec3_add_vec3_col(col, &defuse_col, &specul_col);
-}//сумму коеф зеркальности и прозрачности не должна быть меньше чем 0.98
+}

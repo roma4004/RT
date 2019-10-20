@@ -3,14 +3,14 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dromanic <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/09 11:13:10 by akolinko          #+#    #+#              #
-#    Updated: 2019/09/29 21:30:10 by dromanic         ###   ########.fr        #
+#    Updated: 2019/10/20 16:12:25 by dromanic         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 	=	rtv1
+NAME 	=	rt
 
 CC			= gcc -Wall -Wextra -Werror
 OBJ_PATH	= objectives
@@ -19,22 +19,39 @@ INC_PATH	= includes
 LIBS_PATH	= libraries
 LIBFT_PATH	= ${LIBS_PATH}/libft
 
-SRC_N		=	double_with_vect3.c \
-				draw.c \
-				get_next_line.c \
+SRC_N		=	color.c \
+				double_with_vect3.c \
 				init.c \
-				keys.c \
-				ligths.c \
+				effects.c \
+				key_down_cam_move.c \
+				key_mouse.c \
+				key_down_cam_rotate.c \
+				get_next_line.c \
+				key_up_cam_move.c \
+				key_move.c \
+				key_up_cam_rotate.c \
+				draw.c \
+				key_reset.c \
+				key_utils.c \
+				keys_mouse.c \
 				main.c \
+				ligths.c \
+				obj_normal_base.c \
+				keys.c \
+				obj_utils.c \
+				obj_intersection_base.c \
+				parsing_utils_backup.c \
+				parsing_caps.c \
+				parsing_utils.c \
 				parsing.c \
-				ray_traces.c \
-				rotate.c \
-				uni_intersection.c \
-				utils.c \
-				validate_scene.c \
-				vect3_utils.c \
-				vect3_with_double.c \
-				vect3_with_vect3.c
+				parsing_utils_setters.c \
+				ray_reflect_n_refract.c \
+				vec3_rotate.c \
+				vec3_utils.c \
+				vec3_with_double.c \
+				parsing_validate_scene.c \
+				vec3_with_vec3.c \
+				ray_traces.c
 
 SRC = $(addprefix ${SRC_PATH}/, $(SRC_N))
 

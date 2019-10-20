@@ -6,18 +6,20 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 18:57:38 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 14:31:00 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-t_dvec3			convert_to_viewport(double x, double y, double rate)
+void			convert_to_viewport(t_dvec3 *destination, const t_cam *cam,
+					double x, double y)
 {
-	return ((t_dvec3){
-		.x = x * (VIEWPORT_SIZE * rate) / WIN_WIDTH,
+	*destination = (t_dvec3){
+		.x = x * (VIEWPORT_SIZE * cam->rate) / WIN_WIDTH,
 		.y = y * VIEWPORT_SIZE / WIN_HEIGHT,
-		.z = DISTANCE_TO_PLANE});
+		.z = DISTANCE_TO_PLANE};
+	rotate_vec(destination, &cam->rotate_angle);
 }
 
 static void		put_px(t_env *env, const t_dvec *canvas_half,
@@ -28,6 +30,7 @@ static void		put_px(t_env *env, const t_dvec *canvas_half,
 	if (pt.x < 0.0 || pt.x >= WIN_WIDTH
 	|| pt.y < 0.0 || pt.y >= WIN_HEIGHT)
 		return ;
+	apply_effects(&env->flags, color);
 	env->buff[(unsigned)pt.y][(unsigned)pt.x] =
 		(((uint32_t)color->x) << 16u)
 		| (((uint32_t)color->y) << 8u)
@@ -36,52 +39,39 @@ static void		put_px(t_env *env, const t_dvec *canvas_half,
 
 static void		save_orig_cam_dir(t_cam *cam, const t_dvec *half)
 {
-	cam->origin_dir_z = convert_to_viewport(0.0, 0.0, cam->rate);
-	rotate_vec(&cam->origin_dir_z, &cam->rotate_angle);
+	convert_to_viewport(&cam->origin_dir_z, cam, 0.0, 0.0);
 	vec3_normalize(&cam->origin_dir_z, &cam->origin_dir_z);
-	cam->origin_dir_x = convert_to_viewport(-half->x, 0.0, cam->rate);
-	rotate_vec(&cam->origin_dir_x, &cam->rotate_angle);
+	convert_to_viewport(&cam->origin_dir_x, cam, -half->x, 0.0);
 	vec3_sub_vec3(&cam->origin_dir_x, &cam->origin_dir_x, &cam->origin_dir_z);
 	vec3_normalize(&cam->origin_dir_x, &cam->origin_dir_x);
-	cam->origin_dir_y = convert_to_viewport(0.0, -half->y, cam->rate);
-	rotate_vec(&cam->origin_dir_y, &cam->rotate_angle);
+	convert_to_viewport(&cam->origin_dir_y, cam, 0.0, -half->y);
 	vec3_sub_vec3(&cam->origin_dir_y, &cam->origin_dir_y, &cam->origin_dir_z);
 	vec3_normalize(&cam->origin_dir_y, &cam->origin_dir_y);
 }
 
 static void		*render_frame(void *thread_data)
 {
-	t_env		*env;
-	size_t		thread_id;
-	t_cam		*cam;
-	t_dvec		half;
-	t_ray		ray;
-	t_dvec		pt;
-	t_dvec3		color;
+	const size_t		thread_id = ((t_pth_dt *)thread_data)->id;
+	t_env				*env;
+	t_ray				ray;
+	t_dvec				pt;
+	t_dvec3				color;
 
 	env = ((t_pth_dt *)thread_data)->env;
-	thread_id = ((t_pth_dt *)thread_data)->id;
-	cam = &env->cam;
-	half = cam->half;
-	ray = (t_ray){.t_min = cam->t_min,
-		.t_max = cam->t_max,
-		.pos = cam->pos,
-		.dept_limit = cam->reflective_dept
-	};
-	save_orig_cam_dir(cam, &half);
-	pt.y = -half.y - 1.0;
-	while (++pt.y < half.y)
+	ray = (t_ray){.t_min = env->cam.t_min, .t_max = env->cam.t_max,
+		.pos = env->cam.pos, .dept_limit = env->cam.reflective_dept};
+	save_orig_cam_dir(&env->cam, &env->cam.half);
+	pt.y = -env->cam.half.y - 1.0;
+	while (++pt.y < env->cam.half.y)
 	{
-		pt.x = -half.x - env->threads;
-		while ((pt.x += env->threads) < half.x)
+		pt.x = -env->cam.half.x - env->threads;
+		while ((pt.x += env->threads) < env->cam.half.x)
 		{
-			ray.dir =
-				convert_to_viewport(pt.x + thread_id, pt.y, cam->rate);
-			rotate_vec(&ray.dir, &cam->rotate_angle);
+			convert_to_viewport(&ray.dir, &env->cam, pt.x + thread_id, pt.y);
 			color = (t_dvec3){0, 0, 0};
 			send_ray(env, &ray, &color);
-			apply_effects(&env->flags, &color);
-			put_px(env, &half, (t_dvec){pt.x + thread_id, pt.y}, &color);
+			put_px(env, &env->cam.half, (t_dvec){pt.x + thread_id, pt.y},
+				&color);
 		}
 	}
 	return (NULL);

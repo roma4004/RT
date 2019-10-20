@@ -64,32 +64,6 @@ void			quit_program(t_env *env)
 	SDL_Quit();
 }
 
-///checklist:
-//+ no recalculation without need
-//+ 4 basic object (sphere, plane, cylinder, cone)
-//+ camera movement and rotating and placing on the scene on start from scene_file
-//+ Multi thread computing
-//+ Interacting with objects
-//+ selecting object by mouse
-//+ sepia filter
-//+ It's possible inside the RT to save, screenshot the rendered image. ()
-//+ limited obj (by vtlostiu)
-
-//- JSON
-//- sliced obj
-//- interface
-//- composed elements (grouped obj)
-//- parse screen param from file (screen obj)
-//- texture (checkmate_board)
-//- more figures
-//- negative objects
-
-//optional:
-//- colored light
-//- blinded by light spot facing us.
-//- add figure paraboloid et hyperboloid.
-//- torus
-
 int				main(int argc, char **argv)
 {
 	t_env	*env;
@@ -100,10 +74,6 @@ int				main(int argc, char **argv)
 		&& parse_scene(env, argv[1])
 		&& init_sdl2(env))
 		{
-			//todo: simplify main thread below to 3 func
-			///events()
-			///updade()
-			///render()
 			draw_scene(env, env->threads);
 			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))

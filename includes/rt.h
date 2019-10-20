@@ -6,15 +6,15 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 19:36:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 16:01:40 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
 # define WIN_NAME "RT by dromanic (@Dentair)"
-# define WIN_WIDTH 1000u
-# define WIN_HEIGHT 1000u
+# define WIN_WIDTH 800u
+# define WIN_HEIGHT 800u
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 14
@@ -70,6 +70,25 @@ typedef struct		s_vector_double
 	double			y;
 }					t_dvec;
 
+typedef struct		s_light {
+	t_dvec3			pos;
+	double			intensity;
+	size_t			type;
+	t_dvec3			color;
+}					t_lght;
+
+typedef struct		s_light_calculating
+{
+	t_lght			*cur;
+	t_dvec3			dir;
+	double			defuse_intens;
+	double			specul_intens;
+	double			obj_specular;
+	t_dvec3			obj_color;
+	t_dvec3			view;
+	double			dist;
+}					t_lght_comp;
+
 typedef struct		s_ray
 {
 	double			t_min;
@@ -82,6 +101,7 @@ typedef struct		s_ray
 	unsigned		dept_limit;
 	char			padding[4];
 	t_dvec3			normal;
+	t_lght_comp		light_comput;
 }					t_ray;
 
 typedef struct		s_camera
@@ -122,20 +142,12 @@ typedef struct		s_universal_object
 						double dist);
 	double			reflective_coef;
 	double			refractive_coef;
+	_Bool			is_selected;
+//	char			padding[7];
 	t_dvec3			pos_backup;
 	double			radius_backup;
 	t_dvec3			dir_backup;
-	_Bool			is_selected;
-	char			padding[7];
-	double			angle_cache; //todo: save here angle computs
 }					t_uni;
-
-typedef struct		s_light {
-	t_dvec3			pos;
-	double			intensity;
-	size_t			type;
-	t_dvec3			color;
-}					t_lght;
 
 typedef struct		s_vector3_comput_tmp
 {
@@ -145,15 +157,6 @@ typedef struct		s_vector3_comput_tmp
 	t_dvec3			dir_vec;
 	double			m;
 }					t_dvec3_comp;
-
-typedef struct		s_light_calculating
-{
-	t_lght			*cur;
-	t_dvec3			dir;
-	double			defuse_val;
-	double			specul_val;
-	t_dvec3			view;
-}					t_lght_comp;
 
 typedef struct		s_flags
 {
@@ -223,7 +226,8 @@ enum				e_orient
 /*
 **					draw.c
 */
-t_dvec3				convert_to_viewport(double x, double y, double rate);
+void				convert_to_viewport(t_dvec3 *destination, const t_cam *cam,
+						double x, double y);
 void				draw_scene(t_env *env, size_t threads);
 
 /*
@@ -237,12 +241,6 @@ void				save_screenshot(t_env *env);
 */
 t_env				*init_env(void);
 t_env				*init_sdl2(t_env *env);
-
-/*
-**					parse_utils.c
-*/
-_Bool				init_obj_arr(t_env *env, t_list *lst);
-void				set_obj_value(t_env *env, const double *v, size_t type);
 
 /*
 **					key_down_cam_move.c
@@ -273,6 +271,13 @@ void				move_camera(t_env *env, const t_dvec3 *move_dir,
 						double move_speed);
 
 /*
+**					key_mouse.c
+*/
+_Bool				mouse_move(t_env *env, SDL_Event *event);
+_Bool				mouse_rotate(t_env *env, SDL_Event *event);
+_Bool				mouse_rotate_z(t_env *env, SDL_Event *event);
+
+/*
 **					key_reset.c
 */
 void				reset(t_env *env, t_cam *restrict cam, size_t obj_cnt);
@@ -299,8 +304,8 @@ _Bool				event_handler(t_env *env, t_cam *cam, t_flags *flags);
 /*
 **					ligths.c
 */
-void				get_light(t_env *env, t_lght_comp *l,
-						const t_uni *obj, t_dvec3 *col, t_ray *ray);
+void				get_light(t_env *env, t_lght_comp *l, t_dvec3 *col,
+						const t_ray *ray);
 
 /*
 **					main.c
@@ -353,6 +358,26 @@ void				calculate_oc_tc_dir(t_dvec3_comp *computs, const t_uni *obj,
 t_env				*parse_scene(t_env *env, char *file_name);
 
 /*
+**					parse_utils.c
+*/
+_Bool				init_obj_arr(t_env *env, t_list *lst);
+void				set_obj_value(t_env *env, const double *v, size_t type);
+
+/*
+**					parsing_utils_backup.c
+*/
+void				set_backup_val(t_uni *obj);
+
+/*
+**					parsing_utils_setters.c
+*/
+/*
+ *
+**					parsing_utils_setters.c
+*/
+void				add_caps(t_uni *uni_arr, const double *v, size_t *id_uni,
+						size_t type);
+/*
 **					parsing_validate_scene.c
 */
 _Bool				is_valid_line(t_env *env, char **line, size_t len);
@@ -369,9 +394,12 @@ void				send_selected_ray(t_env *env, t_ray *ray,
 void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
 
 /*
-**					utils.c
+**					ray_reflect_n_refract.c
 */
-void				set_backup_val(t_uni *obj);
+void				send_refract_ray(t_env *env, t_ray *ray,
+						t_dvec3 *cur_color, t_lght_comp *l);
+void				send_reflect_ray(t_env *env, t_ray *ray,
+						t_dvec3 *cur_color, t_lght_comp *l);
 
 /*
 **					key_utils.c
@@ -379,6 +407,7 @@ void				set_backup_val(t_uni *obj);
 void				swith_handle(t_env *env, t_flags *flags, size_t obj_cnt);
 void				count_selected_obj(size_t *dest, t_uni *uni_arr,
 						size_t uni_arr_len);
+void				select_mod(t_env *env, SDL_Event *event, t_cam *cam);
 
 /*
 **					color.c

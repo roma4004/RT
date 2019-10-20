@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 13:50:28 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 17:44:46 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 15:12:38 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp)
 		.z = 0.0};
 }
 
-void	(*g_intersect_catalog(size_t type))
-			(t_dvec3 *touch, const t_uni *obj, const t_ray *ray)
+void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
+			const t_ray *ray)
 {
 	if (type == SPHERE)
 		return (get_intersect_sphere);
@@ -40,8 +40,8 @@ void	(*g_intersect_catalog(size_t type))
 	return (NULL);
 }
 
-void	(*g_normal_catalog(size_t type))
-			(t_ray *ray, const t_uni *obj, double dist)
+void	(*g_normal_catalog(size_t type))(t_ray *ray, const t_uni *obj,
+			double dist)
 {
 	if (type == SPHERE)
 		return (set_normal_sphere);
@@ -54,9 +54,10 @@ void	(*g_normal_catalog(size_t type))
 	return (NULL);
 }
 
-void crop_cyl_n_cone(t_dvec3 *touch, double dir, double oc_dot_dir, double height)
+void	crop_cyl_n_cone(t_dvec3 *touch, double dir, double oc_dot_dir,
+			double height)
 {
-	double			m;
+	double		m;
 
 	m = dir * touch->x + oc_dot_dir;
 	if (m < 0.0 || m > height)

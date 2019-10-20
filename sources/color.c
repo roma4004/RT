@@ -13,7 +13,7 @@
 #include "rt.h"
 
 t_dvec3		vec3_clamp_col_cpy(t_dvec3 first)
-{//todo: delete this func when implement JSON parsing
+{
 	return ((t_dvec3){
 		.x = double_clamp(first.x),
 		.y = double_clamp(first.y),

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 14:49:14 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 19:49:36 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 15:14:56 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,7 @@ static void		cnt_obj_type(t_env *env, t_list *lst)
 			{
 				(*objs)++;
 				if (type == CYLINDER)
-				{
-					(*objs)++;
-					(*objs)++;
-				}
+					(*objs) += 2;
 				if (type == CONE)
 					(*objs)++;
 			}
@@ -48,7 +45,7 @@ _Bool			init_obj_arr(t_env *env, t_list *lst)
 {
 	cnt_obj_type(env, lst);
 	if ((env->uni_arr = (t_uni *)malloc(sizeof(t_uni) * env->uni_arr_len))
-		&& (env->light_arr = (t_lght *)malloc(sizeof(t_lght) * env->light_arr_len)))
+	&& (env->light_arr = (t_lght *)malloc(sizeof(t_lght) * env->light_arr_len)))
 		return (true);
 	else
 	{

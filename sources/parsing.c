@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 15:29:12 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 15:26:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,8 @@ static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
 	double			arr[VALUES_PER_OBJ];
 
 	ft_bzero(&arr, sizeof(double) * VALUES_PER_OBJ);
-	if (type == UINT64_MAX)
+	if (type == UINT64_MAX || !(i = UINT64_MAX))
 		return ;
-	i = UINT64_MAX;
 	num_id = 0;
 	while (++i < len && str[i] != '#')
 	{
@@ -54,10 +53,7 @@ static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
 		if (i > 0 && str[i - 1] == '.' && num_id > 0)
 			arr[num_id - 1] += after_dot(&str[i], arr[num_id - 1]);
 		else
-		{
-			arr[num_id] = ft_atoi(&str[i]);
-			num_id++;
-		}
+			arr[num_id++] = ft_atoi(&str[i]);
 		if (str[i] == '+' || str[i] == '-')
 			i++;
 		while (ft_isdigit(str[i]))
@@ -113,9 +109,7 @@ t_env				*parse_scene(t_env *env, char *file_name)
 	}
 	if (status == -1 || !lst || close(fd))
 		env->flags.err_id = ERR_READ;
-	if (!parse_lst(env, lst)
-	//|| ft_destroy_lst(lst)
-	)
+	if (!parse_lst(env, lst) || ft_destroy_lst(lst))
 		return (NULL);
 	return (env);
 }

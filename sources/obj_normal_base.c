@@ -56,7 +56,7 @@ void	set_normal_cylinder(t_ray *ray, const t_uni *cylinder, double dist)
 
 void	set_normal_cone(t_ray *ray, const t_uni *cone, double dist)
 {
-	const double	k = cone->radius / cone->height; //todo: cache this
+	const double	k = cone->radius / cone->height;
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 

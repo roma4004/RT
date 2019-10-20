@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-		_Bool is_x_rotate_down(t_ivec3 *rotate, SDL_Keycode k)
+_Bool		is_x_rotate_down(t_ivec3 *rotate, SDL_Keycode k)
 {
 	return ((k == SDLK_t && (rotate->x = NEG))
 		|| (k == SDLK_g && (rotate->x = POS)));

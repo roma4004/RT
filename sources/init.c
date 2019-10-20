@@ -32,7 +32,7 @@ static t_env	*env_def_val(t_env *env)
 		return (NULL);
 	init_cam(&env->cam);
 	env->bg_color = (t_dvec3){255.0, 255.0, 255.0, 0.0};
-	env->threads = 1;
+	env->threads = 4;
 	errno = 0;
 	return (env);
 }

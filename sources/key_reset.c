@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   key_reset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 13:31:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/18 19:33:20 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/20 14:33:39 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	reset(t_env *env, t_cam *restrict cam, size_t obj_cnt)
 			{
 				obj->pos = obj->pos_backup;
 				obj->dir = obj->dir_backup;
+				obj->radius = obj->radius_backup;
 			}
 		}
 	}

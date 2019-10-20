@@ -1,22 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.c                                            :+:      :+:    :+:   */
+/*   ft_swap_double.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/09/08 14:43:09 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 14:37:05 by dromanic         ###   ########.fr       */
+/*   Created: 2019/10/20 15:49:28 by dromanic          #+#    #+#             */
+/*   Updated: 2019/10/20 15:49:41 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "rt.h"
+#include "libft.h"
 
-void		set_backup_val(t_uni *obj)
+void			ft_swap(double *first, double *second)
 {
-	if (!obj)
-		return ;
-	obj->pos_backup = obj->pos;
-	obj->radius_backup = obj->radius;
-	obj->dir_backup = obj->dir;
+	double		tmp;
+
+	tmp = *first;
+	*first = *second;
+	*second = tmp;
 }

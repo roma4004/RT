@@ -66,7 +66,6 @@ void			save_screenshot(t_env *env)
 	ft_memcpy(screenshot->pixels, env->buff, screenshot->h * screenshot->pitch);
 	SDL_UnlockSurface(screenshot);
 	SDL_SaveBMP(screenshot, str);
-//	IMG_SavePNG(screenshot, str);
 	ft_strdel(&str);
 	SDL_FreeSurface(screenshot);
 }

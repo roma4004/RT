@@ -84,8 +84,7 @@ size_t			get_type(const char *str)
 	else if (cmp_from_begin("directional", str)
 		|| cmp_from_begin("DIRECTIONAL", str))
 		type = DIRECTIONAL;
-	else if (cmp_from_begin("disk", str)
-		|| cmp_from_begin("DISK", str))
+	else if (cmp_from_begin("disk", str) || cmp_from_begin("DISK", str))
 		type = DISK;
 	return (type);
 }

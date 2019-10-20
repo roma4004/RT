@@ -120,5 +120,6 @@ void			ft_free_arr(char **arr);
 int				ft_switch(_Bool *bits);
 float			ft_q_rsqrt(float number);
 double			ft_atod(const char *str);
+void			ft_swap(double *first, double *second);
 
 #endif
