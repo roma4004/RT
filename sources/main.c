@@ -78,7 +78,6 @@ int				main(int argc, char **argv)
 			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))
 					draw_scene(env, env->threads);
-			system("leaks RT");
 		}
 		else
 			quit_program(env);

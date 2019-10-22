@@ -45,18 +45,18 @@ void	rotate_z(t_dvec3 *destination,
 void	rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle)
 {
 	if (rotate_angle->x != 0.0)
-		rotate_x(vec, vec, rotate_angle->x * M_PI / 180);
+		rotate_x(vec, vec, rotate_angle->x * M_PI / 180.0);
 	if (rotate_angle->y != 0.0)
-		rotate_y(vec, vec, rotate_angle->y * M_PI / 180);
+		rotate_y(vec, vec, rotate_angle->y * M_PI / 180.0);
 	if (rotate_angle->z != 0.0)
-		rotate_z(vec, vec, rotate_angle->z * M_PI / 180);
+		rotate_z(vec, vec, rotate_angle->z * M_PI / 180.);
 }
 
 void	rotate_objects(t_env *env, t_dvec3 rot)
 {
-	int i;
+	size_t		i;
 
-	i = -1;
+	i = UINT64_MAX;
 	while (++i < env->uni_arr_len)
 		if (env->uni_arr[i].is_selected)
 			rotate_vec(&env->uni_arr[i].dir, &rot);

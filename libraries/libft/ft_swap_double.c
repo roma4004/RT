@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-void			ft_swap(double *first, double *second)
+void			ft_swap_double(double *first, double *second)
 {
 	double		tmp;
 

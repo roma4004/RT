@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME 	=	rt
+NAME 	=	RT
 
 CC			= gcc -Wall -Wextra -Werror
 OBJ_PATH	= objectives

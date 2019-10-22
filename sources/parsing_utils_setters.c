@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:49:38 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 15:34:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/22 17:41:23 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ static void		set_light(t_lght *light_arr, const double *v,
 			.z = v[2]},
 			(fabs(v[3]) > 1) ? 1 : fabs(v[3]),
 			type,
-			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0})};
+			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0.0})};
 	(*id_lgh)++;
 }
 
@@ -38,22 +38,22 @@ static void		set_uni(t_uni *uni_arr, const double *v,
 					size_t *id_uni, size_t type)
 {
 	uni_arr[*id_uni] =
-		(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2]},
+		(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2], 0.0},
 			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0}, fabs(v[7]),
-			vec3_clamp_col_cpy((t_dvec3){v[8], v[9], v[10], 0}), v[11],
+			vec3_clamp_col_cpy((t_dvec3){v[8], v[9], v[10], 0.0}), v[11],
 			g_intersect_catalog(type), g_normal_catalog(type), v[12], v[13],
-			false};
+			.is_selected = false};
 	vec3_normalize(&uni_arr[*id_uni].dir, &uni_arr[*id_uni].dir);
 	set_backup_val(&uni_arr[*id_uni]);
 	if ((uni_arr[*id_uni].dir.x == 0)
 	&& (uni_arr[*id_uni].dir.y == 0)
 	&& (uni_arr[*id_uni].dir.z == 0))
-		uni_arr[*id_uni].dir = (t_dvec3){0, 1, 0};
+		uni_arr[*id_uni].dir = (t_dvec3){0.0, 1.0, 0.0, 0.0};
 	ft_clamp_in_range(&uni_arr[*id_uni].reflective_coef,
 		uni_arr[*id_uni].reflective_coef, 0.0, 1.0);
 	ft_clamp_in_range(&uni_arr[*id_uni].refractive_coef,
 		uni_arr[*id_uni].refractive_coef, 0.0, 1.0);
-	add_caps(uni_arr, v, id_uni, type);
+	add_caps(uni_arr, id_uni, type);
 	(*id_uni)++;
 }
 

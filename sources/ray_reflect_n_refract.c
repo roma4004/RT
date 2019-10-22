@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 15:56:23 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 16:01:27 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/22 17:43:35 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static t_dvec3		compute_refract_dir(double eta, double cosi,
 
 	k = 1.0 - eta * eta * (1.0 - cosi * cosi);
 	if (k < 0.0)
-		return ((t_dvec3){0});
+		return ((t_dvec3){0.0, 0.0, 0.0, 0.0});
 	else
 	{
 		double_mul_vec3(&tmp, eta, dir);
@@ -50,7 +50,7 @@ static t_dvec3		refract(const t_dvec3 *dir, const t_dvec3 *normal,
 	}
 	else
 	{
-		ft_swap(&etai, &etat);
+		ft_swap_double(&etai, &etat);
 		vec3_mul_double(ref_normal, normal, -1.0);
 	}
 	return (compute_refract_dir(etai / etat, cosi, dir, ref_normal));
@@ -62,7 +62,7 @@ void				send_refract_ray(t_env *env, t_ray *ray,
 	t_ray		ref_ray;
 	t_dvec3		reflected_color;
 
-	if (ray->dept_limit <= 0
+	if (ray->dept_limit <= 0u
 		|| ray->reflect_coef <= 0.0)
 		return ;
 	else
@@ -71,7 +71,7 @@ void				send_refract_ray(t_env *env, t_ray *ray,
 			.t_min = 0.001,
 			.t_max = (double)INFINITY,
 			.pos = ray->touch_point,
-			.dept_limit = ray->dept_limit - 1,
+			.dept_limit = ray->dept_limit - 1u,
 			.dir = refract(&l->view, &ray->normal, &ray->refract_coef)};
 		send_ray(env, &ref_ray, &reflected_color);
 		vec3_mul_double(cur_color, cur_color, 1.0 - ray->refract_coef);
@@ -89,17 +89,17 @@ void				send_reflect_ray(t_env *env, t_ray *ray,
 	t_dvec3		normal_x2;
 	t_dvec3		refl_dir;
 
-	if (ray->dept_limit <= 0 || ray->reflect_coef <= 0)
+	if (ray->dept_limit <= 0u || ray->reflect_coef <= 0u)
 		return ;
 	else
 	{
 		vec3_dot_vec3(&cos_i, &ray->normal, &l->view);
-		double_mul_vec3(&normal_x2, 2, &ray->normal);
+		double_mul_vec3(&normal_x2, 2u, &ray->normal);
 		vec3_mul_double(&refl_dir, &normal_x2, cos_i);
 		vec3_sub_vec3(&refl_dir, &refl_dir, &l->view);
 		ref_ray = (t_ray){.t_min = 0.001, .t_max = (double)INFINITY,
 			.pos = ray->touch_point, .dir = refl_dir,
-			.dept_limit = ray->dept_limit - 1};
+			.dept_limit = ray->dept_limit - 1u};
 		send_ray(env, &ref_ray, &reflected_color);
 		vec3_mul_double(cur_color, cur_color, 1.0 - ray->reflect_coef);
 		vec3_mul_double(&reflected_color, &reflected_color, ray->reflect_coef);
