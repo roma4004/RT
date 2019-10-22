@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:49:38 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/22 17:41:23 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/22 16:50:23 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@ static void		set_uni(t_uni *uni_arr, const double *v,
 			.is_selected = false};
 	vec3_normalize(&uni_arr[*id_uni].dir, &uni_arr[*id_uni].dir);
 	set_backup_val(&uni_arr[*id_uni]);
-	if ((uni_arr[*id_uni].dir.x == 0)
-	&& (uni_arr[*id_uni].dir.y == 0)
-	&& (uni_arr[*id_uni].dir.z == 0))
+	if ((uni_arr[*id_uni].dir.x == 0.0)
+	&& (uni_arr[*id_uni].dir.y == 0.0)
+	&& (uni_arr[*id_uni].dir.z == 0.0))
 		uni_arr[*id_uni].dir = (t_dvec3){0.0, 1.0, 0.0, 0.0};
 	ft_clamp_in_range(&uni_arr[*id_uni].reflective_coef,
 		uni_arr[*id_uni].reflective_coef, 0.0, 1.0);
@@ -57,7 +57,7 @@ static void		set_uni(t_uni *uni_arr, const double *v,
 	(*id_uni)++;
 }
 
-void			set_obj_value(t_env *env, const double *v, size_t type)
+void			set_obj_value(t_env *env, double *v, size_t type)
 {
 	static size_t	id_uni = 0;
 	static size_t	id_lgh = 0;
@@ -66,6 +66,13 @@ void			set_obj_value(t_env *env, const double *v, size_t type)
 		return ;
 	if (type == CAM)
 		set_cam(&env->cam, v);
+	else if (type == SCRN)
+	{
+		ft_clamp_in_range(&v[0], v[0], 200.0, 2000.0);
+		ft_clamp_in_range(&v[1], v[1], 200.0, 2000.0);
+		env->buff_width = (Uint32)v[0];
+		env->buff_height = (Uint32)v[1];
+	}
 	else if (type < 3)
 		set_light(env->light_arr, v, &id_lgh, type);
 	else

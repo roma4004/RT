@@ -3,24 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 16:23:20 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/22 18:13:58 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef RT_H
 # define RT_H
-# define WIN_NAME "RT by dromanic (@Dentair)"
-# define WIN_WIDTH 800u
-# define WIN_HEIGHT 800u
+# define WIN_NAME "RT"
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 14
 # define OBJ_TYPE_MAX 8
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
+# define REFLECTIVE_MAX_DEPT 5
 
 # include <fcntl.h>
 # include <stdbool.h>
@@ -164,7 +163,9 @@ typedef struct		s_environment
 	t_uni			*uni_arr;
 	t_uni			*selected_obj;
 	t_lght			*light_arr;
-	Uint32			buff[WIN_HEIGHT][WIN_WIDTH];
+	Uint32			*buff;
+	Uint32			buff_width;
+	Uint32			buff_height;
 	t_dvec3			bg_color;
 	size_t			threads;
 	t_cam			cam;
@@ -197,7 +198,8 @@ enum				e_light_type
 	CYLINDER = 5,
 	CONE = 6,
 	DISK = 7,
-	CAM = 8, // the last one
+	SCRN = 8,
+	CAM = 9
 };
 
 enum				e_orient
@@ -210,7 +212,7 @@ enum				e_orient
 /*
 **					draw.c
 */
-void				convert_to_viewport(t_dvec3 *destination, const t_cam *cam,
+void				convert_to_viewport(t_dvec3 *destination, const t_env *env,
 						double x, double y);
 void				draw_scene(t_env *env, size_t threads);
 
@@ -345,7 +347,7 @@ t_env				*parse_scene(t_env *env, char *file_name);
 **					parse_utils.c
 */
 _Bool				init_obj_arr(t_env *env, t_list *lst);
-void				set_obj_value(t_env *env, const double *v, size_t type);
+void				set_obj_value(t_env *env, double *v, size_t type);
 
 /*
 **					parsing_utils_backup.c

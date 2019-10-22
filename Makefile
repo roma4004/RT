@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+         #
+#    By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/09 11:13:10 by akolinko          #+#    #+#              #
-#    Updated: 2019/10/20 16:12:25 by dromanic         ###   ########.fr        #
+#    Updated: 2019/10/22 17:26:24 by vtlostiu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,37 +21,37 @@ LIBFT_PATH	= ${LIBS_PATH}/libft
 
 SRC_N		=	color.c \
 				double_with_vect3.c \
-				init.c \
-				effects.c \
-				key_down_cam_move.c \
-				key_mouse.c \
-				key_down_cam_rotate.c \
-				get_next_line.c \
-				key_up_cam_move.c \
-				key_move.c \
-				key_up_cam_rotate.c \
 				draw.c \
+				effects.c \
+				get_next_line.c \
+				init.c \
+				key_down_cam_move.c \
+				key_down_cam_rotate.c \
+				key_mouse.c \
+				key_move.c \
 				key_reset.c \
+				key_up_cam_move.c \
+				key_up_cam_rotate.c \
 				key_utils.c \
-				keys_mouse.c \
-				main.c \
-				ligths.c \
-				obj_normal_base.c \
 				keys.c \
-				obj_utils.c \
+				keys_mouse.c \
+				ligths.c \
+				main.c \
 				obj_intersection_base.c \
-				parsing_utils_backup.c \
+				obj_normal_base.c \
+				obj_utils.c \
+				parsing.c \
 				parsing_caps.c \
 				parsing_utils.c \
-				parsing.c \
+				parsing_utils_backup.c \
 				parsing_utils_setters.c \
+				parsing_validate_scene.c \
 				ray_reflect_n_refract.c \
+				ray_traces.c \
 				vec3_rotate.c \
 				vec3_utils.c \
 				vec3_with_double.c \
-				parsing_validate_scene.c \
-				vec3_with_vec3.c \
-				ray_traces.c
+				vec3_with_vec3.c
 
 SRC = $(addprefix ${SRC_PATH}/, $(SRC_N))
 

@@ -61,7 +61,8 @@ void			save_screenshot(t_env *env)
 	str = ft_strjoin(tmp, ".bmp");
 	ft_strdel(&tmp);
 	replace_space_newline(str);
-	screenshot = SDL_CreateRGBSurface(0, WIN_WIDTH, WIN_HEIGHT, 32, 0, 0, 0, 0);
+	screenshot = SDL_CreateRGBSurface(0, env->buff_width, env->buff_height,
+		32, 0, 0, 0, 0);
 	SDL_LockSurface(screenshot);
 	ft_memcpy(screenshot->pixels, env->buff, screenshot->h * screenshot->pitch);
 	SDL_UnlockSurface(screenshot);

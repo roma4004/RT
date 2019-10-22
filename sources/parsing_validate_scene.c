@@ -47,7 +47,7 @@ _Bool			is_valid_line(t_env *env, char **line, size_t len)
 	return (true);
 }
 
-static int		cmp_from_begin(const char *s1, const char *s2)
+static int		cmp_begin(const char *s1, const char *s2)
 {
 	size_t	i;
 
@@ -64,27 +64,27 @@ size_t			get_type(const char *str)
 {
 	size_t		type;
 
-	if (str[0] == '#' || str[0] == ' ')
+	if (str[0] == '#' || str[0] == ' ' || !(type = UINT64_MAX))
 		return (UINT64_MAX);
-	type = UINT64_MAX;
-	if (cmp_from_begin("sphere", str) || cmp_from_begin("SPHERE", str))
+	if (cmp_begin("sphere", str) || cmp_begin("SPHERE", str))
 		type = SPHERE;
-	else if (cmp_from_begin("plane", str) || cmp_from_begin("PLANE", str))
+	else if (cmp_begin("plane", str) || cmp_begin("PLANE", str))
 		type = PLANE;
-	else if (cmp_from_begin("cone", str) || cmp_from_begin("CONE", str))
+	else if (cmp_begin("cone", str) || cmp_begin("CONE", str))
 		type = CONE;
-	else if (cmp_from_begin("cylinder", str) || cmp_from_begin("CYLINDER", str))
+	else if (cmp_begin("cylinder", str) || cmp_begin("CYLINDER", str))
 		type = CYLINDER;
-	else if (cmp_from_begin("cam", str) || cmp_from_begin("CAM", str))
+	else if (cmp_begin("cam", str) || cmp_begin("CAM", str))
 		type = CAM;
-	else if (cmp_from_begin("ambient", str) || cmp_from_begin("AMBIENT", str))
+	else if (cmp_begin("ambient", str) || cmp_begin("AMBIENT", str))
 		type = AMBIENT;
-	else if (cmp_from_begin("point", str) || cmp_from_begin("POINT", str))
+	else if (cmp_begin("point", str) || cmp_begin("POINT", str))
 		type = POINT;
-	else if (cmp_from_begin("directional", str)
-		|| cmp_from_begin("DIRECTIONAL", str))
+	else if (cmp_begin("screen", str) || cmp_begin("SCREEN", str))
+		type = SCRN;
+	else if (cmp_begin("directional", str) || cmp_begin("DIRECTIONAL", str))
 		type = DIRECTIONAL;
-	else if (cmp_from_begin("disk", str) || cmp_from_begin("DISK", str))
+	else if (cmp_begin("disk", str) || cmp_begin("DISK", str))
 		type = DISK;
 	return (type);
 }

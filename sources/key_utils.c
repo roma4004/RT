@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   key_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:00:15 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 14:50:25 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 21:25:21 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ void		select_mod(t_env *env, SDL_Event *event, t_cam *cam)
 	{
 		ray = (t_ray){.t_min = cam->t_min, .t_max = cam->t_max,
 			.pos = cam->pos, .dept_limit = cam->reflective_dept};
-		convert_to_viewport(&ray.dir, &env->cam,
-			event->motion.x - env->cam.half.x,
+		convert_to_viewport(&ray.dir, env, event->motion.x - env->cam.half.x,
 			-event->motion.y + env->cam.half.y - 1.0);
 		send_selected_ray(env, &ray, &env->selected_obj, (double)MAXFLOAT);
 		if (env->selected_obj)

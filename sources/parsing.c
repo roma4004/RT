@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 15:26:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 21:13:14 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ t_env				*parse_scene(t_env *env, char *file_name)
 
 	lst = NULL;
 	buf = NULL;
-	if (!env || !file_name || (rows = 0)
+	if (!env || !file_name || (rows = 0) || read(fd, NULL, 0)
 	|| ((fd == -1 || errno == ERR_DIRECTORY) && (env->flags.err_id = ERR_READ)))
 		return (NULL);
 	while ((status = get_next_line(fd, &buf)) == 1
