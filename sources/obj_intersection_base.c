@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 15:01:00 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 17:42:59 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	get_intersect_sphere(t_dvec3 *touch, const t_uni *sphere,
 	tmp = (t_dvec3){
 		.x = tmp.x,
 		.y = 2 * tmp.y,
-		.z = tmp.z - radius * radius};
+		.z = tmp.z - radius * radius, 0.0};
 	discriminant_comput(touch, &tmp);
 }
 
@@ -46,7 +46,7 @@ void	get_intersect_plane(t_dvec3 *touch, const t_uni *plane,
 	}
 	else
 	{
-		*touch = (t_dvec3){0.0};
+		*touch = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 	}
 }
 
@@ -113,7 +113,7 @@ void	get_intersect_disk(t_dvec3 *touch, const t_uni *disk, const t_ray *ray)
 		vec3_dot_vec3(&v_dot_v, &v, &v);
 		if ((v_dot_v > disk->radius * disk->radius))
 		{
-			*touch = (t_dvec3){0.0};
+			*touch = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 			return ;
 		}
 	}

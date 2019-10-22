@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 16:01:40 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 16:23:20 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,22 +29,7 @@
 # include <errno.h>
 # include <math.h>
 # include <time.h>
-
-# pragma GCC diagnostic ignored "-Wstrict-prototypes"
-# pragma GCC diagnostic ignored "-Wpadded"
-# pragma GCC diagnostic ignored "-Wdocumentation"
-# pragma GCC diagnostic ignored "-Wundef"
-# pragma GCC diagnostic ignored "-Wreserved-id-macro"
-
 # include "SDL.h"
-# include "SDL_image.h"
-
-# pragma GCC diagnostic warning "-Wreserved-id-macro"
-# pragma GCC diagnostic warning "-Wundef"
-# pragma GCC diagnostic warning "-Wdocumentation"
-# pragma GCC diagnostic warning "-Wpadded"
-# pragma GCC diagnostic warning "-Wstrict-prototypes"
-
 # include "libft.h"
 # include "get_next_line.h"
 
@@ -143,7 +128,6 @@ typedef struct		s_universal_object
 	double			reflective_coef;
 	double			refractive_coef;
 	_Bool			is_selected;
-//	char			padding[7];
 	t_dvec3			pos_backup;
 	double			radius_backup;
 	t_dvec3			dir_backup;
@@ -371,12 +355,8 @@ void				set_backup_val(t_uni *obj);
 /*
 **					parsing_utils_setters.c
 */
-/*
- *
-**					parsing_utils_setters.c
-*/
-void				add_caps(t_uni *uni_arr, const double *v, size_t *id_uni,
-						size_t type);
+void				add_caps(t_uni *uni_arr, size_t *id_uni, size_t type);
+
 /*
 **					parsing_validate_scene.c
 */

@@ -17,11 +17,11 @@ void	discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp)
 	const double	discriminant = tmp->y * tmp->y - 4 * tmp->x * tmp->z;
 
 	if (discriminant < 0.0)
-		*touch = (t_dvec3){0.0};
+		*touch = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 	*touch = (t_dvec3){
 		.x = (-tmp->y + sqrt(discriminant)) / (2.0 * tmp->x),
 		.y = (-tmp->y - sqrt(discriminant)) / (2.0 * tmp->x),
-		.z = 0.0};
+		.z = 0.0, 0.0};
 }
 
 void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,

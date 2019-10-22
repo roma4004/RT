@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 16:07:43 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 16:07:56 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ void			send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color)
 		prepare_light(env, ray, &l, obj);
 		get_light(env, &l, cur_color, ray);
 		if (obj->is_selected)
-			*cur_color = (t_dvec3){0.0};
+			*cur_color = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 		ray->reflect_coef = obj->reflective_coef;
 		ray->refract_coef = obj->refractive_coef;
 		send_refract_ray(env, ray, cur_color, &l);

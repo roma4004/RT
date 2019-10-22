@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 15:30:31 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 15:31:57 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/20 15:34:15 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ static void		add_cap_top(t_uni *dest_child, t_uni *src_parent)
 	set_backup_val(dest_child);
 }
 
-void			add_caps(t_uni *uni_arr, const double *v, size_t *id_uni,
-					size_t type)
+void			add_caps(t_uni *uni_arr, size_t *id_uni, size_t type)
 {
 	t_uni		*src_parent;
 
