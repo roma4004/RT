@@ -32,7 +32,7 @@ void			move_objects(t_env *env, const t_dvec3 *move_dir,
 		i = UINT64_MAX;
 		while (++i < env->uni_arr_len && (obj = &env->uni_arr[i]))
 			if (obj->is_selected)
-				vec3_move(&obj->pos, move_dir, move_speed);
+				vec3_move(&obj->pos, move_dir, -move_speed);
 	}
 }
 

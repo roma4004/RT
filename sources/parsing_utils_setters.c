@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:49:38 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/22 16:50:23 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/23 17:50:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ static void		set_uni(t_uni *uni_arr, const double *v,
 		uni_arr[*id_uni].reflective_coef, 0.0, 1.0);
 	ft_clamp_in_range(&uni_arr[*id_uni].refractive_coef,
 		uni_arr[*id_uni].refractive_coef, 0.0, 1.0);
+	if (type == CONE)//todo: move this to separated file fo caching once calculated value
+		uni_arr[*id_uni].cone_angle_cache =
+			uni_arr[*id_uni].radius / uni_arr[*id_uni].height; //todo: if we change radius or height in real time we MUST recalculate ".cone_angle_cache"
 	add_caps(uni_arr, id_uni, type);
 	(*id_uni)++;
 }

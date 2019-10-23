@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 14:48:42 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/23 17:46:19 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,21 @@
 # include <errno.h>
 # include <math.h>
 # include <time.h>
+
+# pragma GCC diagnostic ignored "-Wstrict-prototypes"
+# pragma GCC diagnostic ignored "-Wpadded"
+# pragma GCC diagnostic ignored "-Wdocumentation"
+# pragma GCC diagnostic ignored "-Wundef"
+# pragma GCC diagnostic ignored "-Wreserved-id-macro"
+
 # include "SDL.h"
+
+# pragma GCC diagnostic warning "-Wreserved-id-macro"
+# pragma GCC diagnostic warning "-Wundef"
+# pragma GCC diagnostic warning "-Wdocumentation"
+# pragma GCC diagnostic warning "-Wpadded"
+# pragma GCC diagnostic warning "-Wstrict-prototypes"
+
 # include "libft.h"
 # include "get_next_line.h"
 
@@ -130,6 +144,8 @@ typedef struct		s_universal_object
 	t_dvec3			pos_backup;
 	double			radius_backup;
 	t_dvec3			dir_backup;
+	double			cone_angle_cache;
+
 }					t_uni;
 
 typedef struct		s_vector3_comput_tmp
@@ -308,7 +324,7 @@ void				get_intersect_plane(t_dvec3 *touch, const t_uni *plane,
 						const t_ray *ray);
 void				get_intersect_cylinder(t_dvec3 *touch,
 						const t_uni *cylinder, const t_ray *ray);
-void				get_intersect_cone(t_dvec3 *touch, const t_uni *obj,
+void				get_intersect_cone(t_dvec3 *touch, const t_uni *cone,
 						const t_ray *ray);
 void				get_intersect_disk(t_dvec3 *touch, const t_uni *disk,
 						const t_ray *ray);
@@ -369,6 +385,8 @@ size_t				count_number(t_env *env, char *str, size_t len);
 /*
 **					ray_traces.c
 */
+t_uni				*intersect_obj(const t_env *env, const t_ray *ray,
+						double *dist);
 const t_uni			*is_shadow_ray(const t_env *env, const t_ray *ray,
 						const t_dvec3 *shadow_dir, double t_max);
 void				send_selected_ray(t_uni **obj, const t_env *env,

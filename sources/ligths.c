@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 13:58:59 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/23 17:12:34 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,24 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 				l->obj_specular);
 		}
 	}
+	//	double_mul_vec3(&orig_col, 1.0 - l->defuse_val , &l->cur->color);
 	double_mul_vec3(&defuse_col, l->defuse_intens, &l->obj_color);
+	//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
+	//	//todo: color light
+	//	double		orig_col_percent;
+	//	double		val = 1.0 - l->defuse_val;
+	////
+	//	ft_clamp_in_range(&orig_col_percent, &val, 0.0, 1.0);
+	//	orig_col_percent = val;
+	//	double_mul_vec3(&orig_col, orig_col_percent, &obj->color);
+
+
 	double_mul_vec3(&specul_col, l->specul_intens, &l->cur->color);
+	//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
+
+
+
+//	double_mul_vec3(&defuse_col, l->defuse_intens, &l->obj_color);
+//	double_mul_vec3(&specul_col, l->specul_intens, &l->cur->color);
 	vec3_add_vec3_col(col, &defuse_col, &specul_col);
-}
+}//сумму коеф зеркальности и прозрачности не должна быть меньше чем 0.98

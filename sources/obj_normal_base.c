@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/01 12:45:26 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 17:38:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/23 17:29:05 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	set_normal_cylinder(t_ray *ray, const t_uni *cylinder, double dist)
 
 void	set_normal_cone(t_ray *ray, const t_uni *cone, double dist)
 {
-	const double	k = cone->radius / cone->height;
+	const double	k = cone->cone_angle_cache;
 	t_dvec3_comp	computs;
 	double			oc_dot_dir;
 
