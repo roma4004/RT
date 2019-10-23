@@ -111,7 +111,7 @@ void	get_intersect_disk(t_dvec3 *touch, const t_uni *disk, const t_ray *ray)
 		vec3_add_vec3(&touch_point, &ray->pos, &ray_len);
 		vec3_sub_vec3(&v, &touch_point, &disk->pos);
 		vec3_dot_vec3(&v_dot_v, &v, &v);
-		if ((v_dot_v > disk->radius * disk->radius))
+		if (v_dot_v > disk->radius * disk->radius)
 		{
 			*touch = (t_dvec3){0.0, 0.0, 0.0, 0.0};
 			return ;

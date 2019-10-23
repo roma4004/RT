@@ -70,8 +70,8 @@ static void		set_specular_val(double *specul_intens, t_lght_comp *l,
 	}
 }
 
-void			get_light(t_env *env, t_lght_comp *l,
-					t_dvec3 *col, const t_ray *ray)
+void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
+					const t_ray *ray)
 {
 	size_t			i;
 	t_dvec3			defuse_col;

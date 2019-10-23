@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/12 13:31:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 14:33:39 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/23 14:44:15 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,5 @@ void	reset(t_env *env, t_cam *restrict cam, size_t obj_cnt)
 		cam->pos = cam->pos_backup;
 		cam->rotate_angle = cam->rotate_angle_backup;
 	}
+	env->flags.is_reset = false;
 }

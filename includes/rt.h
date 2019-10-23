@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/22 18:13:58 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/23 14:48:42 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,7 +290,7 @@ _Bool				event_handler(t_env *env, t_cam *cam, t_flags *flags);
 /*
 **					ligths.c
 */
-void				get_light(t_env *env, t_lght_comp *l, t_dvec3 *col,
+void				get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 						const t_ray *ray);
 
 /*
@@ -369,19 +369,20 @@ size_t				count_number(t_env *env, char *str, size_t len);
 /*
 **					ray_traces.c
 */
-const t_uni			*is_shadow_ray(t_env *env, const t_ray *ray,
+const t_uni			*is_shadow_ray(const t_env *env, const t_ray *ray,
 						const t_dvec3 *shadow_dir, double t_max);
-void				send_selected_ray(t_env *env, t_ray *ray,
-						t_uni **obj, double dist);
-void				send_ray(t_env *env, t_ray *ray, t_dvec3 *cur_color);
+void				send_selected_ray(t_uni **obj, const t_env *env,
+						const t_ray *ray, double dist);
+void				send_ray(t_dvec3 *cur_color, const t_env *env,
+						t_ray *ray);
 
 /*
 **					ray_reflect_n_refract.c
 */
-void				send_refract_ray(t_env *env, t_ray *ray,
-						t_dvec3 *cur_color, t_lght_comp *l);
-void				send_reflect_ray(t_env *env, t_ray *ray,
-						t_dvec3 *cur_color, t_lght_comp *l);
+void				send_refract_ray(t_dvec3 *cur_color, t_lght_comp *l,
+						const t_env *env, const t_ray *ray);
+void				send_reflect_ray(t_dvec3 *cur_color, t_lght_comp *l,
+						const t_env *env, const t_ray *ray);
 
 /*
 **					key_utils.c
@@ -389,7 +390,8 @@ void				send_reflect_ray(t_env *env, t_ray *ray,
 void				swith_handle(t_env *env, t_flags *flags, size_t obj_cnt);
 void				count_selected_obj(size_t *dest, t_uni *uni_arr,
 						size_t uni_arr_len);
-void				select_mod(t_env *env, SDL_Event *event, t_cam *cam);
+_Bool				select_mod(t_env *env, const SDL_Event *event,
+						const t_cam *cam);
 
 /*
 **					color.c

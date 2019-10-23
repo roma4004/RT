@@ -69,7 +69,7 @@ static void		*render_frame(void *thread_data)
 		{
 			convert_to_viewport(&ray.dir, env, pt.x + thread_id, pt.y);
 			color = (t_dvec3){0.0, 0.0, 0.0, 0.0};
-			send_ray(env, &ray, &color);
+			send_ray(&color, env, &ray);
 			put_px(env, &env->cam.half, (t_dvec){pt.x + thread_id, pt.y},
 				&color);
 		}

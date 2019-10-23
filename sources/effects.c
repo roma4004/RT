@@ -69,4 +69,5 @@ void			save_screenshot(t_env *env)
 	SDL_SaveBMP(screenshot, str);
 	ft_strdel(&str);
 	SDL_FreeSurface(screenshot);
+	env->flags.is_screenshot = false;
 }

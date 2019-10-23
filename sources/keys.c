@@ -6,14 +6,13 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 15:46:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/23 14:37:10 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static void		keyboard_handle(t_env *env, t_flags *restrict f,
-					double move_speed, double rotate_speed)
+static void		key_apply(t_env *env, t_flags *restrict f, double move_speed, double rotate_speed)
 {
 	t_dvec3		rot;
 	size_t		obj_cnt;
@@ -37,10 +36,10 @@ static void		keyboard_handle(t_env *env, t_flags *restrict f,
 static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
 {
 	if ((k == SDLK_CAPSLOCK && ft_switch(&f->is_in_select_mod))
-	|| (k == SDLK_r && ft_switch(&f->is_reset))
 	|| (k == SDLK_1 && ft_switch(&f->is_sepia))
 	|| (k == SDLK_2 && ft_switch(&f->is_grayscale))
-	|| (k == SDLK_4 && ft_switch(&f->is_screenshot)))
+	|| (k == SDLK_4 && (f->is_screenshot = true))
+	|| (k == SDLK_r && (f->is_reset = true)))
 		return (true);
 	return (false);
 }
@@ -68,24 +67,24 @@ static _Bool	keyboard_events(Uint32 event_type, SDL_Keycode k,
 
 static _Bool	mouse_events(t_env *env, SDL_Event *event)
 {
-	if (event->type == SDL_MOUSEMOTION)
-	{
-		mouse_move(env, event);
-		mouse_rotate(env, event);
-		mouse_rotate_z(env, event);
-	}
-	if (event->type == SDL_MOUSEBUTTONUP)
-	{
-		select_mod(env, event, &env->cam);
-	}
 	if (event->type == SDL_MOUSEWHEEL)
 	{
 		if (event->wheel.y > 0)
-			env->flags.move.z = event->wheel.y;
+			env->flags.move.z = POS;
 		else if (event->wheel.y < 0)
-			env->flags.move.z = event->wheel.y;
-		return (true);
+			env->flags.move.z = NEG;
+		if (event->wheel.x || event->wheel.y)
+			return (true);
 	}
+	if (event->type == SDL_MOUSEMOTION)
+	{
+		if (mouse_move(env, event)
+		|| mouse_rotate(env, event)
+		|| mouse_rotate_z(env, event))
+			return (true);
+	}
+	if (event->type == SDL_MOUSEBUTTONUP)
+		return (select_mod(env, event, &env->cam));
 	return (false);
 }
 
@@ -96,12 +95,7 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 	unsigned char		result;
 
 	result = 0;
-	env->flags.move.x = NON;
-	env->flags.move.y = NON;
-	env->flags.move.z = NON;
-	env->flags.rotate.x = NON;
-	env->flags.rotate.y = NON;
-	env->flags.rotate.z = NON;
+	ft_bzero(&env->flags, sizeof(env->flags.move) + sizeof(env->flags.rotate));
 	while (SDL_PollEvent(&event))
 	{
 		key_code = event.key.keysym.sym;
@@ -112,6 +106,6 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 		result += mouse_events(env, &event);
 	}
 	if (result)
-		keyboard_handle(env, flags, cam->move_speed, cam->rotate_speed);
+		key_apply(env, flags, cam->move_speed, cam->rotate_speed);
 	return (result);
 }
