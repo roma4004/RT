@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 13:50:28 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 15:12:38 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/26 22:16:03 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,20 @@ void	discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp)
 
 	if (discriminant < 0.0)
 		*touch = (t_dvec3){0.0, 0.0, 0.0, 0.0};
-	*touch = (t_dvec3){
-		.x = (-tmp->y + sqrt(discriminant)) / (2.0 * tmp->x),
-		.y = (-tmp->y - sqrt(discriminant)) / (2.0 * tmp->x),
-		.z = 0.0, 0.0};
+	else
+	{
+		*touch = (t_dvec3) {
+			.x = (-tmp->y + sqrt(discriminant)) / (2.0 * tmp->x),
+			.y = (-tmp->y - sqrt(discriminant)) / (2.0 * tmp->x),
+			.z = 0.0,
+			0.0};
+	}
 }
 
 void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
 			const t_ray *ray)
 {
-	if (type == SPHERE)
+	if (type == SPHERE || type == SPHERENEG)
 		return (get_intersect_sphere);
 	if (type == PLANE)
 		return (get_intersect_plane);
@@ -43,7 +47,7 @@ void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
 void	(*g_normal_catalog(size_t type))(t_ray *ray, const t_uni *obj,
 			double dist)
 {
-	if (type == SPHERE)
+	if (type == SPHERE || type == SPHERENEG)
 		return (set_normal_sphere);
 	if (type == PLANE || type == DISK)
 		return (set_normal_plane);

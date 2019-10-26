@@ -12,12 +12,12 @@
 
 #include "rt.h"
 
-void	set_normal_sphere(t_ray *ray, const t_uni *plane, double dist)
+void	set_normal_sphere(t_ray *ray, const t_uni *sphere, double dist)
 {
 	t_dvec3		tc;
 
 	(void)dist;
-	vec3_sub_vec3(&tc, &ray->touch_point, &plane->pos);
+	vec3_sub_vec3(&tc, &ray->touch_point, &sphere->pos);
 	vec3_normalize(&ray->normal, &tc);
 }
 

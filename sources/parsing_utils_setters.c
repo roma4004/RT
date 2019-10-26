@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:49:38 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 17:50:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/24 16:20:11 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void		set_uni(t_uni *uni_arr, const double *v,
 {
 	uni_arr[*id_uni] =
 		(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2], 0.0},
-			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0}, fabs(v[7]),
+			v[3], (t_dvec3){v[4], v[5], v[6], 0.0}, fabs(v[7]),
 			vec3_clamp_col_cpy((t_dvec3){v[8], v[9], v[10], 0.0}), v[11],
 			g_intersect_catalog(type), g_normal_catalog(type), v[12], v[13],
 			.is_selected = false};
@@ -60,9 +60,36 @@ static void		set_uni(t_uni *uni_arr, const double *v,
 	(*id_uni)++;
 }
 
+static void		set_neg(t_uni *neg_arr, const double *v,
+					size_t *id_neg, size_t type)
+{
+	neg_arr[*id_neg] =
+		(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2], 0.0},
+			fabs(v[3]), (t_dvec3){v[4], v[5], v[6], 0.0}, fabs(v[7]),
+			vec3_clamp_col_cpy((t_dvec3){v[8], v[9], v[10], 0.0}), v[11],
+			g_intersect_catalog(type), g_normal_catalog(type), v[12], v[13],
+			.is_selected = false};
+	vec3_normalize(&neg_arr[*id_neg].dir, &neg_arr[*id_neg].dir);
+	set_backup_val(&neg_arr[*id_neg]);
+	if ((neg_arr[*id_neg].dir.x == 0.0)
+	&& (neg_arr[*id_neg].dir.y == 0.0)
+	&& (neg_arr[*id_neg].dir.z == 0.0))
+		neg_arr[*id_neg].dir = (t_dvec3){0.0, 1.0, 0.0, 0.0};
+	ft_clamp_in_range(&neg_arr[*id_neg].reflective_coef,
+		neg_arr[*id_neg].reflective_coef, 0.0, 1.0);
+	ft_clamp_in_range(&neg_arr[*id_neg].refractive_coef,
+		neg_arr[*id_neg].refractive_coef, 0.0, 1.0);
+	if (type == CONE)//todo: move this to separated file fo caching once calculated value
+		neg_arr[*id_neg].cone_angle_cache =
+			neg_arr[*id_neg].radius / neg_arr[*id_neg].height; //todo: if we change radius or height in real time we MUST recalculate ".cone_angle_cache"
+	add_caps(neg_arr, id_neg, type);
+	(*id_neg)++;
+}
+
 void			set_obj_value(t_env *env, double *v, size_t type)
 {
 	static size_t	id_uni = 0;
+	static size_t	id_neg = 0;
 	static size_t	id_lgh = 0;
 
 	if (type == UINT64_MAX)
@@ -76,6 +103,8 @@ void			set_obj_value(t_env *env, double *v, size_t type)
 		env->buff_width = (Uint32)v[0];
 		env->buff_height = (Uint32)v[1];
 	}
+	else if (type == SPHERENEG)
+		set_neg(env->neg_arr, v, &id_neg, type);
 	else if (type < 3)
 		set_light(env->light_arr, v, &id_lgh, type);
 	else

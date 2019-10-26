@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 17:46:19 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/26 20:38:51 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,15 @@ typedef struct		s_universal_object
 
 }					t_uni;
 
+
+
+typedef struct		s_touch
+{
+	t_uni		*obj;
+	double		t1;
+	double		t2;
+}					t_touch;
+
 typedef struct		s_vector3_comput_tmp
 {
 	t_dvec3			oc;
@@ -177,6 +186,7 @@ typedef struct		s_environment
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;
 	t_uni			*uni_arr;
+	t_uni			*neg_arr;
 	t_uni			*selected_obj;
 	t_lght			*light_arr;
 	Uint32			*buff;
@@ -187,6 +197,7 @@ typedef struct		s_environment
 	t_cam			cam;
 	size_t			uni_arr_len;
 	size_t			light_arr_len;
+	size_t			neg_arr_len;
 	t_flags			flags;
 }					t_env;
 
@@ -214,8 +225,9 @@ enum				e_light_type
 	CYLINDER = 5,
 	CONE = 6,
 	DISK = 7,
-	SCRN = 8,
-	CAM = 9
+	SPHERENEG = 8,
+	SCRN = 9,
+	CAM = 10
 };
 
 enum				e_orient
@@ -332,7 +344,7 @@ void				get_intersect_disk(t_dvec3 *touch, const t_uni *disk,
 /*
 **					obj_normal_base.c
 */
-void				set_normal_sphere(t_ray *ray, const t_uni *plane,
+void				set_normal_sphere(t_ray *ray, const t_uni *sphere,
 						double dist);
 void				set_normal_plane(t_ray *ray, const t_uni *plane,
 						double dist);
@@ -385,9 +397,8 @@ size_t				count_number(t_env *env, char *str, size_t len);
 /*
 **					ray_traces.c
 */
-t_uni				*intersect_obj(const t_env *env, const t_ray *ray,
-						double *dist);
-const t_uni			*is_shadow_ray(const t_env *env, const t_ray *ray,
+t_uni				*intersect_obj(double *dist, const t_env *env, t_ray *ray);
+const t_uni			*is_shadow_ray(const t_env *env, t_ray *ray,
 						const t_dvec3 *shadow_dir, double t_max);
 void				send_selected_ray(t_uni **obj, const t_env *env,
 						const t_ray *ray, double dist);

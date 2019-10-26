@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 17:15:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/26 21:48:52 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,25 @@ void			quit_program(t_env *env)
 //+ sepia filter
 //+ It's possible inside the RT to save, screenshot the rendered image. ()
 //+ limited obj (by vtlostiu)
+//+ parse screen param from file (screen obj) (by vtlostiu)
+//+ negative objects
 
-//- JSON
-//- sliced obj
-//- interface
-//- composed elements (grouped obj)
-//- parse screen param from file (screen obj)
+//==- JSON (by ykopiika)
+//==- sliced obj
+//==- more figures//- torus//- add figure paraboloid et hyperboloid.
+//==- interface (by dromanic)
 //- texture (checkmate_board)
-//- more figures
-//- negative objects
+
 
 //optional:
+//- composed elements (grouped obj)
 //- colored light
 //- blinded by light spot facing us.
-//- add figure paraboloid et hyperboloid.
-//- torus
 //- selection frame like https://www.shadertoy.com/view/4llXD7
+
+
+//BUGLIST:
+//-0.09 val parse bug
 
 int				main(int argc, char **argv)
 {

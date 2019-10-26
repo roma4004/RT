@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:31:32 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 15:30:43 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/24 16:24:49 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,9 @@ size_t			get_type(const char *str)
 
 	if (str[0] == '#' || str[0] == ' ' || !(type = UINT64_MAX))
 		return (UINT64_MAX);
-	if (cmp_begin("sphere", str) || cmp_begin("SPHERE", str))
+	if (cmp_begin("sphereneg", str) || cmp_begin("SPHERENEG", str))
+		type = SPHERENEG;
+	else if (cmp_begin("sphere", str) || cmp_begin("SPHERE", str))
 		type = SPHERE;
 	else if (cmp_begin("plane", str) || cmp_begin("PLANE", str))
 		type = PLANE;

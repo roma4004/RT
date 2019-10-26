@@ -6,60 +6,156 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 18:33:12 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/26 22:13:37 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-t_uni	*intersect_obj(const t_env *env, const t_ray *ray, double *dist)
+_Bool			is_in_range(double val, double min, double max)
 {
-	const size_t	len = env->uni_arr_len;
-	t_uni			*cur_obj;
-	size_t			i;
-	t_dvec3			touch;
-
-	cur_obj = NULL;
-	i = UINT64_MAX;
-	while (++i < len)
-	{
-		env->uni_arr[i].get_intersect(&touch, &env->uni_arr[i], ray);
-		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max
-		&& (cur_obj = &env->uni_arr[i]))
-			*dist = touch.x;
-		if (touch.y < *dist && ray->t_min < touch.y && touch.y < ray->t_max
-		&& (cur_obj = &env->uni_arr[i]))
-			*dist = touch.y;
-	}
-	return (cur_obj);
+	if (val > min && val < max)
+		return (true);
+	return (false);
 }
 
-const t_uni		*is_shadow_ray(const t_env *env, const t_ray *ray,
-					const t_dvec3 *shadow_dir, double t_max)
-{//todo: add refractive ray
-	const t_uni		*objects = env->uni_arr;
-	const size_t	len = env->uni_arr_len;
+_Bool			is_in_negative_list(t_uni *obj, t_uni *neg_arr,
+					size_t neg_arr_len)
+{
+	size_t			i;
+
+	i = UINT64_MAX;
+	while (++i < neg_arr_len)
+		if (&neg_arr[i] == obj)
+			return (true);
+	return (false);
+}
+
+void			negative_intersect(t_list *lst, t_dvec3 *touch,
+					double *dist, t_uni **obj)
+{
+	t_touch			*touch_neg;
+
+	while (lst)
+	{
+		touch_neg = (t_touch *)lst->content;
+		if ((is_in_range(touch->x, touch_neg->t2, touch_neg->t1))
+		&& (is_in_range(touch->y, touch_neg->t2, touch_neg->t1))
+//		&&	is_in_range(*dist, touch_neg->t2, touch_neg->t1)
+		)
+
+		{
+			*dist = (double)MAXFLOAT;
+			*obj = NULL;
+		}
+		else if (is_in_range(touch->y, touch_neg->t2, touch_neg->t1)
+			)
+		{
+			*dist = touch_neg->t1;
+			touch_neg->obj->color = (*obj)->color;
+			*obj = touch_neg->obj;
+		}
+//		else if (is_in_range(touch->x, touch_neg->t2, touch_neg->t1)
+//			&& touch_neg->t2 < *dist)
+//		{
+//			*dist = touch_neg->t2;
+//			touch_neg->obj->color = (*obj)->color;
+//			*obj = touch_neg->obj;
+//		}
+		lst = lst->next;
+	}
+}
+
+void			shadow_negative_intersect(t_list *lst, t_dvec3 *touch,
+					t_uni **obj)
+{
+	t_touch			*touch_neg;
+
+	while (lst)
+	{
+		touch_neg = (t_touch *)lst->content;
+		if ((is_in_range(touch->x, touch_neg->t2, touch_neg->t1))
+		&& (is_in_range(touch->y, touch_neg->t2, touch_neg->t1)))
+		{
+			*obj = NULL;
+		}
+//		else if (is_in_range(touch->x, touch_neg->t2, touch_neg->t1))
+//		{
+//			*closest_t = touch_neg->t2;
+//			touch_neg->obj->color = (*obj)->color;
+//			*obj = touch_neg->obj;
+//		}
+		else if (is_in_range(touch->y, touch_neg->t2, touch_neg->t1))
+		{
+			touch_neg->obj->color = (*obj)->color;
+			*obj = touch_neg->obj;
+		}
+		lst = lst->next;
+	}
+}
+
+static void		get_negative_touch(t_list **lst, const t_env *env, t_ray *ray)
+{
+	t_list		*lst_neg;
+	size_t		i;
+	t_dvec3		touch;
+
+	lst_neg = NULL;
+	i = UINT64_MAX;
+	while (++i < env->neg_arr_len)
+	{
+		env->neg_arr[i].get_intersect(&touch, &env->neg_arr[i], ray);
+		t_touch touch_tmp;
+		touch_tmp = (t_touch){&env->neg_arr[i], touch.x, touch.y};
+		ft_lstappend(&lst_neg, &touch_tmp, sizeof(t_touch));
+	}
+	*lst = lst_neg;
+}
+
+t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
+{
+	t_list			*lst_neg;
+	t_uni			*obj_pos;
 	size_t			i;
 	t_dvec3			touch;
-	t_ray			shadow_ray;
 
+	get_negative_touch(&lst_neg, env, ray);
+	obj_pos = NULL;
+	i = UINT64_MAX;
+	while (++i < env->uni_arr_len)
+	{
+		env->uni_arr[i].get_intersect(&touch, &env->uni_arr[i], ray);
+		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max)
+		{
+			*dist = touch.x;
+			obj_pos = &env->uni_arr[i];
+		}
+		if (touch.y < *dist && ray->t_min < touch.y && touch.y < ray->t_max)
+		{
+			*dist = touch.y;
+			obj_pos = &env->uni_arr[i];
+		}
+		if (obj_pos)
+			negative_intersect(lst_neg, &touch, dist, &obj_pos);
+	}
+	return (obj_pos);
+}
+
+const t_uni		*is_shadow_ray(const t_env *env, t_ray *ray,
+					const t_dvec3 *shadow_dir, double t_max)
+{//todo: add refractive ray
+	t_uni			*obj;
+	t_ray			shadow_ray;
+	double			dist;
+
+	dist = (double)MAXFLOAT;
 	shadow_ray = (t_ray){
 		.t_min = ray->t_min,
-		.t_max = ray->t_max,
+		.t_max = t_max,
 		.pos = ray->touch_point,
 		.dir = *shadow_dir};
-	i = UINT64_MAX;
-	while (++i < len)
-	{
-		objects[i].get_intersect(&touch, &objects[i], &shadow_ray);
-		if ((touch.x < (double)MAXFLOAT
-			&& env->cam.epsilon < touch.x
-			&& touch.x < t_max)
-		|| (touch.y < (double)MAXFLOAT
-			&& env->cam.epsilon < touch.y
-			&& touch.y < t_max))
-			return (&objects[i]);
-	}
+	if ((obj = intersect_obj(&dist, env, &shadow_ray)))
+		return (obj);
 	return (NULL);
 }
 
@@ -109,7 +205,7 @@ void			send_ray(t_dvec3 *cur_color, const t_env *env, t_ray *ray)
 
 	ft_bzero(&l, sizeof(t_lght_comp));
 	l.dist = (double)MAXFLOAT;
-	if (!(obj = intersect_obj(env, ray, &l.dist)))
+	if (!(obj = intersect_obj(&l.dist, env, ray)))
 		*cur_color = env->bg_color;
 	else
 	{
