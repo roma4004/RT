@@ -77,7 +77,7 @@ void			quit_program(t_env *env)
 //+ parse screen param from file (screen obj) (by vtlostiu)
 //+ negative objects
 
-//==- JSON (by ykopiika)
+//==- JSON aka parson (by ykopiika)
 //==- sliced obj
 //==- more figures//- torus//- add figure paraboloid et hyperboloid.
 //==- interface (by dromanic)
