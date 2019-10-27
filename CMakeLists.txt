@@ -12,8 +12,12 @@ set(INC_PATH			includes)
 set(LFT_PATH			${LIB_PATH}/libft)
 set(LFT_NAME			ft)
 set(LFT_INC_PATH		${LFT_PATH}/)
-set(LFT_LIB				${LFT_PATH}
-						)
+set(LFT_LIB				${LFT_PATH})
+#-----------------------------------json---------------------------------
+set(JSN_NAME			jsn)
+set(JSN_PATH			libparson)
+set(JSN_LIB				${JSN_PATH})
+include_directories(	${JSN_PATH}/)#-----------------inc jsn(libparson)
 include_directories(	${INC_PATH}
 						${LFT_INC_PATH}
 						${SDL2_INCLUDE_DIR}
@@ -29,6 +33,8 @@ link_directories(		${LFT_PATH}
 						)
 aux_source_directory(	${LFT_LIB} LFT_SRC)
 aux_source_directory(	${SRC_PATH} SOURCE_FILES)
+aux_source_directory(	${JSN_LIB} JSN_SRC)          		#json(libparson) src
+add_library(			${JSN_NAME} STATIC ${JSN_SRC})      #l_jsn
 add_library(			${LFT_NAME} STATIC ${LFT_SRC})
 find_package(SDL2		REQUIRED)
 find_package(SDL2_ttf	REQUIRED)
@@ -41,4 +47,5 @@ target_link_libraries(	${CMAKE_PROJECT_NAME}
 						${SDL2_TTF_LIBRARIES}
 						${SDL2_IMAGE_LIBRARIES}
 						${SDL2_MIXER_LIBRARIES}
+						${JSN_NAME}							#l_jsn
 						)

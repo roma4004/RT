@@ -101,6 +101,7 @@ int				main(int argc, char **argv)
 	if (argc == 2)
 	{
 		if ((env = init_env())
+//		&& parse_scene(env, argv[1])
 		&& parse_scene(env, argv[1])
 		&& init_sdl2(env))
 		{

@@ -28,6 +28,7 @@
 # include <errno.h>
 # include <math.h>
 # include <time.h>
+# include "parson.h"
 
 # pragma GCC diagnostic ignored "-Wstrict-prototypes"
 # pragma GCC diagnostic ignored "-Wpadded"
