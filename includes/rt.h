@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/26 20:38:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 14:44:46 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,8 +385,8 @@ void				set_backup_val(t_uni *obj);
 /*
 **					parsing_utils_setters.c
 */
+void				calc_top_cap(t_uni *cap, t_uni *his_parent);
 void				add_caps(t_uni *uni_arr, size_t *id_uni, size_t type);
-
 /*
 **					parsing_validate_scene.c
 */

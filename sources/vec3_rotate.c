@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/23 14:59:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/19 14:37:05 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 14:44:46 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,9 @@ void	rotate_objects(t_env *env, t_dvec3 rot)
 	i = UINT64_MAX;
 	while (++i < env->uni_arr_len)
 		if (env->uni_arr[i].is_selected)
+		{
 			rotate_vec(&env->uni_arr[i].dir, &rot);
+			if (env->uni_arr[i].get_intersect == get_intersect_cylinder)
+				calc_top_cap(&env->uni_arr[i + 2], &env->uni_arr[i]);
+		}
 }
