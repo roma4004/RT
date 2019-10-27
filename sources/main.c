@@ -102,7 +102,7 @@ int				main(int argc, char **argv)
 	{
 		if ((env = init_env())
 //		&& parse_scene(env, argv[1])
-		&& parse_scene(env, argv[1])
+		&& json_parson(env, argv[1], &env->flags.err_id)
 		&& init_sdl2(env))
 		{
 			//todo: simplify main thread below to 3 func

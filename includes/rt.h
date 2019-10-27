@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/26 20:38:51 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 21:41:13 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,18 @@
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
 # define REFLECTIVE_MAX_DEPT 5
+
+//---------------------------------TODO:json defines--------------------
+# define FGRS_CENTER		"centre"
+# define FGRS_COLOR			"color"
+# define FGRS_SPCUL			"specular"
+# define FGRS_DIR			"orient"
+# define FGRS_RADIUS		"radius"
+# define FGRS_ANGLE			"angle"
+# define FGRS_HEIGHT		"height"
+# define FGRS_RFLCTV		"reflective_coef"
+# define FGRS_RFRCTV		"refractive_coef"
+//---------------------------------json defines--------------------
 
 # include <fcntl.h>
 # include <stdbool.h>
@@ -140,7 +152,7 @@ typedef struct		s_universal_object
 						const struct s_universal_object *obj,
 						double dist);
 	double			reflective_coef;
-	double			refractive_coef;
+	double			refractive_coef;//todo
 	_Bool			is_selected;
 	t_dvec3			pos_backup;
 	double			radius_backup;
@@ -510,5 +522,27 @@ void				double_mul_vec3(t_dvec3 *destination,
 void				double_div_vec3(t_dvec3 *destination,
 						double first,
 						const t_dvec3 *restrict second);
+
+
+/*
+**					json_parson.c
+*/
+_Bool				json_parson(t_env *env, char *file_name,
+								 Uint32 *err_id);
+
+
+/*
+**					json_get_value.c
+*/
+_Bool				get_double_val(double *dst, char *key_word,
+							JSON_Object *obj);
+_Bool				get_vector_val(t_dvec3 *dst, char *key_word,
+							JSON_Object *obj);
+_Bool				parse_obj(JSON_Object *jsn_obj, t_uni *obj,
+							size_t type);
+
+
+
+
 
 #endif

@@ -6,76 +6,85 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 16:49:28 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/27 14:18:47 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/27 21:41:13 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-//_Bool	pr_object(JSON_Object *obj, t_fgrs *fgrs)
-//{
-//	char	*obj_type;
-//
-//	obj_type = (char*)json_object_get_string(obj, "type");
-//	if (obj_type == NULL)
-//		print_error(ERR_ARGV, -1);
-//	else if (ft_strcmp(obj_type, "sphere") == 0)
-//		get_sphere_val(fgrs, obj);
-//	else if (ft_strcmp(obj_type, "plane") == 0)
-//		get_plane_val(fgrs, obj);
-//	if (ft_strcmp(obj_type, "cylinder") == 0)
-//		get_cylinder_val(fgrs, obj);
-//	else if (ft_strcmp(obj_type, "cone") == 0)
-//		get_cone_val(fgrs, obj);
-//	else
-//		return (0);
-//	return (1);
-//}
-//
-//_Bool	parse_array_of_scene_objects(JSON_Array *j_arr, t_data *d)
-//{
-//	JSON_Object	*j_ob;
-//	t_fgrs	*fgrs;
-//	int i;
-//	int len;
-//
-//	i = 0;
-//	len = json_array_get_count(j_arr);
-//	fgrs = (t_fgrs *)malloc(sizeof(t_fgrs));
-//	d->figures = fgrs;
-//	while (i < len)
-//	{
-//		if (i > 0)
-//		{
-//			fgrs->next = (t_fgrs *)malloc(sizeof(t_fgrs));
-//			ft_bzero(fgrs->next, sizeof(t_fgrs));
-//			fgrs = fgrs->next;
-//		}
-//		j_ob = json_array_get_object(j_arr, i++);
-//
-//		pr_object(j_ob, fgrs);
-////		if (!)
-////		{
-////			ft_putstr("Error while parsing objects");
-////			exit(ERR_ARGV);
-////		}
-//	}
-//	fgrs->next = NULL;
-//	return (1);
-//}
-//
-//void	rt_parse_objs_n_light(t_data *d, JSON_Object *json_objs)
-//{
-//	JSON_Array	*json_arr;
-//
-//	if ((json_arr = json_object_get_array(json_objs, "objects")) == NULL)
-//	{
-//		ft_putstr("Error while getting array of scene objects");
-//		exit(ERR_ARGV);
-//	}
-//
-//	parse_array_of_scene_objects(json_arr, d);
-//
+static _Bool	get_type_obj(JSON_Object *obj, size_t *type)
+{
+	char	*obj_type;
+
+	obj_type = (char*)json_object_get_string(obj, "type");
+	if (obj_type == NULL)
+		return (false);
+	else if (ft_strcmp(obj_type, "sphere") == 0)
+		*type = SPHERE;
+	else if (ft_strcmp(obj_type, "plane") == 0)
+		*type = PLANE;
+	if (ft_strcmp(obj_type, "cylinder") == 0)
+		*type = CYLINDER;
+	else if (ft_strcmp(obj_type, "cone") == 0)
+		*type = CONE;
+	else
+		return (false);
+	return (true);
+}
+
+static _Bool	parse_uni_or_neg(JSON_Array *arr, t_uni **obj_arr,
+								 size_t *arr_len)
+{
+	JSON_Object	*object;
+	size_t i;
+	size_t type;
+
+	type = 424242;
+	i = 0;
+	*arr_len = json_array_get_count(arr);
+	*obj_arr = (t_uni *)malloc(sizeof(t_uni) * *arr_len);
+	if (*obj_arr == NULL)
+		return (false);
+	while (i < *arr_len)
+	{
+		ft_bzero((*obj_arr) + i, sizeof(t_uni));
+		object = json_array_get_object(arr, i);
+		if (get_type_obj(object, &type) == false)
+			return (false);
+		if (parse_obj(object, (*obj_arr) + i, type) == false)
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+_Bool json_parson(t_env *env, char *file_name, Uint32 *err_id)
+{
+	JSON_Value	*value;
+	JSON_Object	*object;
+	JSON_Array	*array;
+
+	value = json_parse_file(file_name);
+	if (value == NULL && (*err_id = ERR_READ))
+		return (false);
+	object = json_value_get_object(value);
+	if (object == NULL && (*err_id = ERR_SCENE))
+		return (false);
+
+	if ((array = json_object_get_array(object, "objects")) == NULL
+		&& (*err_id = ERR_SCENE))
+		return (false);
+	if ((parse_uni_or_neg(array, &env->uni_arr, &env->uni_arr_len) == false)
+		&& (*err_id = ERR_SCENE))
+		return (false);
+
+	if ((array = json_object_get_array(object, "negative_objects")) == NULL
+		&& (*err_id = ERR_SCENE))
+		return (false);
+	if ((parse_uni_or_neg(array, &env->neg_arr, &env->neg_arr_len) == false)
+		&& (*err_id = ERR_SCENE))
+		return (false);
+//	--------------------------------------------------------------
 //	if ((json_arr = json_object_get_array(json_objs, "lights")) == NULL)
 //	{
 //		ft_putstr("Error while getting array of lights");
@@ -86,38 +95,15 @@
 //		ft_putstr("Error while parsing lights");
 //		exit(ERR_ARGV);
 //	}
-//}
-//
-//void json_parson(t_data *d, char *file_name)
-//{
-//	JSON_Value *value;
-//	JSON_Object *object;
-//
-//	value = json_parse_file(file_name);
-//	if (value == NULL)
-//	{
-//		ft_putstr("Error: File is invalid\n");
-//		exit(ERR_ARGV);
-//	}
-//	object = json_value_get_object(value);
-//	if (object == NULL)
-//	{
-//		ft_putstr("Error: Objects in file is invalid\n");
-//		exit(ERR_ARGV);
-//	}
-//
-//
-//	rt_parse_objs_n_light(d, object);
-////	--------------------------------------------------------------
-//	if (!(pr_camera(object, &(rt->camera))))
-//	{
-//		ft_putstr("Error: CAMERA in file is invalid\n");
-//		exit(ERR_ARGV);
-//	}
-//
-//
-//	json_object_clear(object);
-//	json_value_free(value);
-//
-//}
+	if (!(pr_camera(object, &(rt->camera))))
+	{
+		ft_putstr("Error: CAMERA in file is invalid\n");
+		exit(ERR_ARGV);
+	}
+
+
+	json_object_clear(object);
+	json_value_free(value);
+
+}
 
