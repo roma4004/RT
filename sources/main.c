@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/26 21:48:52 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 19:20:44 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,17 +76,17 @@ void			quit_program(t_env *env)
 //+ limited obj (by vtlostiu)
 //+ parse screen param from file (screen obj) (by vtlostiu)
 //+ negative objects
+//+ colored light
 
 //==- JSON (by ykopiika)
-//==- sliced obj
-//==- more figures//- torus//- add figure paraboloid et hyperboloid.
 //==- interface (by dromanic)
+//==- more figures//- torus//- add figure paraboloid et hyperboloid.
 //- texture (checkmate_board)
 
+//==- sliced obj
 
 //optional:
 //- composed elements (grouped obj)
-//- colored light
 //- blinded by light spot facing us.
 //- selection frame like https://www.shadertoy.com/view/4llXD7
 

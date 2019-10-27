@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/22 17:21:57 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:33:43 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ t_env			*init_env(void)
 		env->buff_width = 640;
 		env->buff_height = 480;
 		env->threads = 4;
+		env->bg_color = (t_dvec3){0,0,0,0};
 		errno = 0;
 	}
 	else

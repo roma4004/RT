@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 17:12:34 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 21:50:08 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,32 @@ static void		point_or_directional(t_dvec3 *light_vector, double *t_max,
 	}
 }
 
-static void		set_diffuse_val(double *defuse_intens, const t_lght_comp *l,
+static void		set_diffuse_val(t_dvec3 *defuse_intens, const t_lght_comp *l,
 					const t_dvec3 *normal)
 {
 	double			normal_dot_light_dir;
 	double			light_dir_length;
 	double			normal_length;
-	double			new_defuse_val;
+	t_dvec3			new_defuse_val;
+	t_dvec3			tmp;
 
 	vec3_dot_vec3(&normal_dot_light_dir, normal, &l->dir);
 	if (normal_dot_light_dir > 0.0)
 	{
 		vec3_length(&normal_length, normal);
 		vec3_length(&light_dir_length, &l->dir);
-		new_defuse_val = l->cur->intensity * normal_dot_light_dir
-					/ (normal_length * light_dir_length);
-		if (new_defuse_val > 0.0)
-			*defuse_intens += new_defuse_val;
+
+		vec3_mul_double(&tmp, &l->cur->color, normal_dot_light_dir);
+		vec3_div_double(&new_defuse_val, &tmp,
+			normal_length * light_dir_length);
+		if (new_defuse_val.x > 0.0
+		|| new_defuse_val.y > 0.0
+		|| new_defuse_val.z > 0.0)
+			vec3_add_vec3(defuse_intens, defuse_intens, &new_defuse_val);
 	}
 }
 
-static void		set_specular_val(double *specul_intens, t_lght_comp *l,
+static void		set_specular_val(t_dvec3 *specul_intens, t_lght_comp *l,
 					const t_dvec3 *normal, double specular)
 {
 	t_dvec3		vec_reflect;
@@ -65,8 +70,11 @@ static void		set_specular_val(double *specul_intens, t_lght_comp *l,
 		vec3_length(&tmp, &vec_reflect);
 		vec3_length(&view_len, &l->view);
 		if (specular > 0.0)
-			*specul_intens += l->cur->intensity * pow(reflect_dot_view
-				/ (tmp * view_len), specular);
+		{
+			vec3_mul_double(&tmp_vec, &l->cur->color,
+				pow(reflect_dot_view / (tmp * view_len), specular));
+			vec3_add_vec3(specul_intens, specul_intens, &tmp_vec);
+		}
 	}
 }
 
@@ -81,10 +89,10 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 	i = UINT64_MAX;
 	while (++i < env->light_arr_len && (l->cur = &env->light_arr[i]))
 	{
-		if (l->cur->intensity <= 0.0)
+		if (l->cur->color.x <= 0.0 && l->cur->color.y <= 0.0 && l->cur->color.z <= 0.0)
 			continue;
 		else if (l->cur->type == AMBIENT)
-			l->defuse_intens += l->cur->intensity;
+			vec3_add_vec3_col(&l->defuse_intens, &l->defuse_intens, &l->cur->color);
 		else
 		{
 			point_or_directional(&l->dir, &t_max, l->cur, &ray->touch_point);
@@ -96,7 +104,7 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 		}
 	}
 	//	double_mul_vec3(&orig_col, 1.0 - l->defuse_val , &l->cur->color);
-	double_mul_vec3(&defuse_col, l->defuse_intens, &l->obj_color);
+	vec3_mul_vec3(&defuse_col, &l->defuse_intens, &l->obj_color);
 	//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
 	//	//todo: color light
 	//	double		orig_col_percent;
@@ -107,7 +115,7 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 	//	double_mul_vec3(&orig_col, orig_col_percent, &obj->color);
 
 
-	double_mul_vec3(&specul_col, l->specul_intens, &l->cur->color);
+	vec3_mul_vec3(&specul_col, &l->specul_intens, &l->obj_color);
 	//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
 
 

@@ -6,11 +6,16 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 15:30:31 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 14:44:46 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:52:43 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+void			calc_bot_cap(t_uni *cap, t_uni *his_parent)
+{
+	cap->pos = his_parent->pos;
+}
 
 void			calc_top_cap(t_uni *cap, t_uni *his_parent)
 {

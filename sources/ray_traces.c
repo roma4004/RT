@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/26 22:13:37 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:47:58 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,79 +19,18 @@ _Bool			is_in_range(double val, double min, double max)
 	return (false);
 }
 
-_Bool			is_in_negative_list(t_uni *obj, t_uni *neg_arr,
-					size_t neg_arr_len)
+_Bool			inside_negative_obj(t_list *lst_neg, double val_t)
 {
-	size_t			i;
+	t_touch			*negative_touch;
 
-	i = UINT64_MAX;
-	while (++i < neg_arr_len)
-		if (&neg_arr[i] == obj)
+	while (lst_neg)
+	{
+		negative_touch = (t_touch *)lst_neg->content;
+		if (is_in_range(val_t, negative_touch->near, negative_touch->far))
 			return (true);
+		lst_neg = lst_neg->next;
+	}
 	return (false);
-}
-
-void			negative_intersect(t_list *lst, t_dvec3 *touch,
-					double *dist, t_uni **obj)
-{
-	t_touch			*touch_neg;
-
-	while (lst)
-	{
-		touch_neg = (t_touch *)lst->content;
-		if ((is_in_range(touch->x, touch_neg->t2, touch_neg->t1))
-		&& (is_in_range(touch->y, touch_neg->t2, touch_neg->t1))
-//		&&	is_in_range(*dist, touch_neg->t2, touch_neg->t1)
-		)
-
-		{
-			*dist = (double)MAXFLOAT;
-			*obj = NULL;
-		}
-		else if (is_in_range(touch->y, touch_neg->t2, touch_neg->t1)
-			)
-		{
-			*dist = touch_neg->t1;
-			touch_neg->obj->color = (*obj)->color;
-			*obj = touch_neg->obj;
-		}
-//		else if (is_in_range(touch->x, touch_neg->t2, touch_neg->t1)
-//			&& touch_neg->t2 < *dist)
-//		{
-//			*dist = touch_neg->t2;
-//			touch_neg->obj->color = (*obj)->color;
-//			*obj = touch_neg->obj;
-//		}
-		lst = lst->next;
-	}
-}
-
-void			shadow_negative_intersect(t_list *lst, t_dvec3 *touch,
-					t_uni **obj)
-{
-	t_touch			*touch_neg;
-
-	while (lst)
-	{
-		touch_neg = (t_touch *)lst->content;
-		if ((is_in_range(touch->x, touch_neg->t2, touch_neg->t1))
-		&& (is_in_range(touch->y, touch_neg->t2, touch_neg->t1)))
-		{
-			*obj = NULL;
-		}
-//		else if (is_in_range(touch->x, touch_neg->t2, touch_neg->t1))
-//		{
-//			*closest_t = touch_neg->t2;
-//			touch_neg->obj->color = (*obj)->color;
-//			*obj = touch_neg->obj;
-//		}
-		else if (is_in_range(touch->y, touch_neg->t2, touch_neg->t1))
-		{
-			touch_neg->obj->color = (*obj)->color;
-			*obj = touch_neg->obj;
-		}
-		lst = lst->next;
-	}
 }
 
 static void		get_negative_touch(t_list **lst, const t_env *env, t_ray *ray)
@@ -125,18 +64,18 @@ t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
 	while (++i < env->uni_arr_len)
 	{
 		env->uni_arr[i].get_intersect(&touch, &env->uni_arr[i], ray);
-		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max)
+		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max
+		&& !inside_negative_obj(lst_neg, touch.x))
 		{
 			*dist = touch.x;
 			obj_pos = &env->uni_arr[i];
 		}
-		if (touch.y < *dist && ray->t_min < touch.y && touch.y < ray->t_max)
+		if (touch.y < *dist && ray->t_min < touch.y && touch.y < ray->t_max
+		&& !inside_negative_obj(lst_neg, touch.y))
 		{
 			*dist = touch.y;
 			obj_pos = &env->uni_arr[i];
 		}
-		if (obj_pos)
-			negative_intersect(lst_neg, &touch, dist, &obj_pos);
 	}
 	return (obj_pos);
 }

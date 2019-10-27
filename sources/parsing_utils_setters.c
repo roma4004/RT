@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:49:38 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/24 16:20:11 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 22:01:26 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,25 @@ static void		set_light(t_lght *light_arr, const double *v,
 					size_t *id_lgh, size_t type)
 {
 	light_arr[*id_lgh] =
-		(t_lght){(t_dvec3){
-			.x = v[0],
-			.y = v[1],
-			.z = v[2]},
-			(fabs(v[3]) > 1) ? 1 : fabs(v[3]),
+		(t_lght){
+			(t_dvec3){
+				.x = v[0],
+				.y = v[1],
+				.z = v[2], 0.0},
+			v[3],
 			type,
-			vec3_clamp_col_cpy((t_dvec3){v[7], v[8], v[9], 0.0})};
+			(t_dvec3){
+				.x = v[4],
+				.y = v[5],
+				.z = v[6], 0.0}
+	};
+	ft_clamp_in_range(&light_arr[*id_lgh].intensity,
+		light_arr[*id_lgh].intensity, 0.0, 1.0);
+	ft_clamp_in_range_vec(&light_arr[*id_lgh].color, 0.0, 255.0);
+	vec3_div_double(&light_arr[*id_lgh].color,
+		&light_arr[*id_lgh].color, 255.0);
+	vec3_mul_double(&light_arr[*id_lgh].color,
+		&light_arr[*id_lgh].color, light_arr[*id_lgh].intensity);
 	(*id_lgh)++;
 }
 

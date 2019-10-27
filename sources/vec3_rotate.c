@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/23 14:59:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 14:44:46 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:56:09 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,18 @@ void	rotate_z(t_dvec3 *destination,
 		.z = pt->z};
 }
 
-void	rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle)
+_Bool	rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle)
 {
-	if (rotate_angle->x != 0.0)
+	size_t		status;
+
+	status = 0;
+	if (rotate_angle->x != 0.0 && ++status)
 		rotate_x(vec, vec, rotate_angle->x * M_PI / 180.0);
-	if (rotate_angle->y != 0.0)
+	if (rotate_angle->y != 0.0 && ++status)
 		rotate_y(vec, vec, rotate_angle->y * M_PI / 180.0);
-	if (rotate_angle->z != 0.0)
-		rotate_z(vec, vec, rotate_angle->z * M_PI / 180.);
+	if (rotate_angle->z != 0.0 && ++status)
+		rotate_z(vec, vec, rotate_angle->z * M_PI / 180.0);
+	return (status);
 }
 
 void	rotate_objects(t_env *env, t_dvec3 rot)
@@ -58,10 +62,15 @@ void	rotate_objects(t_env *env, t_dvec3 rot)
 
 	i = UINT64_MAX;
 	while (++i < env->uni_arr_len)
+	{
 		if (env->uni_arr[i].is_selected)
 		{
-			rotate_vec(&env->uni_arr[i].dir, &rot);
-			if (env->uni_arr[i].get_intersect == get_intersect_cylinder)
+			if (rotate_vec(&env->uni_arr[i].dir, &rot)
+			&& env->uni_arr[i].get_intersect == get_intersect_cylinder)
+			{
 				calc_top_cap(&env->uni_arr[i + 2], &env->uni_arr[i]);
+				calc_bot_cap(&env->uni_arr[i + 1], &env->uni_arr[i]);
+			}
 		}
+	}
 }

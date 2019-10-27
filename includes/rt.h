@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 14:44:46 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/27 17:56:09 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,14 +73,15 @@ typedef struct		s_light {
 	double			intensity;
 	size_t			type;
 	t_dvec3			color;
+//	t_dvec3			color;
 }					t_lght;
 
 typedef struct		s_light_calculating
 {
 	t_lght			*cur;
 	t_dvec3			dir;
-	double			defuse_intens;
-	double			specul_intens;
+	t_dvec3			defuse_intens;
+	t_dvec3			specul_intens;
 	double			obj_specular;
 	t_dvec3			obj_color;
 	t_dvec3			view;
@@ -153,8 +154,8 @@ typedef struct		s_universal_object
 typedef struct		s_touch
 {
 	t_uni		*obj;
-	double		t1;
-	double		t2;
+	double		far;
+	double		near;
 }					t_touch;
 
 typedef struct		s_vector3_comput_tmp
@@ -385,6 +386,7 @@ void				set_backup_val(t_uni *obj);
 /*
 **					parsing_utils_setters.c
 */
+void				calc_bot_cap(t_uni *cap, t_uni *his_parent);
 void				calc_top_cap(t_uni *cap, t_uni *his_parent);
 void				add_caps(t_uni *uni_arr, size_t *id_uni, size_t type);
 /*
@@ -456,7 +458,7 @@ void				rotate_y(t_dvec3 *destination, const t_dvec3 *restrict pt,
 						double angle);
 void				rotate_z(t_dvec3 *destination, const t_dvec3 *restrict pt,
 						double angle);
-void				rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle);
+_Bool				rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle);
 void				rotate_objects(t_env *env, t_dvec3 rot);
 
 /*
