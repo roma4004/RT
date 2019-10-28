@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 21:41:13 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/28 20:35:00 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,16 @@
 # define REFLECTIVE_MAX_DEPT 5
 
 //---------------------------------TODO:json defines--------------------
-# define FGRS_CENTER		"centre"
-# define FGRS_COLOR			"color"
-# define FGRS_SPCUL			"specular"
-# define FGRS_DIR			"orient"
-# define FGRS_RADIUS		"radius"
-# define FGRS_ANGLE			"angle"
-# define FGRS_HEIGHT		"height"
-# define FGRS_RFLCTV		"reflective_coef"
-# define FGRS_RFRCTV		"refractive_coef"
+//# define FGRS_ANGLE		"angle"
+# define POSITION		"position"
+# define COLOR			"color"
+# define SPCULAR		"specular"
+# define DIRECTION		"direction"
+# define RADIUS			"radius"
+# define HEIGHT			"height"
+# define RFLCTV			"reflective"
+# define RFRCTV			"refractive"
+# define INTENSITY		"intensity"
 //---------------------------------json defines--------------------
 
 # include <fcntl.h>
@@ -534,12 +535,24 @@ _Bool				json_parson(t_env *env, char *file_name,
 /*
 **					json_get_value.c
 */
+_Bool				get_type_obj(JSON_Object *obj, size_t *type);
+_Bool				get_type_light(JSON_Object *obj, size_t *type);
 _Bool				get_double_val(double *dst, char *key_word,
+							JSON_Object *obj);
+_Bool				get_uint_val(Uint32 *dst, char *key_word,
 							JSON_Object *obj);
 _Bool				get_vector_val(t_dvec3 *dst, char *key_word,
 							JSON_Object *obj);
+
+
+/*
+**					json_get_obj.c
+*/
 _Bool				parse_obj(JSON_Object *jsn_obj, t_uni *obj,
+							size_t type, size_t *i);
+_Bool				parse_light(JSON_Object *jsn_obj, t_lght *lght,
 							size_t type);
+_Bool				parse_params(t_env *env, JSON_Array	*arr);
 
 
 

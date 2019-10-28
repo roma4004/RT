@@ -6,11 +6,60 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 19:00:46 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/27 21:41:13 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/28 17:02:16 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+_Bool	get_type_obj(JSON_Object *obj, size_t *type)
+{
+	char	*obj_type;
+
+	obj_type = (char*)json_object_get_string(obj, "type");
+	if (obj_type == NULL)
+		return (false);
+	else if (ft_strcmp(obj_type, "sphere") == 0)
+		*type = SPHERE;
+	else if (ft_strcmp(obj_type, "plane") == 0)
+		*type = PLANE;
+	if (ft_strcmp(obj_type, "cylinder") == 0)
+		*type = CYLINDER;
+	else if (ft_strcmp(obj_type, "cone") == 0)
+		*type = CONE;
+	else
+		return (false);
+	return (true);
+}
+
+_Bool	get_type_light(JSON_Object *obj, size_t *type)
+{
+	char	*obj_type;
+
+	obj_type = (char*)json_object_get_string(obj, "type");
+	if (obj_type == NULL)
+		return (false);
+	else if (ft_strcmp(obj_type, "ambient") == 0)
+		*type = AMBIENT;
+	else if (ft_strcmp(obj_type, "point") == 0)
+		*type = POINT;
+	if (ft_strcmp(obj_type, "directional") == 0)
+		*type = DIRECTIONAL;
+	else
+		return (false);
+	return (true);
+}
+
+_Bool	get_uint_val(Uint32 *dst, char *key_word, JSON_Object *obj)
+{
+	double res;
+
+	if (json_object_has_value_of_type(obj, key_word, JSONNumber) == 0)
+		return (0);
+	res = json_object_get_number(obj, key_word);
+	*dst = (Uint32)res;
+	return (1);
+}
 
 _Bool	get_double_val(double *dst, char *key_word, JSON_Object *obj)
 {
@@ -42,24 +91,4 @@ _Bool	get_vector_val(t_dvec3 *dst, char *key_word, JSON_Object *obj)
 	}
 	*dst = (t_dvec3){res[0],res[1],res[2],0};
 	return (1);
-}
-
-_Bool	parse_obj(JSON_Object *jsn_obj, t_uni *obj, size_t type)
-{
-	if (!get_vector_val(&obj->pos, FGRS_CENTER, jsn_obj)
-		|| !get_double_val(&obj->radius, FGRS_RADIUS, jsn_obj)
-		|| !get_vector_val(&obj->dir, FGRS_DIR, jsn_obj)
-		|| !get_double_val(&obj->height, FGRS_HEIGHT, jsn_obj)
-		|| !get_vector_val(&obj->color, FGRS_COLOR, jsn_obj)
-		|| !get_double_val(&obj->specular, FGRS_SPCUL, jsn_obj)
-		|| !get_double_val(&obj->reflective_coef, FGRS_RFLCTV, jsn_obj)
-		|| !get_double_val(&obj->refractive_coef, FGRS_RFRCTV, jsn_obj))
-		return (false);
-	//TODO: clamp_parametrs
-	obj->pos_backup = obj->pos;
-	obj->dir_backup = obj->dir;
-	obj->radius_backup = obj->radius;
-	obj->get_intersect = g_intersect_catalog(type);
-	obj->get_normal = g_normal_catalog(type);
-	//TODO: clculate cone_angle_cache
 }
