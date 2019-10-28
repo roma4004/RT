@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 19:20:44 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 19:43:54 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,22 @@ void			quit_program(t_env *env)
 	env->renderer = NULL;
 	if (env->window)
 		SDL_DestroyWindow(env->window);
+	if (env->font)
+		TTF_CloseFont(env->font);
 	env->window = NULL;
 	show_errors(env);
 	SDL_Quit();
+}
+
+void			screen_update(t_env *env)
+{
+	if (!env)
+		return ;
+	SDL_UpdateTexture(env->screen, NULL, env->buff, env->buff_width << 2u);
+	SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
+	if (!env->flags.is_camera_mod)
+		show_inteface(env);
+	SDL_RenderPresent(env->renderer);
 }
 
 ///checklist:
@@ -77,9 +90,9 @@ void			quit_program(t_env *env)
 //+ parse screen param from file (screen obj) (by vtlostiu)
 //+ negative objects
 //+ colored light
+//+ interface (by dromanic)
 
 //==- JSON (by ykopiika)
-//==- interface (by dromanic)
 //==- more figures//- torus//- add figure paraboloid et hyperboloid.
 //- texture (checkmate_board)
 
@@ -118,5 +131,6 @@ int				main(int argc, char **argv)
 	}
 	else
 		ft_putendl("Usage : ./RTv1 scene_file");
+	system("leaks RT");
 	return (0);
 }

@@ -38,11 +38,11 @@ static void		set_light(t_lght *light_arr, const double *v,
 	};
 	ft_clamp_in_range(&light_arr[*id_lgh].intensity,
 		light_arr[*id_lgh].intensity, 0.0, 1.0);
-	ft_clamp_in_range_vec(&light_arr[*id_lgh].color, 0.0, 255.0);
-	vec3_div_double(&light_arr[*id_lgh].color,
-		&light_arr[*id_lgh].color, 255.0);
-	vec3_mul_double(&light_arr[*id_lgh].color,
-		&light_arr[*id_lgh].color, light_arr[*id_lgh].intensity);
+	ft_clamp_in_range_vec(&light_arr[*id_lgh].col, 0.0, 255.0);
+	vec3_div_double(&light_arr[*id_lgh].col,
+		&light_arr[*id_lgh].col, 255.0);
+	vec3_mul_double(&light_arr[*id_lgh].col,
+		&light_arr[*id_lgh].col, light_arr[*id_lgh].intensity);
 	(*id_lgh)++;
 }
 

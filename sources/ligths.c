@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 21:50:08 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 20:50:05 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,7 @@ static void		set_diffuse_val(t_dvec3 *defuse_intens, const t_lght_comp *l,
 	{
 		vec3_length(&normal_length, normal);
 		vec3_length(&light_dir_length, &l->dir);
-
-		vec3_mul_double(&tmp, &l->cur->color, normal_dot_light_dir);
+		vec3_mul_double(&tmp, &l->cur->col, normal_dot_light_dir);
 		vec3_div_double(&new_defuse_val, &tmp,
 			normal_length * light_dir_length);
 		if (new_defuse_val.x > 0.0
@@ -71,7 +70,7 @@ static void		set_specular_val(t_dvec3 *specul_intens, t_lght_comp *l,
 		vec3_length(&view_len, &l->view);
 		if (specular > 0.0)
 		{
-			vec3_mul_double(&tmp_vec, &l->cur->color,
+			vec3_mul_double(&tmp_vec, &l->cur->col,
 				pow(reflect_dot_view / (tmp * view_len), specular));
 			vec3_add_vec3(specul_intens, specul_intens, &tmp_vec);
 		}
@@ -89,10 +88,10 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 	i = UINT64_MAX;
 	while (++i < env->light_arr_len && (l->cur = &env->light_arr[i]))
 	{
-		if (l->cur->color.x <= 0.0 && l->cur->color.y <= 0.0 && l->cur->color.z <= 0.0)
+		if (l->cur->col.x <= 0.0 && l->cur->col.y <= 0.0 && l->cur->col.z <= 0.0)
 			continue;
 		else if (l->cur->type == AMBIENT)
-			vec3_add_vec3_col(&l->defuse_intens, &l->defuse_intens, &l->cur->color);
+			vec3_add_vec3_col(&l->defuse_intens, &l->defuse_intens, &l->cur->col);
 		else
 		{
 			point_or_directional(&l->dir, &t_max, l->cur, &ray->touch_point);
@@ -103,24 +102,7 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 				l->obj_specular);
 		}
 	}
-	//	double_mul_vec3(&orig_col, 1.0 - l->defuse_val , &l->cur->color);
 	vec3_mul_vec3(&defuse_col, &l->defuse_intens, &l->obj_color);
-	//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
-	//	//todo: color light
-	//	double		orig_col_percent;
-	//	double		val = 1.0 - l->defuse_val;
-	////
-	//	ft_clamp_in_range(&orig_col_percent, &val, 0.0, 1.0);
-	//	orig_col_percent = val;
-	//	double_mul_vec3(&orig_col, orig_col_percent, &obj->color);
-
-
 	vec3_mul_vec3(&specul_col, &l->specul_intens, &l->obj_color);
-	//	vec3_add_vec3_col(&defuse_col, &defuse_col, &orig_col);
-
-
-
-//	double_mul_vec3(&defuse_col, l->defuse_intens, &l->obj_color);
-//	double_mul_vec3(&specul_col, l->specul_intens, &l->cur->color);
 	vec3_add_vec3_col(col, &defuse_col, &specul_col);
 }//сумму коеф зеркальности и прозрачности не должна быть меньше чем 0.98

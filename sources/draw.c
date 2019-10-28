@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   draw.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/22 17:53:09 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/28 14:35:10 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,7 @@ void			draw_scene(t_env *env, size_t threads)
 	id = UINT64_MAX;
 	while (++id < threads)
 		pthread_join(threads_arr[id], NULL);
-	SDL_UpdateTexture(env->screen, NULL, env->buff, env->buff_width << 2u);
-	SDL_RenderCopy(env->renderer, env->screen, NULL, NULL);
-	SDL_RenderPresent(env->renderer);
+	screen_update(env);
 	free(data);
 	free(threads_arr);
 }

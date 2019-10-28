@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+         #
+#    By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/09 11:13:10 by akolinko          #+#    #+#              #
-#    Updated: 2019/10/22 17:26:24 by vtlostiu         ###   ########.fr        #
+#    Updated: 2019/10/28 18:55:38 by dromanic         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,8 +23,10 @@ SRC_N		=	color.c \
 				double_with_vect3.c \
 				draw.c \
 				effects.c \
+				frenel.c \
 				get_next_line.c \
 				init.c \
+				interface.c \
 				key_down_cam_move.c \
 				key_down_cam_rotate.c \
 				key_mouse.c \
@@ -60,12 +62,13 @@ OBJ = $(addprefix ./$(OBJ_PATH)/, $(SRC_N:.c=.o))
 LIBS = ${LIBFT_PATH}/libft.a
 
 INC		=	-I $(INC_PATH)/												\
-			-I $(LIBS_PATH)/Frameworks/SDL2.framework/Versions/A/Headers/\
+			-I $(LIBS_PATH)/frameworks/SDL2.framework/Versions/A/Headers/\
+			-I $(LIBS_PATH)/frameworks/SDL2_ttf.framework/Headers\
 			-I $(LIBFT_PATH)/
 
-LIBKEY	=	-F $(LIBS_PATH)/											\
-			-rpath $(LIBS_PATH)/										\
-			-framework SDL2
+LIBKEY	=	-F $(LIBS_PATH)/frameworks/											\
+			-rpath $(LIBS_PATH)/frameworks/										\
+			-framework SDL2 -framework SDL2_ttf
 
 all: objdir $(NAME)
 	@make -C $(LIBFT_PATH)/

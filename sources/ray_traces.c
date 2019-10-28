@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 17:47:58 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 14:19:22 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,10 +77,11 @@ t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
 			obj_pos = &env->uni_arr[i];
 		}
 	}
+	ft_destroy_lst(lst_neg);
 	return (obj_pos);
 }
 
-const t_uni		*is_shadow_ray(const t_env *env, t_ray *ray,
+const t_uni		*is_shadow_ray(const t_env *env, const t_ray *ray,
 					const t_dvec3 *shadow_dir, double t_max)
 {//todo: add refractive ray
 	t_uni			*obj;

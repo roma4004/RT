@@ -6,13 +6,14 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 15:22:29 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/23 14:37:10 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 19:43:37 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static void		key_apply(t_env *env, t_flags *restrict f, double move_speed, double rotate_speed)
+static void		key_apply(t_env *env, t_flags *restrict f,
+					double move_speed, double rotate_speed)
 {
 	t_dvec3		rot;
 	size_t		obj_cnt;
@@ -35,9 +36,12 @@ static void		key_apply(t_env *env, t_flags *restrict f, double move_speed, doubl
 
 static _Bool	is_key_recognized(t_flags *f, SDL_Keycode k)
 {
-	if ((k == SDLK_CAPSLOCK && ft_switch(&f->is_in_select_mod))
+	if ((k == SDLK_CAPSLOCK && ft_switch(&f->is_select_mod))
 	|| (k == SDLK_1 && ft_switch(&f->is_sepia))
 	|| (k == SDLK_2 && ft_switch(&f->is_grayscale))
+	|| (k == SDLK_3 && ft_switch(&f->is_camera_mod))
+	|| (k == SDLK_i && ft_switch(&f->is_info))
+	|| (k == SDLK_m && ft_switch(&f->is_menu))
 	|| (k == SDLK_4 && (f->is_screenshot = true))
 	|| (k == SDLK_r && (f->is_reset = true)))
 		return (true);

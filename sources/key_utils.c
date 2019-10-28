@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 19:00:15 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/24 16:13:57 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 19:43:37 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ _Bool		select_mod(t_env *env, const SDL_Event *event, const t_cam *cam)
 {
 	t_ray		ray;
 
-	if (env->flags.is_in_select_mod
+	if (env->flags.is_select_mod
 	&& event->button.button == SDL_BUTTON_LEFT)
 	{
 		ray = (t_ray){
@@ -57,7 +57,6 @@ _Bool		select_mod(t_env *env, const SDL_Event *event, const t_cam *cam)
 				(env->selected_obj->is_selected) ? false : true;
 			select_caps_cylinder_cone(env);
 		}
-//		env->neg_arr = env->selected_obj;
 		return (true);
 	}
 	return (false);

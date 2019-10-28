@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 17:56:09 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 20:44:50 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 # pragma GCC diagnostic ignored "-Wreserved-id-macro"
 
 # include "SDL.h"
+# include "SDL_ttf.h"
 
 # pragma GCC diagnostic warning "-Wreserved-id-macro"
 # pragma GCC diagnostic warning "-Wundef"
@@ -53,6 +54,12 @@ typedef struct		s_vector3_int
 	int				z;
 	int				padding;
 }					t_ivec3;
+
+typedef struct		s_vector_int
+{
+	int				x;
+	int				y;
+}					t_ivec;
 
 typedef struct		s_vector3_double
 {
@@ -72,8 +79,8 @@ typedef struct		s_light {
 	t_dvec3			pos;
 	double			intensity;
 	size_t			type;
-	t_dvec3			color;
-//	t_dvec3			color;
+	t_dvec3			col;
+//	t_dvec3			col;
 }					t_lght;
 
 typedef struct		s_light_calculating
@@ -173,12 +180,14 @@ typedef struct		s_flags
 	t_ivec3			move;
 	Uint32			err_id;
 	_Bool			is_rtv1_over;
-	_Bool			is_in_select_mod;
+	_Bool			is_select_mod;
+	_Bool			is_camera_mod;
 	_Bool			is_reset;
 	_Bool			is_sepia;
 	_Bool			is_grayscale;
 	_Bool			is_screenshot;
-	char			padding[2];
+	_Bool			is_menu;
+	_Bool			is_info;
 }					t_flags;
 
 typedef struct		s_environment
@@ -191,6 +200,7 @@ typedef struct		s_environment
 	t_uni			*selected_obj;
 	t_lght			*light_arr;
 	Uint32			*buff;
+	TTF_Font		*font;
 	Uint32			buff_width;
 	Uint32			buff_height;
 	t_dvec3			bg_color;
@@ -254,8 +264,19 @@ void				save_screenshot(t_env *env);
 /*
 **					init.c
 */
-t_env				*init_env(void);
 t_env				*init_sdl2(t_env *env);
+t_env				*init_env(void);
+
+/*
+**					interface.c
+*/
+char				*draw_text(t_env *env, t_ivec pos, char *text);
+void				show_inteface(t_env *env);
+
+/*
+**					interface_utils.c
+*/
+void				show_info(t_env *env, t_ivec *pos, t_ivec offset);
 
 /*
 **					key_down_cam_move.c
@@ -326,8 +347,8 @@ void				get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 **					main.c
 */
 double				double_clamp(double x);
+void				screen_update(t_env *env);
 void				quit_program(t_env *env);
-
 /*
 **					obj_intersection_base.c
 */
@@ -400,7 +421,7 @@ size_t				count_number(t_env *env, char *str, size_t len);
 **					ray_traces.c
 */
 t_uni				*intersect_obj(double *dist, const t_env *env, t_ray *ray);
-const t_uni			*is_shadow_ray(const t_env *env, t_ray *ray,
+const t_uni			*is_shadow_ray(const t_env *env, const t_ray *ray,
 						const t_dvec3 *shadow_dir, double t_max);
 void				send_selected_ray(t_uni **obj, const t_env *env,
 						const t_ray *ray, double dist);
@@ -425,7 +446,7 @@ _Bool				select_mod(t_env *env, const SDL_Event *event,
 						const t_cam *cam);
 
 /*
-**					color.c
+**					col.c
 */
 t_dvec3				vec3_clamp_col_cpy(t_dvec3 first);
 void				double_mul_vec3_col(t_dvec3 *destination, double first,

@@ -34,7 +34,7 @@ t_dvec3			compute_refract_dir(double eta, double cosi,
 
 	k = 1.0 - eta * eta * (1.0 - cosi * cosi);
 	if (k < 0.0)
-		return ((t_dvec3){0});
+		return ((t_dvec3){0.0, 0.0, 0.0, 0.0});
 	else
 	{
 		double_mul_vec3(&tmp, eta, dir);

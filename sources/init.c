@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 17:33:43 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/28 20:47:18 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ t_env			*init_sdl2(t_env *env)
 	if (!(env->buff =
 		(Uint32 *)malloc(sizeof(Uint32) * env->buff_height * env->buff_width))
 	|| SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)
+	|| TTF_Init()
 	|| !(env->window = SDL_CreateWindow(WIN_NAME,
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 			env->buff_width, env->buff_height, SDL_WINDOW_SHOWN))
@@ -37,7 +38,8 @@ t_env			*init_sdl2(t_env *env)
 			SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC))
 	|| !(env->screen = SDL_CreateTexture(env->renderer,
 			SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
-			env->buff_width, env->buff_height)))
+			env->buff_width, env->buff_height))
+	|| !(env->font = TTF_OpenFont("fonts/Roboto/Roboto-Black.ttf", 28)))
 	{
 		quit_program(env);
 		return (NULL);
@@ -56,7 +58,7 @@ t_env			*init_env(void)
 		env->buff_width = 640;
 		env->buff_height = 480;
 		env->threads = 4;
-		env->bg_color = (t_dvec3){0,0,0,0};
+		env->bg_color = (t_dvec3){0, 0, 0, 0};
 		errno = 0;
 	}
 	else
