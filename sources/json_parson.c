@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 16:49:28 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/29 19:12:12 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:27:46 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,6 @@ static _Bool	parse_all_objects(t_env *env, JSON_Object *object)
 
 _Bool			json_parson(t_env *env, char *file_name, Uint32 *err_id)
 {
-//	JSON_Value	*value;
-//	JSON_Object	*object;
-
 	env->value = NULL;
 	env->value = json_parse_file(file_name);
 	if (env->value == NULL && (*err_id = ERR_READ))
