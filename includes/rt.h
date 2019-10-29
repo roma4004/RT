@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 20:44:50 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 16:14:14 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include <errno.h>
 # include <math.h>
 # include <time.h>
+# include "parson.h"
 
 # pragma GCC diagnostic ignored "-Wstrict-prototypes"
 # pragma GCC diagnostic ignored "-Wpadded"
@@ -46,6 +47,29 @@
 
 # include "libft.h"
 # include "get_next_line.h"
+
+//---------------------------------TODO:json defines--------------------
+//# define FGRS_ANGLE		"angle"
+# define POSITION		"position"
+# define COLOR			"color"
+# define SPCULAR		"specular"
+# define DIRECTION		"direction"
+# define RADIUS			"radius"
+# define HEIGHT			"height"
+# define RFLCTV			"reflective"
+# define RFRCTV			"refractive"
+# define INTENSITY		"intensity"
+
+typedef struct		s_calculate_array
+{
+	JSON_Object		*object;
+	size_t			i;
+	size_t			i_js;
+	size_t			js_len;
+	size_t			type;
+}					t_calc_arr;
+
+//---------------------------------json defines--------------------
 
 typedef struct		s_vector3_int
 {
@@ -147,7 +171,7 @@ typedef struct		s_universal_object
 						const struct s_universal_object *obj,
 						double dist);
 	double			reflective_coef;
-	double			refractive_coef;
+	double			refractive_coef;//todo
 	_Bool			is_selected;
 	t_dvec3			pos_backup;
 	double			radius_backup;
@@ -155,8 +179,6 @@ typedef struct		s_universal_object
 	double			cone_angle_cache;
 
 }					t_uni;
-
-
 
 typedef struct		s_touch
 {
@@ -532,5 +554,34 @@ void				double_mul_vec3(t_dvec3 *destination,
 void				double_div_vec3(t_dvec3 *destination,
 						double first,
 						const t_dvec3 *restrict second);
+
+/*
+**					json_parson.c
+*/
+_Bool				json_parson(t_env *env, char *file_name,
+								Uint32 *err_id);
+
+/*
+**					json_get_value.c
+*/
+_Bool				get_type_obj(JSON_Object *obj, size_t *type);
+_Bool				get_type_light(JSON_Object *obj, size_t *type);
+_Bool				get_double_val(double *dst, char *key_word,
+							JSON_Object *obj);
+_Bool				get_uint_val(Uint32 *dst, char *key_word,
+							JSON_Object *obj);
+_Bool				get_vector_val(t_dvec3 *dst, char *key_word,
+							JSON_Object *obj);
+
+/*
+**					json_get_obj.c
+*/
+_Bool				parse_obj(JSON_Object *jsn_obj, t_uni *obj,
+							size_t type, size_t *i);
+_Bool				parse_light(JSON_Object *jsn_obj, t_lght *lght,
+							size_t type);
+_Bool				parse_params(t_env *env, JSON_Array	*arr);
+_Bool				count_n_malloc(t_calc_arr *var, t_uni **obj_arr,
+									size_t *arr_len, JSON_Array *arr);
 
 #endif
