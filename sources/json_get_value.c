@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 19:00:46 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/28 17:02:16 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 14:29:09 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ _Bool	get_type_obj(JSON_Object *obj, size_t *type)
 		*type = SPHERE;
 	else if (ft_strcmp(obj_type, "plane") == 0)
 		*type = PLANE;
-	if (ft_strcmp(obj_type, "cylinder") == 0)
+	else if (ft_strcmp(obj_type, "cylinder") == 0)
 		*type = CYLINDER;
 	else if (ft_strcmp(obj_type, "cone") == 0)
 		*type = CONE;
@@ -43,7 +43,7 @@ _Bool	get_type_light(JSON_Object *obj, size_t *type)
 		*type = AMBIENT;
 	else if (ft_strcmp(obj_type, "point") == 0)
 		*type = POINT;
-	if (ft_strcmp(obj_type, "directional") == 0)
+	else if (ft_strcmp(obj_type, "directional") == 0)
 		*type = DIRECTIONAL;
 	else
 		return (false);
@@ -89,6 +89,6 @@ _Bool	get_vector_val(t_dvec3 *dst, char *key_word, JSON_Object *obj)
 			return (0);
 		res[i] = json_value_get_number(value);
 	}
-	*dst = (t_dvec3){res[0],res[1],res[2],0};
+	*dst = (t_dvec3){res[0], res[1], res[2], 0};
 	return (1);
 }

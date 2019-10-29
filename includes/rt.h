@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 20:35:00 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 16:14:14 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,6 @@
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
 # define REFLECTIVE_MAX_DEPT 5
-
-//---------------------------------TODO:json defines--------------------
-//# define FGRS_ANGLE		"angle"
-# define POSITION		"position"
-# define COLOR			"color"
-# define SPCULAR		"specular"
-# define DIRECTION		"direction"
-# define RADIUS			"radius"
-# define HEIGHT			"height"
-# define RFLCTV			"reflective"
-# define RFRCTV			"refractive"
-# define INTENSITY		"intensity"
-//---------------------------------json defines--------------------
 
 # include <fcntl.h>
 # include <stdbool.h>
@@ -59,6 +46,29 @@
 
 # include "libft.h"
 # include "get_next_line.h"
+
+//---------------------------------TODO:json defines--------------------
+//# define FGRS_ANGLE		"angle"
+# define POSITION		"position"
+# define COLOR			"color"
+# define SPCULAR		"specular"
+# define DIRECTION		"direction"
+# define RADIUS			"radius"
+# define HEIGHT			"height"
+# define RFLCTV			"reflective"
+# define RFRCTV			"refractive"
+# define INTENSITY		"intensity"
+
+typedef struct		s_calculate_array
+{
+	JSON_Object		*object;
+	size_t			i;
+	size_t			i_js;
+	size_t			js_len;
+	size_t			type;
+}					t_calc_arr;
+
+//---------------------------------json defines--------------------
 
 typedef struct		s_vector3_int
 {
@@ -161,8 +171,6 @@ typedef struct		s_universal_object
 	double			cone_angle_cache;
 
 }					t_uni;
-
-
 
 typedef struct		s_touch
 {
@@ -524,13 +532,11 @@ void				double_div_vec3(t_dvec3 *destination,
 						double first,
 						const t_dvec3 *restrict second);
 
-
 /*
 **					json_parson.c
 */
 _Bool				json_parson(t_env *env, char *file_name,
-								 Uint32 *err_id);
-
+								Uint32 *err_id);
 
 /*
 **					json_get_value.c
@@ -544,7 +550,6 @@ _Bool				get_uint_val(Uint32 *dst, char *key_word,
 _Bool				get_vector_val(t_dvec3 *dst, char *key_word,
 							JSON_Object *obj);
 
-
 /*
 **					json_get_obj.c
 */
@@ -553,9 +558,7 @@ _Bool				parse_obj(JSON_Object *jsn_obj, t_uni *obj,
 _Bool				parse_light(JSON_Object *jsn_obj, t_lght *lght,
 							size_t type);
 _Bool				parse_params(t_env *env, JSON_Array	*arr);
-
-
-
-
+_Bool				count_n_malloc(t_calc_arr *var, t_uni **obj_arr,
+									size_t *arr_len, JSON_Array *arr);
 
 #endif

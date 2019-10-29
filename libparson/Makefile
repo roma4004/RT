@@ -3,26 +3,32 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mhonchar <mhonchar@student.42.fr>          +#+  +:+       +#+         #
+#    By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/09/11 18:39:31 by mhonchar          #+#    #+#              #
-#    Updated: 2019/09/11 18:45:57 by mhonchar         ###   ########.fr        #
+#    Created: 2019/09/11 18:39:31 by ykopiika          #+#    #+#              #
+#    Updated: 2019/10/29 16:07:07 by ykopiika         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRC = parson.c
-OBJS = $(SRC:.c=.o)
 NAME = libparson.a
+HEADER = parson.h
+SOURCE = parson.c\
+OBJ = $(SOURCE:.c=.o)
+FLAGS = -Wall -Wextra -Werror
+
 all: $(NAME)
 
-$(NAME):
-	@gcc -Wall -Werror -Wextra  -c $(SRC)
-	@ar rc $(NAME) $(OBJS)
+$(NAME): $(OBJ)
+	@ar rc $(NAME) $(OBJ)
+	@ranlib $(NAME)
+
+%.o: %.c
+	@gcc $(FLAGS) -c $< -o $@ -I $(HEADER)
 
 clean:
-	@/bin/rm -f $(OBJS)
+	@rm -f $(OBJ)
 
 fclean: clean
-	@/bin/rm -f $(NAME)
+	@rm -f $(NAME)
 
-re:	fclean all
+re: fclean all
