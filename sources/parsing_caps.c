@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_caps.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 15:30:31 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 17:52:43 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 17:24:53 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void			add_caps(t_uni *uni_arr, size_t *id_uni, size_t type)
 {
 	t_uni		*src_parent;
 
-	if (type == CYLINDER)
+	if (type == CYLINDER )
 	{
 		src_parent = &uni_arr[*id_uni];
 		(*id_uni)++;

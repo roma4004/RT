@@ -6,7 +6,7 @@
 /*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 17:36:43 by vtlostiu          #+#    #+#             */
-/*   Updated: 2019/10/29 14:08:11 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:44:14 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ void	get_intersect_paraboloid(t_dvec3 *touch, const t_uni *paraboloid,
 	vec3_dot_vec3(&oc_dot_oc, &oc, &oc);
 	tmp = (t_dvec3){
 			.x = tmp.x - pow(tmp.y, 2),
-			.y = 2 * (tmp.z - tmp.y * (oc_dot_dir + 2 * paraboloid->radius)),
+			.y = 2 * (tmp.z - tmp.y *
+					(oc_dot_dir + 2 * (paraboloid->radius / 100))),
 			.z = oc_dot_oc - oc_dot_dir *
-					(oc_dot_dir + 4 * paraboloid->radius)};
+					(oc_dot_dir + 4 * (paraboloid->radius / 100))};
 	discriminant_comput(touch, &tmp);
 	calculate_oc_tc_dir(&computs, paraboloid, ray);
 	crop_cyl_n_cone(touch, computs.dir, oc_dot_dir, paraboloid->height);
