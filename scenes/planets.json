@@ -101,6 +101,7 @@
     "color": [100, 62, 237]
   } ,{
     "type": "ambient",
+    "position": [0, 0, 0],
     "intensity": 0.1,
     "color": [255, 255, 255]
   } ,{

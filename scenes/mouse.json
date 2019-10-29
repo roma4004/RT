@@ -52,6 +52,7 @@
   }],
   "lights": [{
     "type": "ambient",
+    "position": [0, 0, 0],
     "intensity": 0,
     "color": [255, 255, 255]
   } ,{
