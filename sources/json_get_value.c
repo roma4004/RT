@@ -27,6 +27,8 @@ _Bool	get_type_obj(JSON_Object *obj, size_t *type)
 		*type = CYLINDER;
 	else if (ft_strcmp(obj_type, "cone") == 0)
 		*type = CONE;
+	else if (ft_strcmp(obj_type, "paraboloid") == 0)
+		*type = PARABOLOID;
 	else
 		return (false);
 	return (true);
