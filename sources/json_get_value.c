@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/27 19:00:46 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/29 14:29:09 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 20:41:11 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,13 @@ _Bool	get_vector_val(t_dvec3 *dst, char *key_word, JSON_Object *obj)
 	JSON_Value	*value;
 
 	array = json_object_get_array(obj, key_word);
-	if (array == NULL)
+	if (array == NULL || !dst)
 		return (0);
 	if (json_array_get_count(array) != 3)
+	{
+		*dst = (t_dvec3) {0, 0, 0, 0};
 		return (0);
+	}
 	i = -1;
 	while (++i < 3)
 	{

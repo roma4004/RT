@@ -46,6 +46,7 @@
 # define RFLCTV			"reflective"
 # define RFRCTV			"refractive"
 # define INTENSITY		"intensity"
+# define TEXTURE_ID		"texture_id"
 
 typedef struct		s_calculate_array
 {
