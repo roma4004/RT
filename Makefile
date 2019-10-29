@@ -66,7 +66,7 @@ LIBS = ${LIBFT_PATH}/libft.a \
 INC		=	-I $(INC_PATH)/												\
 			-I $(LIBS_PATH)/frameworks/SDL2.framework/Versions/A/Headers/\
 			-I $(LIBS_PATH)/frameworks/SDL2_ttf.framework/Headers\
-			-I $(LIBFT_PATH)/
+			-I $(LIBFT_PATH)/\
 			-I $(LIBJS_PATH)/
 
 LIBKEY	=	-F $(LIBS_PATH)/frameworks/											\
