@@ -44,14 +44,14 @@ _Bool		parse_obj(JSON_Object *jsn_obj, t_uni *obj, size_t type, size_t *i)
 _Bool		parse_light(JSON_Object *jsn_obj, t_lght *lght, size_t type)
 {
 	lght->type = type;
-	if (!get_vector_val(&lght->color, COLOR, jsn_obj)
+	if (!get_vector_val(&lght->col, COLOR, jsn_obj)
 		|| !get_double_val(&lght->intensity, INTENSITY, jsn_obj))
 		return (false);
 	lght->pos = (t_dvec3){0, 0, 0, 0};
 	if ((lght->type == POINT || lght->type == DIRECTIONAL)
 		&& !get_vector_val(&lght->pos, POSITION, jsn_obj))
 		return (false);
-	lght->color = vec3_clamp_col_cpy(lght->color);
+	lght->col = vec3_clamp_col_cpy(lght->col);
 	lght->intensity = (fabs(lght->intensity) > 1) ? 1 : fabs(lght->intensity);
 	return (true);
 }

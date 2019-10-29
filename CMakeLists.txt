@@ -15,7 +15,7 @@ set(LFT_INC_PATH		${LFT_PATH}/)
 set(LFT_LIB				${LFT_PATH})
 #-----------------------------------json---------------------------------
 set(JSN_NAME			jsn)
-set(JSN_PATH			libparson)
+set(JSN_PATH			${LIB_PATH}/libparson)
 set(JSN_LIB				${JSN_PATH})
 include_directories(	${JSN_PATH}/)#-----------------inc jsn(libparson)
 include_directories(	${INC_PATH}
