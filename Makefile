@@ -64,11 +64,12 @@ LIBS = ${LIBFT_PATH}/libft.a
 INC		=	-I $(INC_PATH)/												\
 			-I $(LIBS_PATH)/frameworks/SDL2.framework/Versions/A/Headers/\
 			-I $(LIBS_PATH)/frameworks/SDL2_ttf.framework/Headers\
+			-I $(LIBS_PATH)/frameworks/SDL2_image.framework/Headers\
 			-I $(LIBFT_PATH)/
 
 LIBKEY	=	-F $(LIBS_PATH)/frameworks/											\
 			-rpath $(LIBS_PATH)/frameworks/										\
-			-framework SDL2 -framework SDL2_ttf
+			-framework SDL2 -framework SDL2_ttf -framework SDL2_image
 
 all: objdir $(NAME)
 	@make -C $(LIBFT_PATH)/

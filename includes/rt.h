@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 20:44:50 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 11:24:49 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,20 +29,9 @@
 # include <math.h>
 # include <time.h>
 
-# pragma GCC diagnostic ignored "-Wstrict-prototypes"
-# pragma GCC diagnostic ignored "-Wpadded"
-# pragma GCC diagnostic ignored "-Wdocumentation"
-# pragma GCC diagnostic ignored "-Wundef"
-# pragma GCC diagnostic ignored "-Wreserved-id-macro"
-
 # include "SDL.h"
 # include "SDL_ttf.h"
-
-# pragma GCC diagnostic warning "-Wreserved-id-macro"
-# pragma GCC diagnostic warning "-Wundef"
-# pragma GCC diagnostic warning "-Wdocumentation"
-# pragma GCC diagnostic warning "-Wpadded"
-# pragma GCC diagnostic warning "-Wstrict-prototypes"
+# include "SDL_image.h"
 
 # include "libft.h"
 # include "get_next_line.h"
@@ -76,23 +65,22 @@ typedef struct		s_vector_double
 }					t_dvec;
 
 typedef struct		s_light {
-	t_dvec3			pos;
-	double			intensity;
-	size_t			type;
-	t_dvec3			col;
-//	t_dvec3			col;
+	t_dvec3		pos;
+	double		intensity;
+	size_t		type;
+	t_dvec3		col;
 }					t_lght;
 
 typedef struct		s_light_calculating
 {
-	t_lght			*cur;
-	t_dvec3			dir;
-	t_dvec3			defuse_intens;
-	t_dvec3			specul_intens;
-	double			obj_specular;
-	t_dvec3			obj_color;
-	t_dvec3			view;
-	double			dist;
+	t_lght		*cur;
+	t_dvec3		dir;
+	t_dvec3		defuse_intens;
+	t_dvec3		specul_intens;
+	double		obj_specular;
+	t_dvec3		obj_color;
+	t_dvec3		view;
+	double		dist;
 }					t_lght_comp;
 
 typedef struct		s_ray
@@ -132,31 +120,29 @@ typedef struct		s_camera
 
 typedef struct		s_universal_object
 {
-	t_dvec3			pos;
-	double			radius;
-	t_dvec3			dir;
-	double			height;
-	t_dvec3			color;
-	double			specular;
-	void			(*get_intersect)
-					(t_dvec3 *touch,
-						const struct s_universal_object *obj,
-						const t_ray *ray);
-	void			(*get_normal)
-					(t_ray *ray,
-						const struct s_universal_object *obj,
-						double dist);
-	double			reflective_coef;
-	double			refractive_coef;
-	_Bool			is_selected;
-	t_dvec3			pos_backup;
-	double			radius_backup;
-	t_dvec3			dir_backup;
-	double			cone_angle_cache;
-
+	t_dvec3		pos;
+	double		radius;
+	t_dvec3		dir;
+	double		height;
+	t_dvec3		color;
+	double		specular;
+	void		(*get_intersect)
+				(t_dvec3 *touch,
+					const struct s_universal_object *obj,
+					const t_ray *ray);
+	void		(*get_normal)
+				(t_ray *ray,
+					const struct s_universal_object *obj,
+					double dist);
+	double		reflective_coef;
+	double		refractive_coef;
+	_Bool		is_selected;
+	t_dvec3		pos_backup;
+	double		radius_backup;
+	t_dvec3		dir_backup;
+	double		cone_angle_cache;
+	size_t		texture_id;
 }					t_uni;
-
-
 
 typedef struct		s_touch
 {
@@ -201,6 +187,8 @@ typedef struct		s_environment
 	t_lght			*light_arr;
 	Uint32			*buff;
 	TTF_Font		*font;
+	SDL_Surface		**tex_arr;
+	size_t			tex_arr_len;
 	Uint32			buff_width;
 	Uint32			buff_height;
 	t_dvec3			bg_color;
@@ -214,8 +202,8 @@ typedef struct		s_environment
 
 typedef struct		s_pthread_data
 {
-	t_env			*env;
-	size_t			id;
+	t_env		*env;
+	size_t		id;
 }					t_pth_dt;
 
 enum				e_errors
@@ -223,6 +211,7 @@ enum				e_errors
 	ERR_SCENE = 404,
 	ERR_READ = 405,
 	ERR_SIZE = 406,
+	INVALID_RESOURCE = 407,
 	ERR_DIRECTORY = 21,
 };
 
@@ -533,4 +522,15 @@ void				double_div_vec3(t_dvec3 *destination,
 						double first,
 						const t_dvec3 *restrict second);
 
+
+
+
+
+
+///dodelat
+//int			set_img_cord_to_sphere(t_v3d p, t_sphere *sp);
+Uint32			set_color_img(SDL_Surface *img, int x, int y);
+void			init_img_tex(t_env *env, SDL_Surface **img_tex);
+void			texturing_or_color(t_lght_comp *l, const t_env *env,
+	const t_ray *ray, t_uni *obj);
 #endif

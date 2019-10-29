@@ -30,6 +30,8 @@ static void		show_errors(t_env *env)
 		ft_putstr_fd("ERR_READ", 2);
 	if (env->flags.err_id == 406)
 		ft_putstr_fd("ERR_SIZE", 2);
+	if (env->flags.err_id == 407)
+		ft_putstr_fd("INVALID_RESOURCE", 2);
 	if (env->flags.err_id && errno)
 		ft_putstr_fd(" - ", 2);
 	if (errno)

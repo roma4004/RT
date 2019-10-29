@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 14:19:22 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 14:07:20 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ void			send_selected_ray(t_uni **obj, const t_env *env,
 	*obj = cur_obj;
 }
 
+
 static void		prepare_light(const t_env *env, t_ray *ray, t_lght_comp *l,
 					t_uni *obj)
 {
@@ -135,7 +136,7 @@ static void		prepare_light(const t_env *env, t_ray *ray, t_lght_comp *l,
 	vec3_mul_double(&epsi_normal, &ray->normal, env->cam.epsilon);
 	vec3_add_vec3(&ray->touch_point, &ray->touch_point, &epsi_normal);
 	l->obj_specular = obj->specular;
-	l->obj_color = obj->color;
+	texturing_or_color(l, env, ray, obj);
 }
 
 void			send_ray(t_dvec3 *cur_color, const t_env *env, t_ray *ray)
