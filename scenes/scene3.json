@@ -14,7 +14,8 @@
         "color": [0, 255, 255],
         "specular": 10,
         "reflective": 0,
-        "refractive": 0
+        "refractive": 0,
+        "texture_id": -1
     } ,{
         "type": "sphere",
         "position": [-12, -5, 3],
@@ -24,7 +25,8 @@
         "color": [0, 255, 255],
         "specular": 10,
         "reflective": 0,
-        "refractive": 0
+        "refractive": 0,
+        "texture_id": -1
     }],
     "negative_objects": [{
         "type": "sphere",

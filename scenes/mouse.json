@@ -14,7 +14,8 @@
     "color": [45, 46, 51],
     "specular": 1,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [-1.5,  1.5,  0],
@@ -25,6 +26,7 @@
     "specular": 1,
     "reflective": 0,
     "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [1.5,  1.5,  0],
@@ -35,6 +37,7 @@
     "specular": 1,
     "reflective": 0,
     "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "plane",
     "position": [0, 0, 3],
@@ -44,9 +47,9 @@
     "color": [59, 61, 69],
     "specular": 1,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   }],
-
   "lights": [{
     "type": "ambient",
     "intensity": 0,
@@ -73,51 +76,3 @@
     "color": [255, 255, 255]
   }]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#============== SYMBOL '#' ALLOWS TO MAKE COMMENTS ===========================================================
-#              position    | radius   |  direction  | height |    color   | specular | reflective | refractive
-#--------------------------------------------------------------------------------------------------------------
-
-
-
-#              position    |  NULL    |    NULL     |  NULL  |  NULL        | NULL     | NULL       | NULL
-#-------------------------------------------------------------------------------------------------------------
-screen       800  800   0  |   0      |   0  0  0   |  0     |   0   0   0  | 0        | 0          | 0
-
-
-
-
-
-#             position   |  intensity  |    color    |  NULL  |  NULL  | NULL  | NULL     | NULL
-#-------------------------------------------------------------------------------------------------------------
-
-POINT       -5.95  0  -4 |     0.5     | 255 255 255 |   0    |  0 0 0 | 0     |  0       | 0
-POINT        5.95  0  -4 |     0.5     | 255 255 355 |   0    |  0 0 0 | 0     |  0       | 0
-
-#DIRECTIONAL  -3.95  1  -5  |   0.2    |   0   0 255  |   0    |  0 0 0 | 0     |  0       | 0
-#DIRECTIONAL   3.95  1  -5  |   0.2    | 255   0   0  |   0    |  0 0 0 | 0     |  0       | 0
-#DIRECTIONAL   0     0  -20 |   0.5    | 255 255 255  |   0    |  0 0 0 | 0     |  0       | 0
-#==============================================================================================================
