@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 16:14:14 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:27:46 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 14
 # define OBJ_TYPE_MAX 8
-# define DEBUG 0
+# define DEBUG 1
 # define MAX_MAP_SIDE 10000
 # define REFLECTIVE_MAX_DEPT 5
 
@@ -202,6 +202,8 @@ typedef struct		s_flags
 
 typedef struct		s_environment
 {
+	JSON_Value		*value;
+	JSON_Object		*object;
 	SDL_Window		*window;
 	SDL_Renderer	*renderer;
 	SDL_Texture		*screen;

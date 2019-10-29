@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 16:49:28 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/29 16:21:19 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:12:12 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,18 +96,23 @@ static _Bool	parse_all_objects(t_env *env, JSON_Object *object)
 
 _Bool			json_parson(t_env *env, char *file_name, Uint32 *err_id)
 {
-	JSON_Value	*value;
-	JSON_Object	*object;
+//	JSON_Value	*value;
+//	JSON_Object	*object;
 
-	value = json_parse_file(file_name);
-	if (value == NULL && (*err_id = ERR_READ))
+	env->value = NULL;
+	env->value = json_parse_file(file_name);
+	if (env->value == NULL && (*err_id = ERR_READ))
+	{
+		json_value_free(env->value);
 		return (false);
-	object = json_value_get_object(value);
-	if (object == NULL && (*err_id = ERR_SCENE))
+	}
+	env->object = json_value_get_object(env->value);
+	if (env->object == NULL && (*err_id = ERR_SCENE)
+	&& (json_clear(&env->value, &env->object)))
 		return (false);
-	if ((parse_all_objects(env, object)) == false
+	if ((parse_all_objects(env, env->object)) == false
 		&& (*err_id = ERR_SCENE)
-		&& (json_clear(&value, &object)))
+		&& (json_clear(&env->value, &env->object)))
 		return (false);
 	return (true);
 }

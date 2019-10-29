@@ -133,6 +133,6 @@ int				main(int argc, char **argv)
 	}
 	else
 		ft_putendl("Usage : ./RTv1 scene_file");
-	system("leaks RT");
+	system("leaks -q RT");
 	return (0);
 }
