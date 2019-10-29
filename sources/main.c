@@ -132,7 +132,7 @@ int				main(int argc, char **argv)
 			quit_program(env);
 	}
 	else
-		ft_putendl("Usage : ./RTv1 scene_file");
+		ft_putendl("Usage : ./RT scene_file");
 	system("leaks -q RT");
 	return (0);
 }
