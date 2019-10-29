@@ -6,7 +6,7 @@
 /*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/22 16:49:28 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/29 16:12:11 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 16:21:19 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,16 @@ static _Bool	parse_ligt_arr(JSON_Array *arr, t_lght **lght_arr,
 static _Bool	parse_all_objects(t_env *env, JSON_Object *object)
 {
 	JSON_Array	*array;
+	_Bool		flag;
 
+	flag = true;
 	if ((array = json_object_get_array(object, "objects")) == NULL)
 		return (false);
 	if ((parse_uni_or_neg(array, &env->uni_arr, &env->uni_arr_len) == false))
 		return (false);
 	if ((array = json_object_get_array(object, "negative_objects")) == NULL)
-		return (false);
-	if ((parse_uni_or_neg(array, &env->neg_arr, &env->neg_arr_len) == false))
+		flag = false;
+	if (flag && !(parse_uni_or_neg(array, &env->neg_arr, &env->neg_arr_len)))
 		return (false);
 	if ((array = json_object_get_array(object, "lights")) == NULL)
 		return (false);
