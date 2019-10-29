@@ -14,7 +14,8 @@
     "color": [3, 252, 240],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [ -7.5, -7,  -8],
@@ -24,7 +25,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [ -7.5,  7,  -8],
@@ -34,7 +36,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [ 7.5, -7, -8],
@@ -44,7 +47,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [ 7.5,  7,  -8],
@@ -54,7 +58,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [ 7.5, 7, 8],
@@ -64,7 +69,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "sphere",
     "position": [ -7.5,  -7,  8],
@@ -74,7 +80,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1,
   } ,{
     "type": "sphere",
     "position": [ 7.5,  -7,  8],
@@ -84,7 +91,8 @@
     "color": [63,  93,  99],
     "specular": 10,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "plane",
     "position": [ 0,  7,   10],
@@ -94,7 +102,8 @@
     "color": [ 46,  60, 130],
     "specular": 50,
     "reflective": 0.1,
-    "refractive": 5.0
+    "refractive": 5.0,
+    "texture_id": -1
   } ,{
     "type": "plane",
     "position": [ 0,  -7,   10],
@@ -104,7 +113,8 @@
     "color": [ 168, 176, 179],
     "specular": 50,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "plane",
     "position": [ 0,  0,   20],
@@ -114,7 +124,8 @@
     "color": [ 46, 60, 130],
     "specular": 0,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "cylinder",
     "position": [-7.5, -7, -8],
@@ -124,7 +135,8 @@
     "color": [63,  93,  99],
     "specular": 20,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "cylinder",
     "position": [7.5, -7, -8],
@@ -134,7 +146,8 @@
     "color": [63,  93,  99],
     "specular": 20,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "cylinder",
     "position": [-7.5, -7, 8],
@@ -144,7 +157,8 @@
     "color": [63,  93,  99],
     "specular": 20,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   } ,{
     "type": "cylinder",
     "position": [7.5, -7, 8],
@@ -154,7 +168,8 @@
     "color": [63,  93,  99],
     "specular": 20,
     "reflective": 0,
-    "refractive": 0
+    "refractive": 0,
+    "texture_id": -1
   }],
   "lights": [{
     "type": "directional",
