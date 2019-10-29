@@ -28,6 +28,10 @@ SRC_N		=	color.c \
 				get_next_line.c \
 				init.c \
 				interface.c \
+				interface_info.c \
+				json_get_obj.c \
+				json_get_value.c \
+				json_parson.c \
 				key_down_cam_move.c \
 				key_down_cam_rotate.c \
 				key_mouse.c \
@@ -51,10 +55,12 @@ SRC_N		=	color.c \
 				parsing_validate_scene.c \
 				ray_reflect_n_refract.c \
 				ray_traces.c \
+				texture.c \
 				vec3_rotate.c \
 				vec3_utils.c \
 				vec3_with_double.c \
 				vec3_with_vec3.c
+
 
 SRC = $(addprefix ${SRC_PATH}/, $(SRC_N))
 

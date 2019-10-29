@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 16:32:21 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:17:33 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,14 @@ void			quit_program(t_env *env)
 	if (env->font)
 		TTF_CloseFont(env->font);
 	env->window = NULL;
+	if (env->buff)
+		free(env->buff);
+	if (env->tex_arr)
+		free(env->tex_arr);
+	if (env->uni_arr)
+		free(env->uni_arr);
+	if (env->neg_arr)
+		free(env->neg_arr);
 	show_errors(env);
 	SDL_Quit();
 }
@@ -93,11 +101,11 @@ void			screen_update(t_env *env)
 //+ negative objects
 //+ colored light
 //+ interface (by dromanic)
+//+ texture (checkmate_board)
 
 //==- JSON aka parson (by ykopiika)
 //==- sliced obj
 //==- more figures//- torus//- add figure paraboloid et hyperboloid.
-//- texture (checkmate_board)
 
 //optional:
 //- composed elements (grouped obj)
@@ -119,10 +127,6 @@ int				main(int argc, char **argv)
 		&& json_parson(env, argv[1], &env->flags.err_id)
 		&& init_sdl2(env))
 		{
-			//todo: simplify main thread below to 3 func
-			///events()
-			///updade()
-			///render()
 			draw_scene(env, env->threads);
 			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))

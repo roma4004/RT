@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 10:04:51 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 14:12:19 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:42:14 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,69 +41,30 @@ void		init_img_tex(t_env *env, SDL_Surface **img_tex)
 	img_tex[0] = load_surface(env, "resources/textures/1.jpg");
 	img_tex[1] = load_surface(env, "resources/textures/2.jpg");
 	img_tex[2] = load_surface(env, "resources/textures/3.png");
+	img_tex[3] = load_surface(env, "resources/textures/4.jpg");
 }
-
-Uint32		set_color_img(SDL_Surface *img, int x, int y)
-{
-	int		byt;
-	uint8_t	*pix;
-
-	(x < 0) ? x = 0 : 0;
-	if (!img)
-		return (0);
-	byt = img->format->BytesPerPixel;
-	pix = (uint8_t *)img->pixels + y * img->pitch + x * byt;
-	if (byt == 1)
-		return (*pix);
-	if (byt == 2)
-		return (*(uint16_t *)pix);
-	if (byt == 3)
-	{
-		if (SDL_BYTEORDER != SDL_BIG_ENDIAN)
-			return (pix[0] << 16 | pix[1] << 8 | pix[2]);
-		else
-			return (pix[0] | pix[1] << 8 | pix[2] << 16);
-	}
-	if (byt == 4)
-		return (*(uint32_t *)pix);
-	return (0);
-}
-
-//p = sphere touch_point,  (t_sphere *sp obj_color, tex_arr[tex_id])
-//int			set_img_cord_to_sphere(t_v3d p, t_sphere *sp)
-//{
-//	Uint32	*pix;
-//	double	u;
-//	double	v;
-//
-//	pix = NULL;
-//	if (sp->img == NULL)
-//		return (sp->color.color);
-//	vec_3normalize(&p);
-//	u = 0.5 + atan2(p.z, p.x) / (2 * PI);
-//	v = 0.5 - asin(p.y) / PI;
-//	pix = (Uint32*)sp->img->pixels;
-//	return (set_color_img(sp->img,
-//		(int)(u * sp->img->w),
-//		(int)(v * sp->img->h)));
-//}
 
 void			texturing_or_color(t_lght_comp *l, const t_env *env,
-	const t_ray *ray, t_uni *obj)
+					const t_ray *ray, t_uni *obj)
 {
-	t_dvec3		sphere_dir;
-	double		u;
-	double		v;
-	Uint32		pixel;
+	SDL_Surface		*tex;
+	uint8_t			*pix;
+	t_dvec			uv;
+	t_ivec			coord;
+	Uint32			pixel;
 
-	if (obj->get_intersect == get_intersect_sphere)
+	if (obj->get_intersect == get_intersect_sphere
+	&& obj->texture_id < env->tex_arr_len && obj->texture_id > -1)
 	{
-		sphere_dir = ray->normal;
-		u = 0.5 + atan2(sphere_dir.z, sphere_dir.x) / (2 * M_PI);
-		v = 0.5 - asin(sphere_dir.y) / M_PI;
-		pixel = (set_color_img(env->tex_arr[obj->texture_id],
-			(int)(u * env->tex_arr[obj->texture_id]->w),
-			(int)(v * env->tex_arr[obj->texture_id]->h)));
+		uv = (t_dvec){
+			.x = 0.5 + atan2(ray->normal.z, ray->normal.x) / (2 * M_PI),
+			.y = 0.5 - asin(ray->normal.y) / M_PI};
+		tex = env->tex_arr[obj->texture_id];
+		coord = (t_ivec){.x = (int)(uv.x * tex->w), .y = (int)(uv.y * tex->h)};
+		pix = (uint8_t *)tex->pixels
+			+ coord.y * tex->pitch
+			+ coord.x * tex->format->BytesPerPixel;
+		pixel = *(uint32_t *)pix;
 		l->obj_color = (t_dvec3){
 			.x = (pixel & 0xff0000u) >> 16u,
 			.y = (pixel & 0x00ff00u) >> 8u,
