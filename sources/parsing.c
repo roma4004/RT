@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 21:15:45 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 21:42:24 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,8 @@ _Bool				parse_scene(t_env *env, char *file_name)
 	}
 	if (status == -1 || !lst || close(fd))
 		env->flags.err_id = ERR_READ;
-	if (!parse_lst(env, lst) || ft_destroy_lst(lst))
-		return (false);
+	if (!parse_lst(env, lst))
+		return (ft_destroy_lst(lst));
+	ft_destroy_lst(lst);
 	return (true);
 }
