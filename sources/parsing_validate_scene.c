@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_validate_scene.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:31:32 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/24 16:24:49 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 16:53:28 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,10 @@ size_t			get_type(const char *str)
 		type = CONE;
 	else if (cmp_begin("cylinder", str) || cmp_begin("CYLINDER", str))
 		type = CYLINDER;
+	else if (cmp_begin("disk", str) || cmp_begin("DISK", str))
+		type = DISK;
+	else if (cmp_begin("paraboloid", str) || cmp_begin("PARABOLOID", str))
+		type = PARABOLOID;
 	else if (cmp_begin("cam", str) || cmp_begin("CAM", str))
 		type = CAM;
 	else if (cmp_begin("ambient", str) || cmp_begin("AMBIENT", str))
@@ -86,8 +90,6 @@ size_t			get_type(const char *str)
 		type = SCRN;
 	else if (cmp_begin("directional", str) || cmp_begin("DIRECTIONAL", str))
 		type = DIRECTIONAL;
-	else if (cmp_begin("disk", str) || cmp_begin("DISK", str))
-		type = DISK;
 	return (type);
 }
 

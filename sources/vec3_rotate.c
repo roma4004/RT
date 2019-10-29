@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   vec3_rotate.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/23 14:59:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/27 17:56:09 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 17:30:17 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,17 +59,23 @@ _Bool	rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle)
 void	rotate_objects(t_env *env, t_dvec3 rot)
 {
 	size_t		i;
+	_Bool		rot_stat;
 
 	i = UINT64_MAX;
 	while (++i < env->uni_arr_len)
 	{
 		if (env->uni_arr[i].is_selected)
 		{
-			if (rotate_vec(&env->uni_arr[i].dir, &rot)
-			&& env->uni_arr[i].get_intersect == get_intersect_cylinder)
+			rot_stat = rotate_vec(&env->uni_arr[i].dir, &rot);
+			if (rot_stat)
 			{
-				calc_top_cap(&env->uni_arr[i + 2], &env->uni_arr[i]);
-				calc_bot_cap(&env->uni_arr[i + 1], &env->uni_arr[i]);
+				if (env->uni_arr[i].get_intersect == get_intersect_cylinder)
+				{
+					calc_top_cap(&env->uni_arr[i + 2], &env->uni_arr[i]);
+					calc_bot_cap(&env->uni_arr[i + 1], &env->uni_arr[i]);
+				}
+				if (env->uni_arr[i].get_intersect == get_intersect_cone)
+					calc_top_cap(&env->uni_arr[i + 1], &env->uni_arr[i]);
 			}
 		}
 	}

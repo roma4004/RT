@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 16:14:14 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 17:05:18 by vtlostiu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 14
-# define OBJ_TYPE_MAX 8
+# define OBJ_TYPE_MAX 9
 # define DEBUG 0
 # define MAX_MAP_SIDE 10000
 # define REFLECTIVE_MAX_DEPT 5
@@ -258,9 +258,10 @@ enum				e_light_type
 	CYLINDER = 5,
 	CONE = 6,
 	DISK = 7,
-	SPHERENEG = 8,
-	SCRN = 9,
-	CAM = 10
+	PARABOLOID = 8,
+	SPHERENEG = 9,
+	SCRN = 10,
+	CAM = 11
 };
 
 enum				e_orient
@@ -384,6 +385,8 @@ void				get_intersect_cone(t_dvec3 *touch, const t_uni *cone,
 						const t_ray *ray);
 void				get_intersect_disk(t_dvec3 *touch, const t_uni *disk,
 						const t_ray *ray);
+void				get_intersect_paraboloid(t_dvec3 *touch,
+						const t_uni *paraboloid, const t_ray *ray);
 
 /*
 **					obj_normal_base.c
@@ -395,6 +398,8 @@ void				set_normal_plane(t_ray *ray, const t_uni *plane,
 void				set_normal_cylinder(t_ray *ray, const t_uni *cylinder,
 						double dist);
 void				set_normal_cone(t_ray *ray, const t_uni *cone,
+						double dist);
+void				set_normal_paraboloid(t_ray *ray, const t_uni *paraboloid,
 						double dist);
 
 /*

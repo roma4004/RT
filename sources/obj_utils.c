@@ -41,6 +41,8 @@ void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
 		return (get_intersect_cone);
 	if (type == DISK)
 		return (get_intersect_disk);
+	if (type == PARABOLOID)
+		return (get_intersect_paraboloid);
 	return (NULL);
 }
 
@@ -55,6 +57,8 @@ void	(*g_normal_catalog(size_t type))(t_ray *ray, const t_uni *obj,
 		return (set_normal_cylinder);
 	if (type == CONE)
 		return (set_normal_cone);
+	if (type == PARABOLOID)
+		return (set_normal_paraboloid);
 	return (NULL);
 }
 

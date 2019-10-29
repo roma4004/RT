@@ -113,8 +113,8 @@ int				main(int argc, char **argv)
 	if (argc == 2)
 	{
 		if ((env = init_env())
-//		&& parse_scene(env, argv[1])
-		&& json_parson(env, argv[1], &env->flags.err_id)
+		&& parse_scene(env, argv[1])
+//		&& json_parson(env, argv[1], &env->flags.err_id)
 		&& init_sdl2(env))
 		{
 			//todo: simplify main thread below to 3 func
@@ -130,7 +130,7 @@ int				main(int argc, char **argv)
 			quit_program(env);
 	}
 	else
-		ft_putendl("Usage : ./RTv1 scene_file");
+		ft_putendl("Usage : ./RT scene_file");
 	system("leaks RT");
 	return (0);
 }
