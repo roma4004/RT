@@ -6,7 +6,7 @@
 #    By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/03/09 11:13:10 by akolinko          #+#    #+#              #
-#    Updated: 2019/10/28 18:55:38 by dromanic         ###   ########.fr        #
+#    Updated: 2019/10/29 18:52:32 by dromanic         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,6 @@ SRC_N		=	color.c \
 				double_with_vect3.c \
 				draw.c \
 				effects.c \
-				frenel.c \
 				get_next_line.c \
 				init.c \
 				interface.c \
@@ -45,21 +44,26 @@ SRC_N		=	color.c \
 				ligths.c \
 				main.c \
 				obj_intersection_base.c \
+				obj_intersection_bonus.c \
 				obj_normal_base.c \
+				obj_normal_bonus.c \
+				obj_texture.c \
 				obj_utils.c \
 				parsing.c \
 				parsing_caps.c \
 				parsing_utils.c \
 				parsing_utils_backup.c \
 				parsing_utils_setters.c \
+				parsing_validate_compare.c \
 				parsing_validate_scene.c \
 				ray_reflect_n_refract.c \
 				ray_traces.c \
-				texture.c \
+				ray_traces_negative.c \
 				vec3_rotate.c \
 				vec3_utils.c \
 				vec3_with_double.c \
 				vec3_with_vec3.c
+
 
 
 SRC = $(addprefix ${SRC_PATH}/, $(SRC_N))
