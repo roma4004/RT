@@ -12,7 +12,7 @@
 
 NAME = libparson.a
 HEADER = parson.h
-SOURCE = parson.c\
+SOURCE = parson.c
 OBJ = $(SOURCE:.c=.o)
 FLAGS = -Wall -Wextra -Werror
 

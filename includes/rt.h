@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 16:14:14 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 19:23:54 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,12 +160,12 @@ typedef struct		s_universal_object
 					double dist);
 	double		reflective_coef;
 	double		refractive_coef;//todo
+	size_t		texture_id;
 	_Bool		is_selected;
 	t_dvec3		pos_backup;
 	double		radius_backup;
 	t_dvec3		dir_backup;
 	double		cone_angle_cache;
-	size_t		texture_id;
 }					t_uni;
 
 typedef struct		s_touch
@@ -553,7 +553,7 @@ void				double_div_vec3(t_dvec3 *destination,
 
 ///dodelat
 //int			set_img_cord_to_sphere(t_v3d p, t_sphere *sp);
-Uint32			set_color_img(SDL_Surface *img, int x, int y);
+Uint32			get_img_pixel(SDL_Surface *img, int x, int y);
 void			init_img_tex(t_env *env, SDL_Surface **img_tex);
 void			texturing_or_color(t_lght_comp *l, const t_env *env,
 	const t_ray *ray, t_uni *obj);

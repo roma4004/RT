@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 12:56:10 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 20:24:05 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/29 18:51:45 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	get_intersect_plane(t_dvec3 *touch, const t_uni *plane,
 	{
 		vec3_sub_vec3(&oc, &ray->pos, &plane->pos);
 		vec3_dot_vec3(&oc_dot_dir, &oc, &plane->dir);
-		*touch = (t_dvec3) {-oc_dot_dir / div, 0.0, 0.0, 0.0};
+		*touch = (t_dvec3){-oc_dot_dir / div, 0.0, 0.0, 0.0};
 	}
 	else
 	{
