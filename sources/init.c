@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 10:09:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 18:46:41 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,7 @@ t_env			*init_sdl2(t_env *env)
 	|| !(env->font = TTF_OpenFont("fonts/Roboto/Roboto-Black.ttf", 28))
 	|| !(env->tex_arr =
 		(SDL_Surface **)malloc(sizeof(SDL_Surface *) * env->tex_arr_len)))
-	{
-		quit_program(env);
 		return (NULL);
-	}
 	init_img_tex(env, env->tex_arr);
 	init_cam(env, &env->cam);
 	return (env);
