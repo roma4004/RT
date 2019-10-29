@@ -18,6 +18,7 @@ SRC_PATH	= sources
 INC_PATH	= includes
 LIBS_PATH	= libraries
 LIBFT_PATH	= ${LIBS_PATH}/libft
+LIBJS_PATH	= ${LIBS_PATH}/libparson
 
 SRC_N		=	color.c \
 				double_with_vect3.c \
@@ -59,13 +60,15 @@ SRC = $(addprefix ${SRC_PATH}/, $(SRC_N))
 
 OBJ = $(addprefix ./$(OBJ_PATH)/, $(SRC_N:.c=.o))
 
-LIBS = ${LIBFT_PATH}/libft.a
+LIBS = ${LIBFT_PATH}/libft.a \
+		${LIBJS_PATH}/libparson.a \
 
 INC		=	-I $(INC_PATH)/												\
 			-I $(LIBS_PATH)/frameworks/SDL2.framework/Versions/A/Headers/\
 			-I $(LIBS_PATH)/frameworks/SDL2_ttf.framework/Headers\
 			-I $(LIBS_PATH)/frameworks/SDL2_image.framework/Headers\
-			-I $(LIBFT_PATH)/
+			-I $(LIBFT_PATH)/\
+			-I $(LIBJS_PATH)/
 
 LIBKEY	=	-F $(LIBS_PATH)/frameworks/											\
 			-rpath $(LIBS_PATH)/frameworks/										\
@@ -73,6 +76,7 @@ LIBKEY	=	-F $(LIBS_PATH)/frameworks/											\
 
 all: objdir $(NAME)
 	@make -C $(LIBFT_PATH)/
+	@make -C $(LIBJS_PATH)/
 
 objdir:
 	@mkdir -p $(OBJ_PATH)
@@ -85,6 +89,7 @@ $(NAME): LIBS $(OBJ)
 
 LIBS:
 	@make -C $(LIBFT_PATH)/
+	@make -C $(LIBJS_PATH)/
 
 norm:
 	@norminette ./$(LIBFT_PATH)/*.c
@@ -94,10 +99,12 @@ norm:
 
 clean:
 	@make clean -C $(LIBFT_PATH)/
+	@make clean -C $(LIBJS_PATH)/
 	@/bin/rm -rf $(OBJ_PATH)/
 
 fclean: clean
 	@make fclean -C $(LIBFT_PATH)/
+	@make fclean -C $(LIBJS_PATH)/
 	@/bin/rm -f $(NAME)
 
 re: fclean all

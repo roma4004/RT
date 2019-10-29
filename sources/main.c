@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 19:43:54 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 16:32:21 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,10 @@ void			screen_update(t_env *env)
 //+ colored light
 //+ interface (by dromanic)
 
-//==- JSON (by ykopiika)
+//==- JSON aka parson (by ykopiika)
+//==- sliced obj
 //==- more figures//- torus//- add figure paraboloid et hyperboloid.
 //- texture (checkmate_board)
-
-//==- sliced obj
 
 //optional:
 //- composed elements (grouped obj)
@@ -116,7 +115,8 @@ int				main(int argc, char **argv)
 	if (argc == 2)
 	{
 		if ((env = init_env())
-		&& parse_scene(env, argv[1])
+//		&& parse_scene(env, argv[1])
+		&& json_parson(env, argv[1], &env->flags.err_id)
 		&& init_sdl2(env))
 		{
 			//todo: simplify main thread below to 3 func

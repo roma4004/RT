@@ -1,0 +1,50 @@
+{
+    "parameters": [{
+        "position": [0, 0, -10],
+        "rotate angle": [0, 0, 0],
+        "width": 400,
+        "height": 400
+    }],
+    "objects": [{
+        "type": "sphere",
+        "position": [0, -0, 0],
+        "radius": 3,
+        "direction": [0, 1, 0],
+        "height": 0,
+        "color": [0, 255, 255],
+        "specular": 10,
+        "reflective": 0,
+        "refractive": 0
+    } ,{
+        "type": "sphere",
+        "position": [-12, -5, 3],
+        "radius": 3,
+        "direction": [0, 1, 0],
+        "height": 0,
+        "color": [0, 255, 255],
+        "specular": 10,
+        "reflective": 0,
+        "refractive": 0
+    }],
+    "negative_objects": [{
+        "type": "sphere",
+        "position": [-12, -5, 3],
+        "radius": 3,
+        "direction": [0, 1, 0],
+        "height": 0,
+        "color": [0, 255, 255],
+        "specular": 10,
+        "reflective": 0,
+        "refractive": 0
+    }],
+    "lights": [{
+        "type": "directional",
+        "color": [-0.8, 0.2, -0.5],
+        "position": [-0.8, 0.2, -0.5],
+        "intensity": 0.5
+    }, {
+        "type": "ambient",
+        "color": [-0.8, 0.2, -0.5],
+        "intensity": 0.2
+    }]
+}
