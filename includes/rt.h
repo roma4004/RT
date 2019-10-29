@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 16:14:14 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/29 21:20:23 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # define WIN_NAME "RT"
 # define VIEWPORT_SIZE 1.0
 # define DISTANCE_TO_PLANE 1.0
-# define VALUES_PER_OBJ 14
+# define VALUES_PER_OBJ 15
 # define OBJ_TYPE_MAX 9
 # define DEBUG 1
 # define MAX_MAP_SIDE 10000
@@ -37,8 +37,6 @@
 # include "libft.h"
 # include "get_next_line.h"
 
-//---------------------------------TODO:json defines--------------------
-//# define FGRS_ANGLE		"angle"
 # define POSITION		"position"
 # define COLOR			"color"
 # define SPCULAR		"specular"
@@ -57,8 +55,6 @@ typedef struct		s_calculate_array
 	size_t			js_len;
 	size_t			type;
 }					t_calc_arr;
-
-//---------------------------------json defines--------------------
 
 typedef struct		s_vector3_int
 {
@@ -99,8 +95,8 @@ typedef struct		s_light_calculating
 {
 	t_lght		*cur;
 	t_dvec3		dir;
-	t_dvec3		defuse_intens;
-	t_dvec3		specul_intens;
+	t_dvec3		defuse_intns;
+	t_dvec3		specul_intns;
 	double		obj_specular;
 	t_dvec3		obj_color;
 	t_dvec3		view;
@@ -159,8 +155,8 @@ typedef struct		s_universal_object
 					const struct s_universal_object *obj,
 					double dist);
 	double		reflective_coef;
-	double		refractive_coef;//todo
-	size_t		texture_id;
+	double		refractive_coef;
+	double		texture_id;
 	_Bool		is_selected;
 	t_dvec3		pos_backup;
 	double		radius_backup;
@@ -253,8 +249,13 @@ enum				e_light_type
 	DISK = 7,
 	PARABOLOID = 8,
 	SPHERENEG = 9,
-	SCRN = 10,
-	CAM = 11
+	PLANENEG = 10,
+	CONENEG = 11,
+	CYLINDERNEG = 12,
+	DISKNEG = 13,
+	PARABOLOIDNEG = 14,
+	SCRN = 15,
+	CAM = 16
 };
 
 enum				e_orient
@@ -409,15 +410,23 @@ void				calculate_oc_tc_dir(t_dvec3_comp *computs, const t_uni *obj,
 						const t_ray *ray);
 
 /*
+**					obj_texture.c.c
+*/
+void				init_img_tex(t_env *env, SDL_Surface **img_tex);
+void				texturing_or_color(t_lght_comp *l, const t_env *env,
+						const t_ray *ray, t_uni *obj);
+
+/*
 **					parsing.c
 */
-t_env				*parse_scene(t_env *env, char *file_name);
+_Bool				parse_scene(t_env *env, char *file_name);
 
 /*
 **					parse_utils.c
 */
 _Bool				init_obj_arr(t_env *env, t_list *lst);
 void				set_obj_value(t_env *env, double *v, size_t type);
+_Bool				parse_switch(t_env *env, char *file_name);
 
 /*
 **					parsing_utils_backup.c
@@ -429,13 +438,20 @@ void				set_backup_val(t_uni *obj);
 */
 void				calc_bot_cap(t_uni *cap, t_uni *his_parent);
 void				calc_top_cap(t_uni *cap, t_uni *his_parent);
-void				add_caps(t_uni *uni_arr, size_t *id_uni, size_t type);
+void				add_caps(t_uni *arr, size_t *id_uni, size_t type);
 /*
 **					parsing_validate_scene.c
 */
 _Bool				is_valid_line(t_env *env, char **line, size_t len);
 size_t				get_type(const char *str);
 size_t				count_number(t_env *env, char *str, size_t len);
+
+/*
+**					ray_traces_negative.c
+*/
+_Bool				inside_negative_obj(t_list *lst_neg, double val_t);
+void				get_negative_touch(t_list **lst, const t_env *env,
+						t_ray *ray);
 
 /*
 **					ray_traces.c
@@ -553,22 +569,11 @@ void				double_div_vec3(t_dvec3 *destination,
 						double first,
 						const t_dvec3 *restrict second);
 
-
-
-
-
-
-///dodelat
-//int			set_img_cord_to_sphere(t_v3d p, t_sphere *sp);
-Uint32			get_img_pixel(SDL_Surface *img, int x, int y);
-void			init_img_tex(t_env *env, SDL_Surface **img_tex);
-void			texturing_or_color(t_lght_comp *l, const t_env *env,
-	const t_ray *ray, t_uni *obj);
 /*
 **					json_parson.c
 */
 _Bool				json_parson(t_env *env, char *file_name,
-								Uint32 *err_id);
+						Uint32 *err_id);
 
 /*
 **					json_get_value.c
@@ -576,21 +581,21 @@ _Bool				json_parson(t_env *env, char *file_name,
 _Bool				get_type_obj(JSON_Object *obj, size_t *type);
 _Bool				get_type_light(JSON_Object *obj, size_t *type);
 _Bool				get_double_val(double *dst, char *key_word,
-							JSON_Object *obj);
+						JSON_Object *obj);
 _Bool				get_uint_val(Uint32 *dst, char *key_word,
-							JSON_Object *obj);
+						JSON_Object *obj);
 _Bool				get_vector_val(t_dvec3 *dst, char *key_word,
-							JSON_Object *obj);
+						JSON_Object *obj);
 
 /*
 **					json_get_obj.c
 */
 _Bool				parse_obj(JSON_Object *jsn_obj, t_uni *obj,
-							size_t type, size_t *i);
+						size_t type, size_t *i);
 _Bool				parse_light(JSON_Object *jsn_obj, t_lght *lght,
-							size_t type);
+						size_t type);
 _Bool				parse_params(t_env *env, JSON_Array	*arr);
 _Bool				count_n_malloc(t_calc_arr *var, t_uni **obj_arr,
-									size_t *arr_len, JSON_Array *arr);
+						size_t *arr_len, JSON_Array *arr);
 
 #endif

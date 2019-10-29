@@ -15,15 +15,15 @@
 char			*draw_text(t_env *env, t_ivec pos, char *text)
 {
 	SDL_Color			color;
-	SDL_Surface*		msg;
-	SDL_Texture*		message;
-	SDL_Rect			msgRect;
+	SDL_Surface			*msg;
+	SDL_Texture			*message;
+	SDL_Rect			msg_rect;
 
 	color = (SDL_Color){255, 255, 255, 0};
 	msg = TTF_RenderText_Solid(env->font, text, color);
 	message = SDL_CreateTextureFromSurface(env->renderer, msg);
-	msgRect = (SDL_Rect){pos.x, pos.y, msg->w, msg->h};
-	SDL_RenderCopy(env->renderer, message, NULL, &msgRect);
+	msg_rect = (SDL_Rect){pos.x, pos.y, msg->w, msg->h};
+	SDL_RenderCopy(env->renderer, message, NULL, &msg_rect);
 	SDL_FreeSurface(msg);
 	SDL_DestroyTexture(message);
 	return (text);

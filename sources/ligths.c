@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/07 19:24:07 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 20:50:05 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 20:56:05 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,21 +88,21 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 	i = UINT64_MAX;
 	while (++i < env->light_arr_len && (l->cur = &env->light_arr[i]))
 	{
-		if (l->cur->col.x <= 0.0 && l->cur->col.y <= 0.0 && l->cur->col.z <= 0.0)
+		if (l->cur->col.x <= 0. && l->cur->col.y <= 0. && l->cur->col.z <= 0.)
 			continue;
 		else if (l->cur->type == AMBIENT)
-			vec3_add_vec3_col(&l->defuse_intens, &l->defuse_intens, &l->cur->col);
+			vec3_add_vec3_col(&l->defuse_intns, &l->defuse_intns, &l->cur->col);
 		else
 		{
 			point_or_directional(&l->dir, &t_max, l->cur, &ray->touch_point);
 			if (is_shadow_ray(env, ray, &l->dir, t_max))
 				continue;
-			set_diffuse_val(&l->defuse_intens, l, &ray->normal);
-			set_specular_val(&l->specul_intens, l, &ray->normal,
+			set_diffuse_val(&l->defuse_intns, l, &ray->normal);
+			set_specular_val(&l->specul_intns, l, &ray->normal,
 				l->obj_specular);
 		}
 	}
-	vec3_mul_vec3(&defuse_col, &l->defuse_intens, &l->obj_color);
-	vec3_mul_vec3(&specul_col, &l->specul_intens, &l->obj_color);
+	vec3_mul_vec3(&defuse_col, &l->defuse_intns, &l->obj_color);
+	vec3_mul_vec3(&specul_col, &l->specul_intns, &l->obj_color);
 	vec3_add_vec3_col(col, &defuse_col, &specul_col);
-}//сумму коеф зеркальности и прозрачности не должна быть меньше чем 0.98
+}

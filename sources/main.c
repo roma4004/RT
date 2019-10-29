@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 19:17:33 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 21:12:48 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,35 +87,6 @@ void			screen_update(t_env *env)
 	SDL_RenderPresent(env->renderer);
 }
 
-///checklist:
-//+ no recalculation without need
-//+ 4 basic object (sphere, plane, cylinder, cone)
-//+ camera movement and rotating and placing on the scene on start from scene_file
-//+ Multi thread computing
-//+ Interacting with objects
-//+ selecting object by mouse
-//+ sepia filter
-//+ It's possible inside the RT to save, screenshot the rendered image. ()
-//+ limited obj (by vtlostiu)
-//+ parse screen param from file (screen obj) (by vtlostiu)
-//+ negative objects
-//+ colored light
-//+ interface (by dromanic)
-//+ texture (checkmate_board)
-
-//==- JSON aka parson (by ykopiika)
-//==- sliced obj
-//==- more figures//- torus//- add figure paraboloid et hyperboloid.
-
-//optional:
-//- composed elements (grouped obj)
-//- blinded by light spot facing us.
-//- selection frame like https://www.shadertoy.com/view/4llXD7
-
-
-//BUGLIST:
-//-0.09 val parse bug
-
 int				main(int argc, char **argv)
 {
 	t_env	*env;
@@ -123,8 +94,7 @@ int				main(int argc, char **argv)
 	if (argc == 2)
 	{
 		if ((env = init_env())
-//		&& parse_scene(env, argv[1])
-		&& json_parson(env, argv[1], &env->flags.err_id)
+		&& parse_switch(env, argv[1])
 		&& init_sdl2(env))
 		{
 			draw_scene(env, env->threads);

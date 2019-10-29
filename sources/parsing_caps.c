@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_caps.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/20 15:30:31 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 17:24:53 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/29 20:51:53 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,22 +58,22 @@ static void		add_cap_top(t_uni *dest_child, t_uni *src_parent)
 	set_backup_val(dest_child);
 }
 
-void			add_caps(t_uni *uni_arr, size_t *id_uni, size_t type)
+void			add_caps(t_uni *arr, size_t *id_uni, size_t type)
 {
 	t_uni		*src_parent;
 
-	if (type == CYLINDER )
+	if (type == CYLINDERNEG || type == CYLINDER)
 	{
-		src_parent = &uni_arr[*id_uni];
+		src_parent = &arr[*id_uni];
 		(*id_uni)++;
-		add_cap_bottom(&(uni_arr[*id_uni]), src_parent);
+		add_cap_bottom(&(arr[*id_uni]), src_parent);
 		(*id_uni)++;
-		add_cap_top(&(uni_arr[*id_uni]), src_parent);
+		add_cap_top(&(arr[*id_uni]), src_parent);
 	}
-	if (type == CONE)
+	if (type == CONENEG || type == CONE)
 	{
-		src_parent = &uni_arr[*id_uni];
+		src_parent = &arr[*id_uni];
 		(*id_uni)++;
-		add_cap_top(&(uni_arr[*id_uni]), src_parent);
+		add_cap_top(&(arr[*id_uni]), src_parent);
 	}
 }

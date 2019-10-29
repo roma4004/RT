@@ -3,14 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 14:49:14 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 17:24:09 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/29 20:59:30 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+static void		cnt_neg_obj(t_env *env, size_t type)
+{
+	env->neg_arr_len++;
+	if (type == CYLINDERNEG)
+		env->neg_arr_len += 2u;
+	if (type == CONENEG)
+		env->neg_arr_len++;
+}
+
+static void		cnt_uni_obj(t_env *env, size_t type)
+{
+	env->uni_arr_len++;
+	if (type == CYLINDER)
+		env->uni_arr_len += 2u;
+	if (type == CONE)
+		env->uni_arr_len++;
+}
 
 static void		cnt_obj_type(t_env *env, t_list *lst)
 {
@@ -22,18 +40,12 @@ static void		cnt_obj_type(t_env *env, t_list *lst)
 	{
 		if ((type = get_type(cur->content)) != UINT64_MAX)
 		{
-			if (type == SPHERENEG)
-				env->neg_arr_len++;
-			else if (type < 3u)
+			if (type < 3u)
 				env->light_arr_len++;
+			else if (type >= OBJ_TYPE_MAX && type < SCRN)
+				cnt_neg_obj(env, type);
 			else if (type < OBJ_TYPE_MAX)
-			{
-				env->uni_arr_len++;
-				if (type == CYLINDER)
-					env->uni_arr_len += 2u;
-				if (type == CONE)
-					env->uni_arr_len++;
-			}
+				cnt_uni_obj(env, type);
 		}
 		cur = cur->next;
 	}
@@ -56,4 +68,11 @@ _Bool			init_obj_arr(t_env *env, t_list *lst)
 			ft_memdel((void **)&env->neg_arr);
 	}
 	return (false);
+}
+
+_Bool			parse_switch(t_env *env, char *file_name)
+{
+	if (ft_strnstr(file_name, ".json", ft_strlen(file_name)))
+		return (json_parson(env, file_name, &env->flags.err_id));
+	return (parse_scene(env, file_name));
 }

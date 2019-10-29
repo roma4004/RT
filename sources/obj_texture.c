@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   texture.c                                          :+:      :+:    :+:   */
+/*   obj_texture.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/29 10:04:51 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 19:42:14 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 21:00:20 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static SDL_Surface		*load_surface(t_env *env, char *path_name)
 	return (convert_srf);
 }
 
-void		init_img_tex(t_env *env, SDL_Surface **img_tex)
+void					init_img_tex(t_env *env, SDL_Surface **img_tex)
 {
 	img_tex[0] = load_surface(env, "resources/textures/1.jpg");
 	img_tex[1] = load_surface(env, "resources/textures/2.jpg");
@@ -44,8 +44,8 @@ void		init_img_tex(t_env *env, SDL_Surface **img_tex)
 	img_tex[3] = load_surface(env, "resources/textures/4.jpg");
 }
 
-void			texturing_or_color(t_lght_comp *l, const t_env *env,
-					const t_ray *ray, t_uni *obj)
+void					texturing_or_color(t_lght_comp *l, const t_env *env,
+							const t_ray *ray, t_uni *obj)
 {
 	SDL_Surface		*tex;
 	uint8_t			*pix;
@@ -59,7 +59,7 @@ void			texturing_or_color(t_lght_comp *l, const t_env *env,
 		uv = (t_dvec){
 			.x = 0.5 + atan2(ray->normal.z, ray->normal.x) / (2 * M_PI),
 			.y = 0.5 - asin(ray->normal.y) / M_PI};
-		tex = env->tex_arr[obj->texture_id];
+		tex = env->tex_arr[(size_t)obj->texture_id];
 		coord = (t_ivec){.x = (int)(uv.x * tex->w), .y = (int)(uv.y * tex->h)};
 		pix = (uint8_t *)tex->pixels
 			+ coord.y * tex->pitch

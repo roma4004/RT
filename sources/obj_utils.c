@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/19 13:50:28 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/26 22:16:03 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 20:50:50 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,17 @@ void	discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp)
 void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
 			const t_ray *ray)
 {
-	if (type == SPHERE || type == SPHERENEG)
+	if (type == SPHERENEG || type == SPHERE)
 		return (get_intersect_sphere);
-	if (type == PLANE)
+	if (type == PLANENEG || type == PLANE)
 		return (get_intersect_plane);
-	if (type == CYLINDER)
+	if (type == CYLINDERNEG || type == CYLINDER)
 		return (get_intersect_cylinder);
-	if (type == CONE)
+	if (type == CONENEG || type == CONE)
 		return (get_intersect_cone);
-	if (type == DISK)
+	if (type == DISKNEG || type == DISK)
 		return (get_intersect_disk);
-	if (type == PARABOLOID)
+	if (type == PARABOLOIDNEG || type == PARABOLOID)
 		return (get_intersect_paraboloid);
 	return (NULL);
 }
@@ -49,15 +49,16 @@ void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
 void	(*g_normal_catalog(size_t type))(t_ray *ray, const t_uni *obj,
 			double dist)
 {
-	if (type == SPHERE || type == SPHERENEG)
+	if (type == SPHERENEG || type == SPHERE)
 		return (set_normal_sphere);
-	if (type == PLANE || type == DISK)
+	if (type == PLANENEG || type == PLANE
+	|| type == DISKNEG || type == DISK)
 		return (set_normal_plane);
-	if (type == CYLINDER)
+	if (type == CYLINDERNEG || type == CYLINDER)
 		return (set_normal_cylinder);
-	if (type == CONE)
+	if (type == CONENEG || type == CONE)
 		return (set_normal_cone);
-	if (type == PARABOLOID)
+	if (type == PARABOLOIDNEG || type == PARABOLOID)
 		return (set_normal_paraboloid);
 	return (NULL);
 }

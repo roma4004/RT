@@ -58,7 +58,7 @@ t_env			*init_env(void)
 		env->buff_width = 640;
 		env->buff_height = 480;
 		env->threads = 4;
-		env->tex_arr_len = 3;
+		env->tex_arr_len = 4;
 		env->bg_color = (t_dvec3){0, 0, 0, 0};
 		errno = 0;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vtlostiu <vtlostiu@student.unit.ua>        +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/27 15:30:58 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/20 21:13:14 by vtlostiu         ###   ########.fr       */
+/*   Updated: 2019/10/29 21:15:45 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static bool			parse_lst(t_env *env, t_list *lst)
 	return (true);
 }
 
-t_env				*parse_scene(t_env *env, char *file_name)
+_Bool				parse_scene(t_env *env, char *file_name)
 {
 	const int		fd = open(file_name, O_RDONLY);
 	int				status;
@@ -110,6 +110,6 @@ t_env				*parse_scene(t_env *env, char *file_name)
 	if (status == -1 || !lst || close(fd))
 		env->flags.err_id = ERR_READ;
 	if (!parse_lst(env, lst) || ft_destroy_lst(lst))
-		return (NULL);
-	return (env);
+		return (false);
+	return (true);
 }

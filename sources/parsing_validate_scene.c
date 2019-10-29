@@ -47,52 +47,6 @@ _Bool			is_valid_line(t_env *env, char **line, size_t len)
 	return (true);
 }
 
-static int		cmp_begin(const char *s1, const char *s2)
-{
-	size_t	i;
-
-	i = 0;
-	while (s1[i]
-		&& (s1[i] == s2[i]))
-		i++;
-	if (i == ft_strlen(s1))
-		return (1);
-	return (0);
-}
-
-size_t			get_type(const char *str)
-{
-	size_t		type;
-
-	if (str[0] == '#' || str[0] == ' ' || !(type = UINT64_MAX))
-		return (UINT64_MAX);
-	if (cmp_begin("sphereneg", str) || cmp_begin("SPHERENEG", str))
-		type = SPHERENEG;
-	else if (cmp_begin("sphere", str) || cmp_begin("SPHERE", str))
-		type = SPHERE;
-	else if (cmp_begin("plane", str) || cmp_begin("PLANE", str))
-		type = PLANE;
-	else if (cmp_begin("cone", str) || cmp_begin("CONE", str))
-		type = CONE;
-	else if (cmp_begin("cylinder", str) || cmp_begin("CYLINDER", str))
-		type = CYLINDER;
-	else if (cmp_begin("disk", str) || cmp_begin("DISK", str))
-		type = DISK;
-	else if (cmp_begin("paraboloid", str) || cmp_begin("PARABOLOID", str))
-		type = PARABOLOID;
-	else if (cmp_begin("cam", str) || cmp_begin("CAM", str))
-		type = CAM;
-	else if (cmp_begin("ambient", str) || cmp_begin("AMBIENT", str))
-		type = AMBIENT;
-	else if (cmp_begin("point", str) || cmp_begin("POINT", str))
-		type = POINT;
-	else if (cmp_begin("screen", str) || cmp_begin("SCREEN", str))
-		type = SCRN;
-	else if (cmp_begin("directional", str) || cmp_begin("DIRECTIONAL", str))
-		type = DIRECTIONAL;
-	return (type);
-}
-
 size_t			count_number(t_env *env, char *str, size_t len)
 {
 	size_t		i;

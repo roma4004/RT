@@ -6,50 +6,11 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:56:52 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 14:07:20 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 21:04:39 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-_Bool			is_in_range(double val, double min, double max)
-{
-	if (val > min && val < max)
-		return (true);
-	return (false);
-}
-
-_Bool			inside_negative_obj(t_list *lst_neg, double val_t)
-{
-	t_touch			*negative_touch;
-
-	while (lst_neg)
-	{
-		negative_touch = (t_touch *)lst_neg->content;
-		if (is_in_range(val_t, negative_touch->near, negative_touch->far))
-			return (true);
-		lst_neg = lst_neg->next;
-	}
-	return (false);
-}
-
-static void		get_negative_touch(t_list **lst, const t_env *env, t_ray *ray)
-{
-	t_list		*lst_neg;
-	size_t		i;
-	t_dvec3		touch;
-
-	lst_neg = NULL;
-	i = UINT64_MAX;
-	while (++i < env->neg_arr_len)
-	{
-		env->neg_arr[i].get_intersect(&touch, &env->neg_arr[i], ray);
-		t_touch touch_tmp;
-		touch_tmp = (t_touch){&env->neg_arr[i], touch.x, touch.y};
-		ft_lstappend(&lst_neg, &touch_tmp, sizeof(t_touch));
-	}
-	*lst = lst_neg;
-}
 
 t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
 {
@@ -65,17 +26,13 @@ t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
 	{
 		env->uni_arr[i].get_intersect(&touch, &env->uni_arr[i], ray);
 		if (touch.x < *dist && ray->t_min < touch.x && touch.x < ray->t_max
-		&& !inside_negative_obj(lst_neg, touch.x))
-		{
+		&& !inside_negative_obj(lst_neg, touch.x)
+		&& (obj_pos = &env->uni_arr[i]))
 			*dist = touch.x;
-			obj_pos = &env->uni_arr[i];
-		}
 		if (touch.y < *dist && ray->t_min < touch.y && touch.y < ray->t_max
-		&& !inside_negative_obj(lst_neg, touch.y))
-		{
+		&& !inside_negative_obj(lst_neg, touch.y)
+		&& (obj_pos = &env->uni_arr[i]))
 			*dist = touch.y;
-			obj_pos = &env->uni_arr[i];
-		}
 	}
 	ft_destroy_lst(lst_neg);
 	return (obj_pos);
@@ -83,7 +40,7 @@ t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
 
 const t_uni		*is_shadow_ray(const t_env *env, const t_ray *ray,
 					const t_dvec3 *shadow_dir, double t_max)
-{//todo: add refractive ray
+{
 	t_uni			*obj;
 	t_ray			shadow_ray;
 	double			dist;
@@ -121,7 +78,6 @@ void			send_selected_ray(t_uni **obj, const t_env *env,
 	}
 	*obj = cur_obj;
 }
-
 
 static void		prepare_light(const t_env *env, t_ray *ray, t_lght_comp *l,
 					t_uni *obj)
