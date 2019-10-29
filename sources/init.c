@@ -39,7 +39,8 @@ t_env			*init_sdl2(t_env *env)
 	|| !(env->screen = SDL_CreateTexture(env->renderer,
 			SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
 			env->buff_width, env->buff_height))
-	|| !(env->font = TTF_OpenFont("fonts/Roboto/Roboto-Black.ttf", 28))
+	|| !(env->font =
+		TTF_OpenFont("resources/fonts/Roboto/Roboto-Black.ttf", 28))
 	|| !(env->tex_arr =
 		(SDL_Surface **)malloc(sizeof(SDL_Surface *) * env->tex_arr_len)))
 		return (NULL);

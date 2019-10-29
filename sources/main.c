@@ -107,6 +107,5 @@ int				main(int argc, char **argv)
 	}
 	else
 		ft_putendl("Usage : ./RT scene_file");
-	system("leaks -q RT");
 	return (0);
 }
