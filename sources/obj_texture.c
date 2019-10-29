@@ -36,12 +36,14 @@ static SDL_Surface		*load_surface(t_env *env, char *path_name)
 	return (convert_srf);
 }
 
-void					init_img_tex(t_env *env, SDL_Surface **img_tex)
+_Bool					init_img_tex(t_env *env, SDL_Surface **img_tex)
 {
-	img_tex[0] = load_surface(env, "resources/textures/1.jpg");
-	img_tex[1] = load_surface(env, "resources/textures/2.jpg");
-	img_tex[2] = load_surface(env, "resources/textures/3.png");
-	img_tex[3] = load_surface(env, "resources/textures/4.jpg");
+	if (!(img_tex[0] = load_surface(env, "resources/textures/1.jpg"))
+	|| !(img_tex[1] = load_surface(env, "resources/textures/2.jpg"))
+	|| !(img_tex[2] = load_surface(env, "resources/textures/3.png"))
+	|| !(img_tex[3] = load_surface(env, "resources/textures/4.jpg")))
+		return (false);
+	return (true);
 }
 
 void					texturing_or_color(t_lght_comp *l, const t_env *env,

@@ -413,7 +413,7 @@ void				calculate_oc_tc_dir(t_dvec3_comp *computs, const t_uni *obj,
 /*
 **					obj_texture.c.c
 */
-void				init_img_tex(t_env *env, SDL_Surface **img_tex);
+_Bool				init_img_tex(t_env *env, SDL_Surface **img_tex);
 void				texturing_or_color(t_lght_comp *l, const t_env *env,
 						const t_ray *ray, t_uni *obj);
 
