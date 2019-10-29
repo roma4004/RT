@@ -17,7 +17,7 @@
 # define DISTANCE_TO_PLANE 1.0
 # define VALUES_PER_OBJ 14
 # define OBJ_TYPE_MAX 9
-# define DEBUG 0
+# define DEBUG 1
 # define MAX_MAP_SIDE 10000
 # define REFLECTIVE_MAX_DEPT 5
 
