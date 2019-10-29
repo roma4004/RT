@@ -1,0 +1,104 @@
+{
+  "parameters": [{
+    "position": [0, 2, -20],
+    "rotate angle": [1, 0, 0],
+    "width": 800,
+    "height": 800
+  }],
+  "objects": [{
+    "type": "sphere",
+    "position": [6, 0, -2],
+    "radius": 0.6,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [100, 89, 0],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [-4, 0, -4],
+    "radius": 0.5,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [215, 0, 112],
+    "specular": 1000,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [6, 0,  0],
+    "radius": 0.9,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [255, 255, 255],
+    "specular": 100,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [-3, 0, 4],
+    "radius": 0.7,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [134, 2, 80],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [3, 0, 4],
+    "radius": 1.6,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [255, 99, 0],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [0, 0, 2],
+    "radius": 1.1,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [14, 99, 127],
+    "specular": 100,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [0, 7, 6],
+    "radius": 2.1,
+    "direction": [0, 0, 0],
+    "height": 0,
+    "color": [255, 234, 8],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "plane",
+    "position": [0, -3, 5],
+    "radius": 1.2,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [255, 255, 255],
+    "specular": 1000,
+    "reflective": 0.5,
+    "refractive": 0.5
+  }],
+  "lights": [{
+    "type": "directional",
+    "position": [4, 10, -30],
+    "intensity": 0.4,
+    "color": [100, 62, 237]
+  } ,{
+    "type": "ambient",
+    "intensity": 0.1,
+    "color": [255, 255, 255]
+  } ,{
+    "type": "point",
+    "position": [-8, 10, 10],
+    "intensity": 1.0,
+    "color": [255, 255, 255]
+  }]
+}
