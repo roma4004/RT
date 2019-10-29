@@ -1,0 +1,179 @@
+{
+  "parameters": [{
+    "position": [0, 0, -40],
+    "rotate angle": [0, 0, 0],
+    "width": 800,
+    "height": 800
+  }],
+  "objects": [{
+    "type": "sphere",
+    "position": [0,  -5,  -5],
+    "radius": 1,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [3, 252, 240],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ -7.5, -7,  -8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ -7.5,  7,  -8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ 7.5, -7, -8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ 7.5,  7,  -8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ 7.5, 7, 8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ -7.5,  -7,  8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "sphere",
+    "position": [ 7.5,  -7,  8],
+    "radius": 2.5,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [63,  93,  99],
+    "specular": 10,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "plane",
+    "position": [ 0,  7,   10],
+    "radius": 0,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [ 46,  60, 130],
+    "specular": 50,
+    "reflective": 0.1,
+    "refractive": 5.0
+  } ,{
+    "type": "plane",
+    "position": [ 0,  -7,   10],
+    "radius": 0,
+    "direction": [0, 1, 0],
+    "height": 0,
+    "color": [ 168, 176, 179],
+    "specular": 50,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "plane",
+    "position": [ 0,  0,   20],
+    "radius": 0,
+    "direction": [0, 0, 1],
+    "height": 0,
+    "color": [ 46, 60, 130],
+    "specular": 0,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "cylinder",
+    "position": [-7.5, -7, -8],
+    "radius": 1.5,
+    "direction": [0, 1, 0],
+    "height": 16,
+    "color": [63,  93,  99],
+    "specular": 20,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "cylinder",
+    "position": [7.5, -7, -8],
+    "radius": 1.5,
+    "direction": [0, 1, 0],
+    "height": 16,
+    "color": [63,  93,  99],
+    "specular": 20,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "cylinder",
+    "position": [-7.5, -7, 8],
+    "radius": 1.5,
+    "direction": [0, 1, 0],
+    "height": 16,
+    "color": [63,  93,  99],
+    "specular": 20,
+    "reflective": 0,
+    "refractive": 0
+  } ,{
+    "type": "cylinder",
+    "position": [7.5, -7, 8],
+    "radius": 1.5,
+    "direction": [0, 1, 0],
+    "height": 16,
+    "color": [63,  93,  99],
+    "specular": 20,
+    "reflective": 0,
+    "refractive": 0
+  }],
+  "lights": [{
+    "type": "directional",
+    "position": [0, 0, -10],
+    "intensity": 0.2,
+    "color": [100, 62, 237]
+  } ,{
+    "type": "ambient",
+    "intensity": 0.4,
+    "color": [255, 255, 255]
+  } ,{
+    "type": "point",
+    "position": [12,  3,  -12],
+    "intensity": 0.8,
+    "color": [255, 255, 255]
+  } ,{
+    "type": "point",
+    "position": [-12,  3,  -12],
+    "intensity": 0.8,
+    "color": [255, 255, 255]
+  }]
+}

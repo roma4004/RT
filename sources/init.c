@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/28 20:47:18 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/29 18:46:41 by ykopiika         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,11 @@ t_env			*init_sdl2(t_env *env)
 	|| !(env->screen = SDL_CreateTexture(env->renderer,
 			SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_TARGET,
 			env->buff_width, env->buff_height))
-	|| !(env->font = TTF_OpenFont("fonts/Roboto/Roboto-Black.ttf", 28)))
-	{
-		quit_program(env);
+	|| !(env->font = TTF_OpenFont("fonts/Roboto/Roboto-Black.ttf", 28))
+	|| !(env->tex_arr =
+		(SDL_Surface **)malloc(sizeof(SDL_Surface *) * env->tex_arr_len)))
 		return (NULL);
-	}
+	init_img_tex(env, env->tex_arr);
 	init_cam(env, &env->cam);
 	return (env);
 }
@@ -58,6 +58,7 @@ t_env			*init_env(void)
 		env->buff_width = 640;
 		env->buff_height = 480;
 		env->threads = 4;
+		env->tex_arr_len = 3;
 		env->bg_color = (t_dvec3){0, 0, 0, 0};
 		errno = 0;
 	}
