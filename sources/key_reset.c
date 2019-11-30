@@ -12,10 +12,10 @@
 
 #include "rt.h"
 
-void	reset(t_env *env, t_cam *restrict cam, size_t obj_cnt)
+void	reset(t_env *env, t_cam *restrict cam, uint64_t obj_cnt)
 {
 	t_uni		*obj;
-	size_t		i;
+	uint64_t	i;
 
 	if (obj_cnt)
 	{

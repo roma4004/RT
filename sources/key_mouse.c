@@ -14,7 +14,7 @@
 
 void	select_caps_cylinder_cone(t_env *env)
 {
-	size_t		i;
+	uint64_t	i;
 
 	i = UINT64_MAX;
 	while (++i < env->uni_arr_len)

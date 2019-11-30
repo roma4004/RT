@@ -39,10 +39,10 @@ void			apply_effects(t_flags *flags, t_dvec3 *color)
 
 static void		replace_space_newline(char *str)
 {
-	size_t		i;
+	uint64_t	i;
 
 	i = UINT64_MAX;
-	while (str[++i] && (str[i] = ft_tolower(str[i])))
+	while (str[++i] && (str[i] = (char)ft_tolower(str[i])))
 		if (str[i] == ' ' || str[i] == '\n')
 			str[i] = '_';
 }

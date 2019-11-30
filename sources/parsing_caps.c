@@ -58,7 +58,7 @@ static void		add_cap_top(t_uni *dest_child, t_uni *src_parent)
 	set_backup_val(dest_child);
 }
 
-void			add_caps(t_uni *arr, size_t *id_uni, size_t type)
+void			add_caps(t_uni *arr, uint64_t *id_uni, uint64_t type)
 {
 	t_uni		*src_parent;
 

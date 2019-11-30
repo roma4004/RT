@@ -26,7 +26,9 @@ _Bool			inside_negative_obj(t_list *lst_neg, double val_t)
 	while (lst_neg)
 	{
 		negative_touch = (t_touch *)lst_neg->content;
-		if (is_in_range(val_t, negative_touch->near, negative_touch->far))
+		if (is_in_range(val_t,
+				negative_touch->near_touch,
+				negative_touch->far_touch))
 			return (true);
 		lst_neg = lst_neg->next;
 	}
@@ -36,7 +38,7 @@ _Bool			inside_negative_obj(t_list *lst_neg, double val_t)
 void			get_negative_touch(t_list **lst, const t_env *env, t_ray *ray)
 {
 	t_list		*lst_neg;
-	size_t		i;
+	uint64_t	i;
 	t_dvec3		touch;
 	t_touch		touch_tmp;
 

@@ -15,7 +15,7 @@
 static void		point_or_directional(t_dvec3 *light_vector, double *t_max,
 					const t_lght *light, const t_dvec3 *touch_point)
 {
-	if (light->type == POINT)
+	if (light->type == L_POINT)
 	{
 		vec3_sub_vec3(light_vector, &light->pos, touch_point);
 		*t_max = 1.0;
@@ -23,7 +23,7 @@ static void		point_or_directional(t_dvec3 *light_vector, double *t_max,
 	else
 	{
 		*light_vector = light->pos;
-		*t_max = (double)MAXFLOAT;
+		*t_max = INFINITY;
 	}
 }
 
@@ -80,7 +80,7 @@ static void		set_specular_val(t_dvec3 *specul_intens, t_lght_comp *l,
 void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 					const t_ray *ray)
 {
-	size_t			i;
+	uint64_t		i;
 	t_dvec3			defuse_col;
 	t_dvec3			specul_col;
 	double			t_max;
@@ -90,7 +90,7 @@ void			get_light(t_dvec3 *col, t_lght_comp *l, const t_env *env,
 	{
 		if (l->cur->col.x <= 0. && l->cur->col.y <= 0. && l->cur->col.z <= 0.)
 			continue;
-		else if (l->cur->type == AMBIENT)
+		else if (l->cur->type == L_AMBIENT)
 			vec3_add_vec3_col(&l->defuse_intns, &l->defuse_intns, &l->cur->col);
 		else
 		{

@@ -33,13 +33,13 @@ static double		after_dot(const char *str, double nbr)
 	return (res * sign);
 }
 
-static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
+static void			get_value_from_line(t_env *env, t_list *lst, uint64_t type)
 {
-	const size_t	len = lst->content_size;
-	const char		*str = lst->content;
-	size_t			i;
-	size_t			num_id;
-	double			arr[VALUES_PER_OBJ];
+	const uint64_t		len = lst->content_size;
+	const char			*str = lst->content;
+	uint64_t			i;
+	uint64_t			num_id;
+	double				arr[VALUES_PER_OBJ];
 
 	ft_bzero(&arr, sizeof(double) * VALUES_PER_OBJ);
 	if (type == UINT64_MAX || !(i = UINT64_MAX))
@@ -65,7 +65,7 @@ static void			get_value_from_line(t_env *env, t_list *lst, size_t type)
 static bool			parse_lst(t_env *env, t_list *lst)
 {
 	t_list		*cur;
-	size_t		nums;
+	uint64_t	nums;
 
 	if (env->flags.err_id || !init_obj_arr(env, lst))
 		return (false);

@@ -44,7 +44,7 @@ void	rotate_z(t_dvec3 *destination,
 
 _Bool	rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle)
 {
-	size_t		status;
+	uint64_t	status;
 
 	status = 0;
 	if (rotate_angle->x != 0.0 && ++status)
@@ -58,7 +58,7 @@ _Bool	rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle)
 
 void	rotate_objects(t_env *env, t_dvec3 rot)
 {
-	size_t		i;
+	uint64_t	i;
 	_Bool		rot_stat;
 
 	i = UINT64_MAX;

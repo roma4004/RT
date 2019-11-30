@@ -20,7 +20,7 @@ static _Bool	json_clear(JSON_Value **value, JSON_Object **object)
 }
 
 static _Bool	parse_uni_or_neg(JSON_Array *arr, t_uni **obj_arr,
-									size_t *arr_len)
+					uint64_t *arr_len)
 {
 	t_calc_arr	var;
 
@@ -44,11 +44,11 @@ static _Bool	parse_uni_or_neg(JSON_Array *arr, t_uni **obj_arr,
 }
 
 static _Bool	parse_ligt_arr(JSON_Array *arr, t_lght **lght_arr,
-								size_t *arr_len)
+					uint64_t *arr_len)
 {
 	JSON_Object	*object;
-	size_t		i;
-	size_t		type;
+	uint64_t	i;
+	uint64_t	type;
 
 	type = 424242;
 	i = 0;
@@ -79,7 +79,8 @@ static _Bool	parse_all_objects(t_env *env, JSON_Object *object)
 		return (false);
 	if ((parse_uni_or_neg(array, &env->uni_arr, &env->uni_arr_len) == false))
 		return (false);
-	if ((array = json_object_get_array(object, "negative_objects")) == NULL)
+	if ((array =
+			json_object_get_array(object, "negative_objects")) == NULL)
 		flag = false;
 	if (flag && !(parse_uni_or_neg(array, &env->neg_arr, &env->neg_arr_len)))
 		return (false);
@@ -108,8 +109,8 @@ _Bool			json_parson(t_env *env, char *file_name, Uint32 *err_id)
 	&& (json_clear(&env->value, &env->object)))
 		return (false);
 	if ((parse_all_objects(env, env->object)) == false
-		&& (*err_id = ERR_SCENE)
-		&& (json_clear(&env->value, &env->object)))
+	&& (*err_id = ERR_SCENE)
+	&& (json_clear(&env->value, &env->object)))
 		return (false);
 	return (true);
 }

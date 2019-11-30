@@ -16,7 +16,7 @@ static void		key_apply(t_env *env, t_flags *restrict f,
 					double move_speed, double rotate_speed)
 {
 	t_dvec3		rot;
-	size_t		obj_cnt;
+	uint64_t	obj_cnt;
 	void		(*uni_move)(t_env *, const t_dvec3 *, double);
 	void		(*uni_rotate)(t_env *, t_dvec3);
 

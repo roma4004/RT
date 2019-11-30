@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-static void		cnt_neg_obj(t_env *env, size_t type)
+static void		cnt_neg_obj(t_env *env, uint64_t type)
 {
 	env->neg_arr_len++;
 	if (type == CYLINDERNEG)
@@ -21,7 +21,7 @@ static void		cnt_neg_obj(t_env *env, size_t type)
 		env->neg_arr_len++;
 }
 
-static void		cnt_uni_obj(t_env *env, size_t type)
+static void		cnt_uni_obj(t_env *env, uint64_t type)
 {
 	env->uni_arr_len++;
 	if (type == CYLINDER)
@@ -33,7 +33,7 @@ static void		cnt_uni_obj(t_env *env, size_t type)
 static void		cnt_obj_type(t_env *env, t_list *lst)
 {
 	t_list		*cur;
-	size_t		type;
+	uint64_t	type;
 
 	cur = lst;
 	while (cur)

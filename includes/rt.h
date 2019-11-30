@@ -51,10 +51,10 @@
 typedef struct		s_calculate_array
 {
 	JSON_Object		*object;
-	size_t			i;
-	size_t			i_js;
-	size_t			js_len;
-	size_t			type;
+	uint64_t		i;
+	uint64_t		i_js;
+	uint64_t		js_len;
+	uint64_t		type;
 }					t_calc_arr;
 
 typedef struct		s_vector3_int
@@ -88,7 +88,7 @@ typedef struct		s_vector_double
 typedef struct		s_light {
 	t_dvec3		pos;
 	double		intensity;
-	size_t		type;
+	uint64_t	type;
 	t_dvec3		col;
 }					t_lght;
 
@@ -168,8 +168,8 @@ typedef struct		s_universal_object
 typedef struct		s_touch
 {
 	t_uni		*obj;
-	double		far;
-	double		near;
+	double		far_touch;
+	double		near_touch;
 }					t_touch;
 
 typedef struct		s_vector3_comput_tmp
@@ -211,22 +211,22 @@ typedef struct		s_environment
 	Uint32			*buff;
 	TTF_Font		*font;
 	SDL_Surface		**tex_arr;
-	size_t			tex_arr_len;
+	uint64_t		tex_arr_len;
 	Uint32			buff_width;
 	Uint32			buff_height;
 	t_dvec3			bg_color;
-	size_t			threads;
+	uint64_t		threads;
 	t_cam			cam;
-	size_t			uni_arr_len;
-	size_t			light_arr_len;
-	size_t			neg_arr_len;
+	uint64_t		uni_arr_len;
+	uint64_t		light_arr_len;
+	uint64_t		neg_arr_len;
 	t_flags			flags;
 }					t_env;
 
 typedef struct		s_pthread_data
 {
 	t_env		*env;
-	size_t		id;
+	uint64_t	id;
 }					t_pth_dt;
 
 enum				e_errors
@@ -240,9 +240,9 @@ enum				e_errors
 
 enum				e_light_type
 {
-	AMBIENT = 0,
-	POINT = 1,
-	DIRECTIONAL = 2,
+	L_AMBIENT = 0,
+	L_POINT = 1,
+	L_DIRECTIONAL = 2,
 	SPHERE = 3,
 	PLANE = 4,
 	CYLINDER = 5,
@@ -271,7 +271,7 @@ enum				e_orient
 */
 void				convert_to_viewport(t_dvec3 *destination, const t_env *env,
 						double x, double y);
-void				draw_scene(t_env *env, size_t threads);
+void				draw_scene(t_env *env, uint64_t threads);
 
 /*
 **					effects.c
@@ -334,7 +334,7 @@ _Bool				mouse_rotate_z(t_env *env, SDL_Event *event);
 /*
 **					key_reset.c
 */
-void				reset(t_env *env, t_cam *restrict cam, size_t obj_cnt);
+void				reset(t_env *env, t_cam *restrict cam, uint64_t obj_cnt);
 
 /*
 **					key_up_cam_move.c
@@ -401,9 +401,9 @@ void				set_normal_paraboloid(t_ray *ray, const t_uni *paraboloid,
 **					obj_utils.c
 */
 void				discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp);
-void				(*g_intersect_catalog(size_t type))
+void				(*g_intersect_catalog(uint64_t type))
 						(t_dvec3 *touch, const t_uni *obj, const t_ray *ray);
-void				(*g_normal_catalog(size_t type))
+void				(*g_normal_catalog(uint64_t type))
 						(t_ray *ray, const t_uni *obj, double dist);
 void				crop_cyl_n_cone(t_dvec3 *touch, double dir,
 						double oc_dot_dir, double height);
@@ -426,7 +426,7 @@ _Bool				parse_scene(t_env *env, char *file_name);
 **					parse_utils.c
 */
 _Bool				init_obj_arr(t_env *env, t_list *lst);
-void				set_obj_value(t_env *env, double *v, size_t type);
+void				set_obj_value(t_env *env, double *v, uint64_t type);
 _Bool				parse_switch(t_env *env, char *file_name);
 
 /*
@@ -439,13 +439,13 @@ void				set_backup_val(t_uni *obj);
 */
 void				calc_bot_cap(t_uni *cap, t_uni *his_parent);
 void				calc_top_cap(t_uni *cap, t_uni *his_parent);
-void				add_caps(t_uni *arr, size_t *id_uni, size_t type);
+void				add_caps(t_uni *arr, uint64_t *id_uni, uint64_t type);
 /*
 **					parsing_validate_scene.c
 */
-_Bool				is_valid_line(t_env *env, char **line, size_t len);
-size_t				get_type(const char *str);
-size_t				count_number(t_env *env, char *str, size_t len);
+_Bool				is_valid_line(t_env *env, char **line, uint64_t len);
+uint64_t			get_type(const char *str);
+uint64_t			count_number(t_env *env, char *str, uint64_t len);
 
 /*
 **					ray_traces_negative.c
@@ -476,9 +476,9 @@ void				send_reflect_ray(t_dvec3 *cur_color, t_lght_comp *l,
 /*
 **					key_utils.c
 */
-void				swith_handle(t_env *env, t_flags *flags, size_t obj_cnt);
-void				count_selected_obj(size_t *dest, t_uni *uni_arr,
-						size_t uni_arr_len);
+void				swith_handle(t_env *env, t_flags *flags, uint64_t obj_cnt);
+void				count_selected_obj(uint64_t *dest, t_uni *uni_arr,
+						uint64_t uni_arr_len);
 _Bool				select_mod(t_env *env, const SDL_Event *event,
 						const t_cam *cam);
 
@@ -579,8 +579,8 @@ _Bool				json_parson(t_env *env, char *file_name,
 /*
 **					json_get_value.c
 */
-_Bool				get_type_obj(JSON_Object *obj, size_t *type);
-_Bool				get_type_light(JSON_Object *obj, size_t *type);
+_Bool				get_type_obj(JSON_Object *obj, uint64_t *type);
+_Bool				get_type_light(JSON_Object *obj, uint64_t *type);
 _Bool				get_double_val(double *dst, char *key_word,
 						JSON_Object *obj);
 _Bool				get_uint_val(Uint32 *dst, char *key_word,
@@ -592,11 +592,11 @@ _Bool				get_vector_val(t_dvec3 *dst, char *key_word,
 **					json_get_obj.c
 */
 _Bool				parse_obj(JSON_Object *jsn_obj, t_uni *obj,
-						size_t type, size_t *i);
+						uint64_t type, uint64_t *i);
 _Bool				parse_light(JSON_Object *jsn_obj, t_lght *lght,
-						size_t type);
+						uint64_t type);
 _Bool				parse_params(t_env *env, JSON_Array	*arr);
 _Bool				count_n_malloc(t_calc_arr *var, t_uni **obj_arr,
-						size_t *arr_len, JSON_Array *arr);
+						uint64_t *arr_len, JSON_Array *arr);
 
 #endif

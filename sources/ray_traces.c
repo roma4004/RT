@@ -14,10 +14,10 @@
 
 t_uni			*intersect_obj(double *dist, const t_env *env, t_ray *ray)
 {
-	t_list			*lst_neg;
-	t_uni			*obj_pos;
-	size_t			i;
-	t_dvec3			touch;
+	t_list		*lst_neg;
+	t_uni		*obj_pos;
+	uint64_t	i;
+	t_dvec3		touch;
 
 	get_negative_touch(&lst_neg, env, ray);
 	obj_pos = NULL;
@@ -45,7 +45,7 @@ const t_uni		*is_shadow_ray(const t_env *env, const t_ray *ray,
 	t_ray			shadow_ray;
 	double			dist;
 
-	dist = (double)MAXFLOAT;
+	dist = INFINITY;
 	shadow_ray = (t_ray){
 		.t_min = ray->t_min,
 		.t_max = t_max,
@@ -59,10 +59,10 @@ const t_uni		*is_shadow_ray(const t_env *env, const t_ray *ray,
 void			send_selected_ray(t_uni **obj, const t_env *env,
 					const t_ray *ray, double dist)
 {
-	const size_t	len = env->uni_arr_len;
-	t_uni			*cur_obj;
-	size_t			i;
-	t_dvec3			touch;
+	const uint64_t		len = env->uni_arr_len;
+	t_uni				*cur_obj;
+	uint64_t			i;
+	t_dvec3				touch;
 
 	cur_obj = NULL;
 	i = UINT64_MAX;
@@ -101,7 +101,7 @@ void			send_ray(t_dvec3 *cur_color, const t_env *env, t_ray *ray)
 	t_lght_comp		l;
 
 	ft_bzero(&l, sizeof(t_lght_comp));
-	l.dist = (double)MAXFLOAT;
+	l.dist = INFINITY;
 	if (!(obj = intersect_obj(&l.dist, env, ray)))
 		*cur_color = env->bg_color;
 	else

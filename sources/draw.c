@@ -51,7 +51,7 @@ static void		save_orig_cam_dir(t_env *env, t_cam *cam, const t_dvec *half)
 
 static void		*render_frame(void *thread_data)
 {
-	const size_t		thread_id = ((t_pth_dt *)thread_data)->id;
+	const uint64_t		thread_id = ((t_pth_dt *)thread_data)->id;
 	t_env				*env;
 	t_ray				ray;
 	t_dvec				pt;
@@ -77,9 +77,9 @@ static void		*render_frame(void *thread_data)
 	return (NULL);
 }
 
-void			draw_scene(t_env *env, size_t threads)
+void			draw_scene(t_env *env, uint64_t threads)
 {
-	size_t		id;
+	uint64_t	id;
 	t_pth_dt	*data;
 	pthread_t	*threads_arr;
 

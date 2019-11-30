@@ -25,7 +25,7 @@ void			move_objects(t_env *env, const t_dvec3 *move_dir,
 					double move_speed)
 {
 	t_uni		*obj;
-	size_t		i;
+	uint64_t	i;
 
 	if (move_speed != 0.0)
 	{

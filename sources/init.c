@@ -20,7 +20,7 @@ static void		init_cam(t_env *env, t_cam *cam)
 	cam->rate = (double)env->buff_width / (double)env->buff_height;
 	cam->move_speed = 1.2;
 	cam->rotate_speed = 2.9;
-	cam->t_max = (double)MAXFLOAT;
+	cam->t_max = INFINITY;
 	cam->reflective_dept = REFLECTIVE_MAX_DEPT;
 	cam->epsilon = 0.00001;
 }

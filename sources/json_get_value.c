@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-_Bool	get_type_obj(JSON_Object *obj, size_t *type)
+_Bool	get_type_obj(JSON_Object *obj, uint64_t *type)
 {
 	char	*obj_type;
 
@@ -34,7 +34,7 @@ _Bool	get_type_obj(JSON_Object *obj, size_t *type)
 	return (true);
 }
 
-_Bool	get_type_light(JSON_Object *obj, size_t *type)
+_Bool	get_type_light(JSON_Object *obj, uint64_t *type)
 {
 	char	*obj_type;
 
@@ -42,11 +42,11 @@ _Bool	get_type_light(JSON_Object *obj, size_t *type)
 	if (obj_type == NULL)
 		return (false);
 	else if (ft_strcmp(obj_type, "ambient") == 0)
-		*type = AMBIENT;
+		*type = L_AMBIENT;
 	else if (ft_strcmp(obj_type, "point") == 0)
-		*type = POINT;
+		*type = L_POINT;
 	else if (ft_strcmp(obj_type, "directional") == 0)
-		*type = DIRECTIONAL;
+		*type = L_DIRECTIONAL;
 	else
 		return (false);
 	return (true);

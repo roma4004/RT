@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-static int		is_dot_in_double(const char *str, size_t i)
+static int		is_dot_in_double(const char *str, uint64_t i)
 {
 	if (str
 	&& i != 0
@@ -22,10 +22,10 @@ static int		is_dot_in_double(const char *str, size_t i)
 	return (0);
 }
 
-_Bool			is_valid_line(t_env *env, char **line, size_t len)
+_Bool			is_valid_line(t_env *env, char **line, uint64_t len)
 {
 	char		*str;
-	size_t		i;
+	uint64_t	i;
 
 	if (!line || !(str = *line))
 		return (false);
@@ -47,11 +47,11 @@ _Bool			is_valid_line(t_env *env, char **line, size_t len)
 	return (true);
 }
 
-size_t			count_number(t_env *env, char *str, size_t len)
+uint64_t		count_number(t_env *env, char *str, uint64_t len)
 {
-	size_t		i;
-	size_t		digits;
-	size_t		dots;
+	uint64_t	i;
+	uint64_t	digits;
+	uint64_t	dots;
 
 	i = UINT64_MAX;
 	digits = 0;

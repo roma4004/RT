@@ -11,8 +11,7 @@
 /* ************************************************************************** */
 
 #include <string.h>
-#include <sys/param.h>
-#include <sys/sysctl.h>
+#include <winbase.h>
 #include "libft.h"
 
 /*
@@ -31,6 +30,7 @@
 
 /*
 ** on win32 detecting number of processors on machine:
+** #include <winbase.h>
 **	{
 **		SYSTEM_INFO		sysinfo;
 **
@@ -41,20 +41,8 @@
 
 int		ft_get_processors_num(void)
 {
-	int		nm[2];
-	int		count;
-	size_t	len;
+	SYSTEM_INFO		sysinfo;
 
-	len = 4;
-	nm[0] = CTL_HW;
-	nm[1] = HW_AVAILCPU;
-	sysctl(nm, 2, &count, &len, NULL, 0);
-	if (count < 1)
-	{
-		nm[1] = HW_NCPU;
-		sysctl(nm, 2, &count, &len, NULL, 0);
-		if (count < 1)
-			count = 1;
-	}
-	return (count);
+	GetSystemInfo(&sysinfo);
+	return (sysinfo.dwNumberOfProcessors);
 }

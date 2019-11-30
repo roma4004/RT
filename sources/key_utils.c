@@ -12,7 +12,7 @@
 
 #include "rt.h"
 
-void		swith_handle(t_env *env, t_flags *flags, size_t obj_cnt)
+void		swith_handle(t_env *env, t_flags *flags, uint64_t obj_cnt)
 {
 	if (flags->is_reset)
 		reset(env, &env->cam, obj_cnt);
@@ -20,10 +20,11 @@ void		swith_handle(t_env *env, t_flags *flags, size_t obj_cnt)
 		save_screenshot(env);
 }
 
-void		count_selected_obj(size_t *dest, t_uni *uni_arr, size_t uni_arr_len)
+void		count_selected_obj(uint64_t *dest, t_uni *uni_arr,
+				uint64_t uni_arr_len)
 {
-	size_t		obj_cnt;
-	size_t		i;
+	uint64_t	obj_cnt;
+	uint64_t	i;
 
 	i = UINT64_MAX;
 	obj_cnt = 0;
@@ -50,7 +51,7 @@ _Bool		select_mod(t_env *env, const SDL_Event *event, const t_cam *cam)
 			env,
 			event->motion.x - env->cam.half.x,
 			-event->motion.y + env->cam.half.y - 1.0);
-		send_selected_ray(&env->selected_obj, env, &ray, (double)MAXFLOAT);
+		send_selected_ray(&env->selected_obj, env, &ray, INFINITY);
 		if (env->selected_obj)
 		{
 			env->selected_obj->is_selected =

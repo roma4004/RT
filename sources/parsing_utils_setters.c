@@ -21,7 +21,7 @@ static void		set_cam(t_cam *cam, const double *v)
 }
 
 static void		set_light(t_lght *light_arr, const double *v,
-					size_t *id_lgh, size_t type)
+					uint64_t *id_lgh, uint64_t type)
 {
 	light_arr[*id_lgh] =
 		(t_lght){
@@ -47,7 +47,7 @@ static void		set_light(t_lght *light_arr, const double *v,
 }
 
 static void		set_arr(t_uni *arr, const double *v,
-					size_t *id, size_t type)
+					uint64_t *id, uint64_t type)
 {
 	arr[*id] =
 		(t_uni){(t_dvec3){.x = v[0], .y = v[1], .z = v[2], 0.0},
@@ -73,11 +73,11 @@ static void		set_arr(t_uni *arr, const double *v,
 	(*id)++;
 }
 
-void			set_obj_value(t_env *env, double *v, size_t type)
+void			set_obj_value(t_env *env, double *v, uint64_t type)
 {
-	static size_t	id_uni = 0;
-	static size_t	id_neg = 0;
-	static size_t	id_lgh = 0;
+	static uint64_t		id_uni = 0;
+	static uint64_t		id_neg = 0;
+	static uint64_t		id_lgh = 0;
 
 	if (type == UINT64_MAX)
 		return ;

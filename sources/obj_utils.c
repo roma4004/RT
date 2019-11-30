@@ -28,7 +28,7 @@ void	discriminant_comput(t_dvec3 *touch, const t_dvec3 *tmp)
 	}
 }
 
-void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
+void	(*g_intersect_catalog(uint64_t type))(t_dvec3 *touch, const t_uni *obj,
 			const t_ray *ray)
 {
 	if (type == SPHERENEG || type == SPHERE)
@@ -46,7 +46,7 @@ void	(*g_intersect_catalog(size_t type))(t_dvec3 *touch, const t_uni *obj,
 	return (NULL);
 }
 
-void	(*g_normal_catalog(size_t type))(t_ray *ray, const t_uni *obj,
+void	(*g_normal_catalog(uint64_t type))(t_ray *ray, const t_uni *obj,
 			double dist)
 {
 	if (type == SPHERENEG || type == SPHERE)

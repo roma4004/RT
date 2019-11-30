@@ -27,7 +27,8 @@ _Bool		get_param(JSON_Object *jsn_obj, t_uni *obj)
 	return (true);
 }
 
-_Bool		parse_obj(JSON_Object *jsn_obj, t_uni *obj, size_t type, size_t *i)
+_Bool		parse_obj(JSON_Object *jsn_obj, t_uni *obj,
+				uint64_t type, uint64_t *i)
 {
 	get_param(jsn_obj, &obj[*i]);
 	obj[*i].height = fabs(obj[*i].height);
@@ -48,7 +49,7 @@ _Bool		parse_obj(JSON_Object *jsn_obj, t_uni *obj, size_t type, size_t *i)
 	return (true);
 }
 
-_Bool		parse_light(JSON_Object *jsn_obj, t_lght *lght, size_t type)
+_Bool		parse_light(JSON_Object *jsn_obj, t_lght *lght, uint64_t type)
 {
 	lght->type = type;
 	if (!get_vector_val(&lght->col, COLOR, jsn_obj)
@@ -64,8 +65,8 @@ _Bool		parse_light(JSON_Object *jsn_obj, t_lght *lght, size_t type)
 
 _Bool		parse_params(t_env *env, JSON_Array *arr)
 {
-	JSON_Object	*jsn_obj;
-	double		res;
+	JSON_Object		*jsn_obj;
+	double			res;
 
 	if (json_array_get_count(arr) != 1)
 		return (false);
@@ -88,7 +89,7 @@ _Bool		parse_params(t_env *env, JSON_Array *arr)
 }
 
 _Bool		count_n_malloc(t_calc_arr *var, t_uni **obj_arr,
-						size_t *arr_len, JSON_Array *arr)
+				uint64_t *arr_len, JSON_Array *arr)
 {
 	var->js_len = json_array_get_count(arr);
 	*arr_len = var->js_len;

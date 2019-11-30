@@ -61,7 +61,7 @@ void					texturing_or_color(t_lght_comp *l, const t_env *env,
 		uv = (t_dvec){
 			.x = 0.5 + atan2(ray->normal.z, ray->normal.x) / (2 * M_PI),
 			.y = 0.5 - asin(ray->normal.y) / M_PI};
-		tex = env->tex_arr[(size_t)obj->texture_id];
+		tex = env->tex_arr[(uint64_t)obj->texture_id];
 		coord = (t_ivec){.x = (int)(uv.x * tex->w), .y = (int)(uv.y * tex->h)};
 		pix = (uint8_t *)tex->pixels
 			+ coord.y * tex->pitch
