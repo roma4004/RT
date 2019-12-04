@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   json_get_obj.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ykopiika <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/28 17:01:42 by ykopiika          #+#    #+#             */
-/*   Updated: 2019/10/29 23:11:38 by ykopiika         ###   ########.fr       */
+/*   Updated: 2019/10/30 04:01:09 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ _Bool		parse_obj(JSON_Object *jsn_obj, t_uni *obj,
 	obj[*i].height = fabs(obj[*i].height);
 	obj[*i].color = vec3_clamp_col_cpy(obj[*i].color);
 	vec3_normalize(&obj[*i].dir, &obj[*i].dir);
-	set_backup_val(obj);
+	set_backup_val(&obj[*i]);
 	if (obj[*i].dir.x == 0.0 && obj[*i].dir.y == 0.0 && obj[*i].dir.z == 0.0)
 		obj[*i].dir = (t_dvec3){0.0, 1.0, 0.0, 0.0};
 	ft_clamp_in_range(&obj[*i].reflective_coef,
