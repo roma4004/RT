@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 21:12:48 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/10/30 02:03:25 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,15 +97,16 @@ int				main(int argc, char **argv)
 		&& parse_switch(env, argv[1])
 		&& init_sdl2(env))
 		{
-			draw_scene(env, env->threads);
+			draw_scene(env);
 			while (!(env->flags.is_rtv1_over))
 				if (event_handler(env, &env->cam, &env->flags))
-					draw_scene(env, env->threads);
+					draw_scene(env);
 		}
 		else
 			quit_program(env);
 	}
 	else
 		ft_putendl("Usage : ./RT scene_file");
+	system("leaks --quiet RT");
 	return (0);
 }

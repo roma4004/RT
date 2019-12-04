@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/29 21:20:23 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/12/04 12:49:02 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,28 +199,33 @@ typedef struct		s_flags
 
 typedef struct		s_environment
 {
-	JSON_Value		*value;
-	JSON_Object		*object;
-	SDL_Window		*window;
-	SDL_Renderer	*renderer;
-	SDL_Texture		*screen;
-	t_uni			*uni_arr;
-	t_uni			*neg_arr;
-	t_uni			*selected_obj;
-	t_lght			*light_arr;
-	Uint32			*buff;
-	TTF_Font		*font;
-	SDL_Surface		**tex_arr;
-	uint64_t		tex_arr_len;
-	Uint32			buff_width;
-	Uint32			buff_height;
-	t_dvec3			bg_color;
-	uint64_t		threads;
-	t_cam			cam;
-	uint64_t		uni_arr_len;
-	uint64_t		light_arr_len;
-	uint64_t		neg_arr_len;
-	t_flags			flags;
+	JSON_Value					*value;
+	JSON_Object					*object;
+	SDL_Window					*window;
+	SDL_Renderer				*renderer;
+	SDL_Texture					*screen;
+	t_uni						*uni_arr;
+	t_uni						*neg_arr;
+	t_uni						*selected_obj;
+	t_lght						*light_arr;
+	Uint32						*buff;
+	TTF_Font					*font;
+	SDL_Surface					**tex_arr;
+	uint64_t					tex_arr_len;
+	Uint32						buff_width;
+	Uint32						buff_height;
+	t_dvec3						bg_color;
+
+	_Bool						*thread_status;
+	uint64_t					threads;
+	struct s_pthread_data		*data;
+	pthread_t					*threads_arr;
+
+	t_cam						cam;
+	uint64_t					uni_arr_len;
+	uint64_t					light_arr_len;
+	uint64_t					neg_arr_len;
+	t_flags						flags;
 }					t_env;
 
 typedef struct		s_pthread_data
@@ -271,7 +276,7 @@ enum				e_orient
 */
 void				convert_to_viewport(t_dvec3 *destination, const t_env *env,
 						double x, double y);
-void				draw_scene(t_env *env, uint64_t threads);
+void				draw_scene(t_env *env);
 
 /*
 **					effects.c
@@ -283,6 +288,7 @@ void				save_screenshot(t_env *env);
 **					init.c
 */
 t_env				*init_sdl2(t_env *env);
+void				init_thread(t_env *env, size_t threads);
 t_env				*init_env(void);
 
 /*
@@ -497,15 +503,9 @@ void				ft_clamp_in_range_vec(t_dvec3 *dest,
 						double min, double max);
 
 /*
-**					vec3_utils.c
+**					thread.c
 */
-void				vec3_length(double *destination,
-						const t_dvec3 *restrict first);
-void				vec3_dot_vec3(double *destination,
-						const t_dvec3 *first,
-						const t_dvec3 *second);
-void				vec3_normalize(t_dvec3 *destination,
-						const t_dvec3 *restrict first);
+void				*render_frame(void *thread_data);
 
 /*
 **					vec3_rotate.c
@@ -518,6 +518,17 @@ void				rotate_z(t_dvec3 *destination, const t_dvec3 *restrict pt,
 						double angle);
 _Bool				rotate_vec(t_dvec3 *vec, const t_dvec3 *rotate_angle);
 void				rotate_objects(t_env *env, t_dvec3 rot);
+
+/*
+**					vec3_utils.c
+*/
+void				vec3_length(double *destination,
+						const t_dvec3 *restrict first);
+void				vec3_dot_vec3(double *destination,
+						const t_dvec3 *first,
+						const t_dvec3 *second);
+void				vec3_normalize(t_dvec3 *destination,
+						const t_dvec3 *restrict first);
 
 /*
 **					vec3_with_double.c

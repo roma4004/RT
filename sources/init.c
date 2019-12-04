@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/22 17:23:17 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/30 00:05:49 by dromanic         ###   ########.fr       */
+/*   Updated: 2019/12/04 12:46:42 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,32 @@ t_env			*init_sdl2(t_env *env)
 	return (env);
 }
 
+//	pthread_cond_t pthreadCond; //todo: add sleep until condition
+//	int pthread_cond_broadcast(pthread_cond_t *cv);
+//	https://www.opennet.ru/docs/RUS/linux_parallel/node75.html
+void			init_thread(t_env *env, size_t threads)
+{
+	size_t		id;
+
+	if (!env || !(env->data = (t_pth_dt *)malloc(threads * sizeof(t_pth_dt))))
+		return ;
+	if (!(env->threads_arr = (pthread_t *)malloc(threads * sizeof(pthread_t))))
+	{
+		free(env->data);
+		return ;
+	}
+	id = UINT64_MAX;
+	while (++id < threads)
+	{
+		env->thread_status[id] = false;
+		env->data[id] = (t_pth_dt){.env = env, .id = id};
+		pthread_create(&env->threads_arr[id], NULL,
+			render_frame, &env->data[id]);
+//		pthread_cond_wait()
+		pthread_detach(env->threads_arr[id]);
+	}
+}
+
 t_env			*init_env(void)
 {
 	t_env	*env;
@@ -58,7 +84,9 @@ t_env			*init_env(void)
 		ft_bzero(env, sizeof(t_env));
 		env->buff_width = 640;
 		env->buff_height = 480;
-		env->threads = 4;
+		env->threads = ft_get_processors_num();
+		env->thread_status = (_Bool *)malloc(sizeof(_Bool) * env->threads);
+		init_thread(env, env->threads);
 		env->tex_arr_len = 4;
 		env->bg_color = (t_dvec3){0, 0, 0, 0};
 		errno = 0;
