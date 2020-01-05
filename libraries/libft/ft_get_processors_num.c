@@ -6,21 +6,21 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/12 12:51:00 by dromanic          #+#    #+#             */
-/*   Updated: 2019/12/04 11:53:38 by dromanic         ###   ########.fr       */
+/*   Updated: 2020/01/05 17:54:48 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <string.h>
 #include "libft.h"
 
-#ifdef __unix__
+#ifdef linux
+
+# include <sys/sysinfo.h>
+
+#elif defined(__unix__) || defined(__APPLE__)
 
 # include <sys/param.h>
 # include <sys/sysctl.h>
-
-#elif defined(linux)
-
-# include <sys/sysinfo.h>
 
 #elif defined(_WIN32) || defined(WIN32)
 
@@ -28,7 +28,14 @@
 
 #endif
 
-#ifdef __unix__
+#ifdef linux
+
+int		ft_get_processors_num(void)
+{
+	return (sysconf(_SC_NPROCESSORS_ONLN));
+}
+
+#elif defined(__unix__) || defined(__APPLE__)
 
 int		ft_get_processors_num(void)
 {
@@ -48,13 +55,6 @@ int		ft_get_processors_num(void)
 			count = 1;
 	}
 	return (count);
-}
-
-#elif defined(linux)
-
-int		ft_get_processors_num(void)
-{
-	return (sysconf(_SC_NPROCESSORS_ONLN));
 }
 
 #elif defined(_WIN32) || defined(WIN32)
