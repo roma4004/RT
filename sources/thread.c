@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/24 18:21:50 by dromanic          #+#    #+#             */
-/*   Updated: 2019/12/04 12:49:02 by dromanic         ###   ########.fr       */
+/*   Updated: 2020/01/05 21:08:41 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static void		save_orig_cam_dir(t_env *env, t_cam *cam, const t_dvec *half)
 	vec3_normalize(&cam->origin_dir_y, &cam->origin_dir_y);
 }
 
-static void		thread_do_work(t_env *env, size_t thread_id)
+static void		thread_render_buffer(t_env *env, size_t thread_id)
 {
 	t_dvec				pt;
 	t_ray				ray;
@@ -64,6 +64,7 @@ static void		thread_do_work(t_env *env, size_t thread_id)
 				(t_dvec){pt.x + thread_id, pt.y}, &color);
 		}
 	}
+	--(env->working_threads_amount);
 	env->thread_status[thread_id] = false;
 }
 
@@ -71,14 +72,26 @@ void			*render_frame(void *thread_data)
 {
 	const size_t		thread_id = ((t_pth_dt *)thread_data)->id;
 	t_env				*env;
+//	pthread_mutex_t		count_lock;
 
 	env = ((t_pth_dt *)thread_data)->env;
-	while (!(env->flags.is_rtv1_over))
+	while (!(env->flags.is_rtv1_running))
 	{
-		if (!(*(env->thread_status + thread_id)))
-			usleep(100); //todo wait for condition
-		else
-			thread_do_work(env, thread_id);
+		pthread_mutex_lock(env->count_lock + thread_id);
+
+
+		//cond_wait test section:
+		while (!(*(env->thread_status + thread_id)))
+			pthread_cond_wait(&env->buffer_obsolete, env->count_lock + thread_id);
+		thread_render_buffer(env, thread_id);
+
+		//original sleep section:
+//		if (!(*(env->thread_status + thread_id)))
+//			usleep(100);
+//		else
+//			thread_render_buffer(env, thread_id);
+
+		pthread_mutex_unlock(env->count_lock + thread_id);
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/08 14:41:21 by dromanic          #+#    #+#             */
-/*   Updated: 2019/12/04 12:11:08 by dromanic         ###   ########.fr       */
+/*   Updated: 2020/01/05 20:07:29 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,16 @@ void			convert_to_viewport(t_dvec3 *destination, const t_env *env,
 void			draw_scene(t_env *env)
 {
 	uint64_t	i;
-	uint64_t	status;
 
+	env->working_threads_amount = env->threads;
 	i = UINT64_MAX;
 	while (++i < env->threads)
 		env->thread_status[i] = true;
+	pthread_cond_broadcast(&env->buffer_obsolete);
 	while (true)
-	{
-		status = 0;
-		i = UINT64_MAX;
-		while (++i < env->threads)
-			status += env->thread_status[i];
-		if (status == 0)
-			break ;
-		else
+		if (env->working_threads_amount)
 			screen_update(env);
-	}
+		else
+			break ;
 	screen_update(env);
 }

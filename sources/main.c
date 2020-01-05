@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/18 17:13:08 by dromanic          #+#    #+#             */
-/*   Updated: 2019/10/30 02:03:25 by dromanic         ###   ########.fr       */
+/*   Updated: 2020/01/05 20:55:36 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void			quit_program(t_env *env)
 		free(env->uni_arr);
 	if (env->neg_arr)
 		free(env->neg_arr);
+	pthread_cond_destroy(&env->buffer_obsolete);
 	show_errors(env);
 	SDL_Quit();
 }
@@ -98,9 +99,11 @@ int				main(int argc, char **argv)
 		&& init_sdl2(env))
 		{
 			draw_scene(env);
-			while (!(env->flags.is_rtv1_over))
+			while (!(env->flags.is_rtv1_running))
 				if (event_handler(env, &env->cam, &env->flags))
 					draw_scene(env);
+				else
+					usleep(500);
 		}
 		else
 			quit_program(env);

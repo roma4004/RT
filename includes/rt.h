@@ -6,7 +6,7 @@
 /*   By: dromanic <dromanic@student.unit.ua>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/25 19:41:05 by dromanic          #+#    #+#             */
-/*   Updated: 2019/12/04 12:49:02 by dromanic         ###   ########.fr       */
+/*   Updated: 2020/01/05 20:41:45 by dromanic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 # include <errno.h>
 # include <math.h>
 # include <time.h>
+# include <stdatomic.h>
 # include "parson.h"
 
 # include "SDL.h"
@@ -141,35 +142,35 @@ typedef struct		s_camera
 
 typedef struct		s_universal_object
 {
-	t_dvec3		pos;
-	double		radius;
-	t_dvec3		dir;
-	double		height;
-	t_dvec3		color;
-	double		specular;
-	void		(*get_intersect)
-				(t_dvec3 *touch,
-					const struct s_universal_object *obj,
-					const t_ray *ray);
-	void		(*get_normal)
-				(t_ray *ray,
-					const struct s_universal_object *obj,
-					double dist);
-	double		reflective_coef;
-	double		refractive_coef;
-	double		texture_id;
-	_Bool		is_selected;
-	t_dvec3		pos_backup;
-	double		radius_backup;
-	t_dvec3		dir_backup;
-	double		cone_angle_cache;
+	t_dvec3			pos;
+	double			radius;
+	t_dvec3			dir;
+	double			height;
+	t_dvec3			color;
+	double			specular;
+	void			(*get_intersect)
+					(t_dvec3 *touch,
+						const struct s_universal_object *obj,
+						const t_ray *ray);
+	void			(*get_normal)
+					(t_ray *ray,
+						const struct s_universal_object *obj,
+						double dist);
+	double			reflective_coef;
+	double			refractive_coef;
+	double			texture_id;
+	_Bool			is_selected;
+	t_dvec3			pos_backup;
+	double			radius_backup;
+	t_dvec3			dir_backup;
+	double			cone_angle_cache;
 }					t_uni;
 
 typedef struct		s_touch
 {
-	t_uni		*obj;
-	double		far_touch;
-	double		near_touch;
+	t_uni			*obj;
+	double			far_touch;
+	double			near_touch;
 }					t_touch;
 
 typedef struct		s_vector3_comput_tmp
@@ -183,55 +184,59 @@ typedef struct		s_vector3_comput_tmp
 
 typedef struct		s_flags
 {
-	t_ivec3			rotate;
-	t_ivec3			move;
-	Uint32			err_id;
-	_Bool			is_rtv1_over;
-	_Bool			is_select_mod;
-	_Bool			is_camera_mod;
-	_Bool			is_reset;
-	_Bool			is_sepia;
-	_Bool			is_grayscale;
-	_Bool			is_screenshot;
-	_Bool			is_menu;
-	_Bool			is_info;
+	t_ivec3				rotate;
+	t_ivec3				move;
+	Uint32				err_id;
+	volatile _Bool		is_rtv1_running;
+	_Bool				is_select_mod;
+	_Bool				is_camera_mod;
+	_Bool				is_reset;
+	_Bool				is_sepia;
+	_Bool				is_grayscale;
+	_Bool				is_screenshot;
+	_Bool				is_menu;
+	_Bool				is_info;
 }					t_flags;
 
 typedef struct		s_environment
 {
-	JSON_Value					*value;
-	JSON_Object					*object;
-	SDL_Window					*window;
-	SDL_Renderer				*renderer;
-	SDL_Texture					*screen;
-	t_uni						*uni_arr;
-	t_uni						*neg_arr;
-	t_uni						*selected_obj;
-	t_lght						*light_arr;
-	Uint32						*buff;
-	TTF_Font					*font;
-	SDL_Surface					**tex_arr;
-	uint64_t					tex_arr_len;
-	Uint32						buff_width;
-	Uint32						buff_height;
-	t_dvec3						bg_color;
+	JSON_Value							*value;
+	JSON_Object							*object;
+	SDL_Window							*window;
+	SDL_Renderer						*renderer;
+	SDL_Texture							*screen;
+	t_uni								*uni_arr;
+	t_uni								*neg_arr;
+	t_uni								*selected_obj;
+	t_lght								*light_arr;
+	Uint32								*buff;
+	TTF_Font							*font;
+	SDL_Surface							**tex_arr;
+	uint64_t							tex_arr_len;
+	Uint32								buff_width;
+	Uint32								buff_height;
+	t_dvec3								bg_color;
 
-	_Bool						*thread_status;
-	uint64_t					threads;
-	struct s_pthread_data		*data;
-	pthread_t					*threads_arr;
+	_Bool								*thread_status;
+	uint64_t							threads;
+	struct s_pthread_data				*data;
+	pthread_t							*threads_arr;
 
-	t_cam						cam;
-	uint64_t					uni_arr_len;
-	uint64_t					light_arr_len;
-	uint64_t					neg_arr_len;
-	t_flags						flags;
+	t_cam								cam;
+	uint64_t							uni_arr_len;
+	uint64_t							light_arr_len;
+	uint64_t							neg_arr_len;
+	t_flags								flags;
+
+	pthread_mutex_t						*count_lock;
+	pthread_cond_t						buffer_obsolete;
+	volatile atomic_uint_least32_t		working_threads_amount;
 }					t_env;
 
 typedef struct		s_pthread_data
 {
-	t_env		*env;
-	uint64_t	id;
+	t_env			*env;
+	uint64_t		id;
 }					t_pth_dt;
 
 enum				e_errors

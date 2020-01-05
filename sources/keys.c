@@ -105,7 +105,7 @@ _Bool			event_handler(t_env *env, t_cam *cam, t_flags *flags)
 		key_code = event.key.keysym.sym;
 		if (event.type == SDL_QUIT
 		|| (event.type == SDL_KEYDOWN && key_code == SDLK_ESCAPE))
-			env->flags.is_rtv1_over = true;
+			env->flags.is_rtv1_running = true;
 		result += keyboard_events(event.type, key_code, flags);
 		result += mouse_events(env, &event);
 	}
